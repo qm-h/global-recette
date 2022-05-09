@@ -1,0 +1,17 @@
+{
+  "name": "webapp-devops",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "client": "npm start --prefix client",
+    "server": "npm run dev --prefix server",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "7.1.0"
+  }
+}
