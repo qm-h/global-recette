@@ -12,7 +12,11 @@
     "lint-staged": "lint-staged"
   },
   "lint-staged": {
-    "**/*.{js,ts,tsx,jsx,md,css}": ["eslint --fix", "pretty-quick --staged"]
+    "**/*.{js,ts,tsx,jsx}": [
+      "eslint --fix",
+      "pretty-quick --staged"
+    ],
+    "**/*.{md,css}": "pretty-quick --staged"
   },
   "author": "",
   "license": "ISC",
