@@ -1,64 +1,78 @@
 import { useEffect, useState } from 'react'
-import { Recipes } from '../../../server/share/types'
-import { addRecipe, getAllRecipes } from '../api/router'
+import { Ingredients, Recipes } from '../../../server/share/types'
+import { addRecipe, getAllRecipes, getRecipesIngredients } from '../api/router'
+import AddRecipeComponent from './components/addRecipeComponent'
+import AddRecipeButton from './components/AddRecipesButton'
 
 const ListRecipes = () => {
     const [addRecipes, setAddRecipes] = useState(false)
+    const [addRecipesIngredients, setAddRecipesIngredients] = useState(false)
     const [recipesData, setRecipesData] = useState<Recipes[]>([])
-    const [recipeName, setRecipeName] = useState('')
-    const [recipeDetails, setRecipeDetails] = useState('')
+    const [recipesIngredientsData, setRecipesIngredientsData] = useState<
+        Ingredients[]
+    >([])
+
+    const [counter, setCounter] = useState(0)
+    const [errorEmptyField, setErrorEmptyField] = useState('')
 
     const handleAdd = () => {
         setAddRecipes(true)
     }
+    const handleAddIngredient = () => {
+        setCounter(counter + 1)
+        setAddRecipesIngredients(true)
+    }
     const handleClose = () => {
         setAddRecipes(false)
+        setAddRecipesIngredients(false)
+        setCounter(0)
+        setErrorEmptyField('')
+        console.log('counter:', counter)
+        console.log('addRecipesIngredients:', addRecipesIngredients)
+        console.log('ErrorEmptyField:', errorEmptyField)
     }
 
-    const handleSave = (name: string, details: string) => {
-        const data: Recipes = {
-            name: name,
-            details: details,
-            ingredients: ['tout', 'ou', 'rien'],
-            origin: 'nulpart',
+    const handleSave = (
+        name: string,
+        ingredientsName: string,
+        origin: string,
+        details: string
+    ) => {
+        if (
+            name !== '' &&
+            ingredientsName !== '' &&
+            origin !== '' &&
+            details !== ''
+        ) {
+            const ingredients: Ingredients[] = [
+                {
+                    recipeId: 1,
+                    name: ingredientsName,
+                },
+            ]
+            const data: Recipes = {
+                id: 1,
+                name: name,
+                details: details,
+                ingredients: ingredients,
+                origin: origin,
+            }
+            recipesData.push(data)
+            setRecipesData([])
+            setAddRecipes(false)
+            setAddRecipesIngredients(false)
+            setCounter(0)
+            addRecipe(data)
+        } else {
+            setErrorEmptyField('Les champs ne doivent pas être vides')
         }
-        recipesData.push(data)
-        setRecipesData([])
-        setAddRecipes(false)
-        addRecipe(data)
     }
 
     useEffect(() => {
         getAllRecipes.then((r) => setRecipesData(r))
-        console.log(recipesData)
-    }, [recipesData])
+        getRecipesIngredients.then((res) => setRecipesIngredientsData(res))
+    }, [recipesData, recipesIngredientsData])
 
-    const addComponent = (
-        <div className="add_component_container">
-            <span>Nom</span>
-            <input
-                onChange={(event) => setRecipeName(event.target.value)}
-                id="name"
-                name="name"
-                type="text"
-                value={recipeName}
-            />
-            <label>Details</label>
-            <input
-                id="detail"
-                onChange={(event) => setRecipeDetails(event.target.value)}
-                name="detail"
-                type="text"
-            />
-            <button
-                type="submit"
-                className="button save_button"
-                onClick={() => handleSave(recipeName, recipeDetails)}
-            >
-                Save
-            </button>
-        </div>
-    )
     return (
         <>
             <div className="card_container">
@@ -66,28 +80,40 @@ const ListRecipes = () => {
                     <h1>Recettes</h1>
                 </div>
                 <div className="card">
-                    {addRecipes ? (
-                        <button
-                            className="button close_button"
-                            onClick={handleClose}
-                        >
-                            x
-                        </button>
-                    ) : (
-                        <button
-                            className="button add_button"
-                            onClick={handleAdd}
-                        >
-                            +
-                        </button>
-                    )}
+                    <AddRecipeButton
+                        addRecipes={addRecipes}
+                        handleClose={handleClose}
+                        handleAddIngredient={handleAddIngredient}
+                        handleAdd={handleAdd}
+                    />
                     <ul>
-                        {addRecipes && addComponent}
+                        {addRecipes && (
+                            <AddRecipeComponent
+                                errorMessage={errorEmptyField}
+                                counter={counter}
+                                handleSave={handleSave}
+                            />
+                        )}
                         {recipesData
-                            ? recipesData.map((r, index) => (
+                            ? recipesData.map((recipe, index) => (
                                   <>
                                       <li key={index}>
-                                          {r.name} : {r.details}
+                                          <span>Nom : {recipe.name} </span>
+                                          <br />
+                                          <span>Origine : {recipe.origin}</span>
+                                          <br />
+                                          <span>
+                                              Ingredient :
+                                              {recipe.ingredients.map(
+                                                  (ingredient) => (
+                                                      <li>{ingredient.name}</li>
+                                                  )
+                                              )}
+                                          </span>
+                                          <br />
+                                          <span>
+                                              Details : {recipe.details}
+                                          </span>
                                           <button className="button edit_button">
                                               Edit
                                           </button>
