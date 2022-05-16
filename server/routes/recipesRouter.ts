@@ -12,13 +12,11 @@ router.get('/ingredients/:id', (_req, res) => {
 
 router.post('/addRecipes', (req, res) => {
     mockRecipes.push(req.body)
-    console.log(mockRecipes)
     res.send('OK')
 })
 
 router.post('/addRecipesIngredients', (req, res) => {
     mockIngredients.push(req.body)
-    console.log(mockIngredients)
     res.send('OK')
 })
 

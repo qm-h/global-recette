@@ -1,16 +1,22 @@
 type Props = {
     addRecipes: boolean
     handleClose: () => void
-    addIngredient: JSX.Element
     handleAdd: () => void
+    handleAddIngredient: () => void
 }
 
 const AddRecipeButton = ({
     addRecipes,
     handleClose,
-    addIngredient,
     handleAdd,
+    handleAddIngredient,
 }: Props) => {
+    const addIngredient = (
+        <button className="button add_button" onClick={handleAddIngredient}>
+            Ajouter un ingrédient
+        </button>
+    )
+
     return (
         <>
             {addRecipes ? (
