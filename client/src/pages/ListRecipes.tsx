@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Ingredients, Recipes } from '../../../server/share/types'
+import { useCallback, useEffect, useState } from 'react'
+import { Ingredients, Recipes } from '../../../server/shared/types'
 import { addRecipe, getAllRecipes, getRecipesIngredients } from '../api/router'
 import AddRecipeComponent from './components/addRecipeComponent'
 import AddRecipeButton from './components/AddRecipesButton'
@@ -11,7 +11,7 @@ const ListRecipes = () => {
     const [recipesIngredientsData, setRecipesIngredientsData] = useState<
         Ingredients[]
     >([])
-
+    const [isLoading, setIsLoading] = useState(true)
     const [counter, setCounter] = useState(0)
     const [errorEmptyField, setErrorEmptyField] = useState('')
 
@@ -27,9 +27,6 @@ const ListRecipes = () => {
         setAddRecipesIngredients(false)
         setCounter(0)
         setErrorEmptyField('')
-        console.log('counter:', counter)
-        console.log('addRecipesIngredients:', addRecipesIngredients)
-        console.log('ErrorEmptyField:', errorEmptyField)
     }
 
     const handleSave = (
@@ -46,32 +43,41 @@ const ListRecipes = () => {
         ) {
             const ingredients: Ingredients[] = [
                 {
-                    recipeId: 1,
-                    name: ingredientsName,
+                    id: 1,
+                    nomIngredient: ingredientsName,
                 },
             ]
             const data: Recipes = {
                 id: 1,
-                name: name,
-                details: details,
+                nomRecette: name,
+                description: details,
                 ingredients: ingredients,
                 origin: origin,
             }
-            recipesData.push(data)
-            setRecipesData([])
             setAddRecipes(false)
             setAddRecipesIngredients(false)
             setCounter(0)
             addRecipe(data)
+            fetchRecipes()
         } else {
             setErrorEmptyField('Les champs ne doivent pas être vides')
         }
     }
 
+    const fetchRecipes = useCallback(async () => {
+        const recipes = await getAllRecipes()
+        setRecipesData(recipes)
+    }, [getAllRecipes])
+
     useEffect(() => {
-        getAllRecipes.then((r) => setRecipesData(r))
-        getRecipesIngredients.then((res) => setRecipesIngredientsData(res))
-    }, [recipesData, recipesIngredientsData])
+        Promise.all([getAllRecipes(), getRecipesIngredients(1)]).then(
+            ([recipes, ingredients]) => {
+                setRecipesData(recipes)
+                setRecipesIngredientsData(ingredients)
+                setIsLoading(false)
+            }
+        )
+    }, [])
 
     return (
         <>
@@ -94,36 +100,32 @@ const ListRecipes = () => {
                                 handleSave={handleSave}
                             />
                         )}
-                        {recipesData
-                            ? recipesData.map((recipe, index) => (
-                                  <>
-                                      <li key={index}>
-                                          <span>Nom : {recipe.name} </span>
-                                          <br />
-                                          <span>Origine : {recipe.origin}</span>
-                                          <br />
-                                          <span>
-                                              Ingredient :
-                                              {recipe.ingredients.map(
-                                                  (ingredient) => (
-                                                      <li>{ingredient.name}</li>
-                                                  )
-                                              )}
-                                          </span>
-                                          <br />
-                                          <span>
-                                              Details : {recipe.details}
-                                          </span>
-                                          <button className="button edit_button">
-                                              Edit
-                                          </button>
-                                          <button className="button delete_button">
-                                              Delete
-                                          </button>
-                                      </li>
-                                  </>
-                              ))
-                            : 'Loading...'}
+                        {isLoading
+                            ? 'loading'
+                            : recipesData.map((r, i) => (
+                                  <li key={i}>
+                                      <span>Nom : {r.nomRecette} </span>
+                                      <br />
+                                      <span>Origine : {r.origin}</span>
+                                      <br />
+                                      <span>
+                                          Ingredient :
+                                          {r.ingredients.map((ingredient) => (
+                                              <li>
+                                                  {ingredient.nomIngredient}
+                                              </li>
+                                          ))}
+                                      </span>
+                                      <br />
+                                      <span>Details : {r.description}</span>
+                                      <button className="button edit_button">
+                                          Edit
+                                      </button>
+                                      <button className="button delete_button">
+                                          Delete
+                                      </button>
+                                  </li>
+                              ))}
                     </ul>
                 </div>
             </div>

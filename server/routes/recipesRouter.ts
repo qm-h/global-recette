@@ -1,23 +1,46 @@
-import express from 'express'
-import { mockIngredients, mockRecipes } from '../share/mockRecipes'
-const router = express.Router()
+import { Router, Request, Response } from 'express'
+import {
+    selectAllRecipesQuery,
+    selectIngredientQuery,
+    selectRecipeQuery,
+    getQuery,
+    addRecipeQuery,
+    postQuery,
+} from '../shared/queries'
 
-router.get('/', (_req, res) => {
-    res.json(mockRecipes)
-})
+class RecipeRouter {
+    public readonly router: Router
 
-router.get('/ingredients/:id', (_req, res) => {
-    res.send('OK')
-})
+    constructor() {
+        this.router = Router()
+        this.router.get('/', [this.getAllRecipesData])
+        this.router.get('/recipe/:id', (_req: Request, res: Response) => [
+            this.getRecipeById(_req, res),
+        ])
+        this.router.get('/ingredients/:id', (_req: Request, res: Response) => [
+            this.getIngredientById(_req, res),
+        ])
+        this.router.post('/addrecipe', (_req: Request, res: Response) => [
+            this.addRecipe(_req, res),
+        ])
+    }
 
-router.post('/addRecipes', (req, res) => {
-    mockRecipes.push(req.body)
-    res.send('OK')
-})
+    private getAllRecipesData(req: Request, res: Response) {
+        return getQuery(req, res, selectAllRecipesQuery)
+    }
 
-router.post('/addRecipesIngredients', (req, res) => {
-    mockIngredients.push(req.body)
-    res.send('OK')
-})
+    private getRecipeById(req: Request, res: Response) {
+        return getQuery(req, res, selectRecipeQuery(req.params.id))
+    }
 
-export default router
+    private getIngredientById(req: Request, res: Response) {
+        return getQuery(req, res, selectIngredientQuery(req.params.id))
+    }
+
+    private addRecipe(req: Request, res: Response) {
+        return postQuery(req, res, addRecipeQuery(req, res))
+    }
+}
+
+const createRecipeRouter: Router = new RecipeRouter().router
+export { createRecipeRouter }
