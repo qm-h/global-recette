@@ -1,14 +1,14 @@
-import { Ingredients, Recipes } from '../../../server/shared/types'
+import { FullRecette, Ingredients, Recipe } from '../../../server/shared/types'
 import axios from 'axios'
 
-export function getAllRecipes(): Promise<Recipes[]> {
+export function getAllRecipes(): Promise<Recipe[]> {
     return axios
         .get('http://localhost:3001')
         .then((res) => res.data)
         .catch((err) => console.log(err))
 }
 
-export function getRecipesById(id: string): Promise<Recipes> {
+export function getRecipesById(id: string): Promise<Recipe> {
     return axios
         .get(`http://localhost:3001/recipe/${id}`)
         .then((res) => res.data[0])
@@ -22,22 +22,53 @@ export function getRecipesIngredients(id: string): Promise<Ingredients[]> {
         .catch((err) => console.log(err))
 }
 
-export function addRecipe(data: Recipes) {
+export function addRecipe(data: Recipe): Promise<number | void> {
     return axios
         .post('/addrecipe', {
             nomRecette: data.nomRecette,
             origine: data.origine,
             description: data.description,
         })
-        .then((r) => r)
+        .then((res) => res.status)
         .catch((err) => console.log(err))
 }
 
-export function addRecipesIngredients(data: Ingredients) {
+export function addIngredients(data: Ingredients): Promise<number | void> {
     return axios
-        .post('/addRecipesIngredients', {
-            name: data.nomIngredient,
+        .post('/addingredient', {
+            nomIngredient: data.nomIngredient,
         })
-        .then((r) => r)
+        .then((res) => res.status)
+        .catch((err) => console.log(err))
+}
+
+export function addRecipeIngredients(
+    data: FullRecette
+): Promise<number | void> {
+    return axios
+        .post('/addrecipeingredient', {
+            idIngredient: data.idIngredient,
+            idRecette: data.idRecette,
+        })
+        .then((res) => res.status)
+        .catch((err) => console.log(err))
+}
+
+export function updateRecipe(data: Recipe): Promise<number | void> {
+    return axios
+        .post('/updaterecipe', {
+            idRecette: data.idRecette,
+            nomRecette: data.nomRecette,
+            origine: data.origine,
+            description: data.description,
+        })
+        .then((res) => res.status)
+        .catch((err) => console.log(err))
+}
+
+export function deleteRecipesIngredients(id: string): Promise<number | void> {
+    return axios
+        .get(`http://localhost:3001/delete/recipe/${id}`)
+        .then((res) => res.status)
         .catch((err) => console.log(err))
 }

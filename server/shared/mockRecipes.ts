@@ -1,22 +1,22 @@
-import { Ingredients, Recipes } from './types'
+import { Ingredients, Recipe } from './types'
 
 export const mockIngredients: Ingredients[] = [
-    { id: 1, nomIngredient: 'Ingredient 1' },
+    { idIngredient: 1, nomIngredient: 'Ingredient 1' },
     {
-        id: 1,
+        idIngredient: 1,
         nomIngredient: 'Ingredient 2',
     },
     {
-        id: 1,
+        idIngredient: 1,
         nomIngredient: 'Ingredient 3',
     },
     {
-        id: 2,
+        idIngredient: 2,
         nomIngredient: 'Ingredient 3',
     },
 ]
-export const emptyMockRecipes: Recipes[] = []
-export const mockRecipes: Recipes[] = [
+export const emptyMockRecipes: Recipe[] = []
+export const mockRecipes: Recipe[] = [
     {
         idRecette: 1,
         nomRecette: 'Recette 1',

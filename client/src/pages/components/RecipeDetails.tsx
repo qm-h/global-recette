@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Ingredients, Recipes } from '../../../../server/shared/types'
+import { Ingredients, Recipe } from '../../../../server/shared/types'
 import { getRecipesById, getRecipesIngredients } from '../../api/router'
 
 const RecipeDetails = () => {
-    const [recipeData, setRecipeData] = useState<Recipes>()
+    const [recipeData, setRecipeData] = useState<Recipe>()
     const [ingredientsData, setIngredientsData] = useState<Ingredients[]>([])
     const { id } = useParams()
 
@@ -19,7 +19,7 @@ const RecipeDetails = () => {
         )
     }, [id])
 
-    const recipeDetail = (recipe: Recipes) => (
+    const recipeDetail = (recipe: Recipe) => (
         <>
             <p>{recipe.nomRecette}</p>
             <p>{recipe.origine}</p>

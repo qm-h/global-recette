@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Recipes } from '../../../server/shared/types'
+import { Recipe } from '../../../server/shared/types'
 import { addRecipe, getAllRecipes } from '../api/router'
 import AddRecipeComponent from './components/addRecipeComponent'
 import AddRecipeButton from './components/AddRecipesButton'
 
 const ListRecipes = () => {
     const [addRecipes, setAddRecipes] = useState(false)
-    const [recipesData, setRecipesData] = useState<Recipes[]>([])
+    const [recipesData, setRecipesData] = useState<Recipe[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [counter, setCounter] = useState(0)
     const [errorEmptyField, setErrorEmptyField] = useState('')
@@ -42,7 +42,7 @@ const ListRecipes = () => {
             origine !== '' &&
             details !== ''
         ) {
-            const data: Recipes = {
+            const data: Recipe = {
                 idRecette: 1,
                 nomRecette: name,
                 description: details,

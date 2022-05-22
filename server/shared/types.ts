@@ -1,4 +1,4 @@
-export type Recipes = {
+export type Recipe = {
     idRecette: number
     nomRecette: string
     origine: string
@@ -6,7 +6,7 @@ export type Recipes = {
 }
 
 export type Ingredients = {
-    id: number
+    idIngredient: number
     nomIngredient: string
 }
 
@@ -16,4 +16,9 @@ export type User = {
     prenom: string
     email: string
     password: string
+}
+
+export type FullRecette = {
+    idIngredient: number
+    idRecette: number
 }
