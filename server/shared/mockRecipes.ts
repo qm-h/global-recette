@@ -18,17 +18,15 @@ export const mockIngredients: Ingredients[] = [
 export const emptyMockRecipes: Recipes[] = []
 export const mockRecipes: Recipes[] = [
     {
-        id: 1,
+        idRecette: 1,
         nomRecette: 'Recette 1',
         description: 'Details Recette 1',
-        ingredients: mockIngredients,
-        origin: 'hein',
+        origine: 'hein',
     },
     {
-        id: 2,
+        idRecette: 2,
         nomRecette: 'Recette 2',
         description: 'Details Recette 2',
-        ingredients: mockIngredients,
-        origin: 'oh',
+        origine: 'oh',
     },
 ]

@@ -102,3 +102,11 @@ li .delete_button:hover {
     align-items: center;
     flex-direction: row;
 }
+
+.card_recipe {
+    border: 2px solid blue;
+}
+
+.card_recipe:hover {
+    background-color: rgb(231, 231, 231);
+}

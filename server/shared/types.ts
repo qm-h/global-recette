@@ -1,8 +1,7 @@
 export type Recipes = {
-    id: number
+    idRecette: number
     nomRecette: string
-    origin: string
-    ingredients: Ingredients[]
+    origine: string
     description: string
 }
 

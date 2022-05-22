@@ -6,6 +6,7 @@ import {
     getQuery,
     addRecipeQuery,
     postQuery,
+    getQueryOne,
 } from '../shared/queries'
 
 class RecipeRouter {
@@ -30,7 +31,7 @@ class RecipeRouter {
     }
 
     private getRecipeById(req: Request, res: Response) {
-        return getQuery(req, res, selectRecipeQuery(req.params.id))
+        return getQueryOne(req, res, selectRecipeQuery(req.params.id))
     }
 
     private getIngredientById(req: Request, res: Response) {

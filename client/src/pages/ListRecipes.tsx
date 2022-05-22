@@ -1,30 +1,31 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Ingredients, Recipes } from '../../../server/shared/types'
-import { addRecipe, getAllRecipes, getRecipesIngredients } from '../api/router'
+import { useNavigate } from 'react-router-dom'
+import { Recipes } from '../../../server/shared/types'
+import { addRecipe, getAllRecipes } from '../api/router'
 import AddRecipeComponent from './components/addRecipeComponent'
 import AddRecipeButton from './components/AddRecipesButton'
 
 const ListRecipes = () => {
     const [addRecipes, setAddRecipes] = useState(false)
-    const [addRecipesIngredients, setAddRecipesIngredients] = useState(false)
     const [recipesData, setRecipesData] = useState<Recipes[]>([])
-    const [recipesIngredientsData, setRecipesIngredientsData] = useState<
-        Ingredients[]
-    >([])
     const [isLoading, setIsLoading] = useState(true)
     const [counter, setCounter] = useState(0)
     const [errorEmptyField, setErrorEmptyField] = useState('')
+
+    const navigate = useNavigate()
+    const handleOnClick = useCallback(
+        (id) => navigate(`/detail/${id}`, { replace: true }),
+        [navigate]
+    )
 
     const handleAdd = () => {
         setAddRecipes(true)
     }
     const handleAddIngredient = () => {
         setCounter(counter + 1)
-        setAddRecipesIngredients(true)
     }
     const handleClose = () => {
         setAddRecipes(false)
-        setAddRecipesIngredients(false)
         setCounter(0)
         setErrorEmptyField('')
     }
@@ -32,30 +33,22 @@ const ListRecipes = () => {
     const handleSave = (
         name: string,
         ingredientsName: string,
-        origin: string,
+        origine: string,
         details: string
     ) => {
         if (
             name !== '' &&
             ingredientsName !== '' &&
-            origin !== '' &&
+            origine !== '' &&
             details !== ''
         ) {
-            const ingredients: Ingredients[] = [
-                {
-                    id: 1,
-                    nomIngredient: ingredientsName,
-                },
-            ]
             const data: Recipes = {
-                id: 1,
+                idRecette: 1,
                 nomRecette: name,
                 description: details,
-                ingredients: ingredients,
-                origin: origin,
+                origine: origine,
             }
             setAddRecipes(false)
-            setAddRecipesIngredients(false)
             setCounter(0)
             addRecipe(data)
             fetchRecipes()
@@ -67,24 +60,24 @@ const ListRecipes = () => {
     const fetchRecipes = useCallback(async () => {
         const recipes = await getAllRecipes()
         setRecipesData(recipes)
-    }, [getAllRecipes])
-
-    useEffect(() => {
-        Promise.all([getAllRecipes(), getRecipesIngredients(1)]).then(
-            ([recipes, ingredients]) => {
-                setRecipesData(recipes)
-                setRecipesIngredientsData(ingredients)
-                setIsLoading(false)
-            }
-        )
     }, [])
 
+    useEffect(() => {
+        ;(async () => {
+            const promiseResult = await Promise.all([getAllRecipes()])
+            setRecipesData(promiseResult[0])
+            setIsLoading(false)
+        })()
+    }, [])
+
+    console.log(recipesData)
     return (
         <>
             <div className="card_container">
                 <div className="title_card">
                     <h1>Recettes</h1>
                 </div>
+
                 <div className="card">
                     <AddRecipeButton
                         addRecipes={addRecipes}
@@ -92,6 +85,7 @@ const ListRecipes = () => {
                         handleAddIngredient={handleAddIngredient}
                         handleAdd={handleAdd}
                     />
+
                     <ul>
                         {addRecipes && (
                             <AddRecipeComponent
@@ -100,22 +94,18 @@ const ListRecipes = () => {
                                 handleSave={handleSave}
                             />
                         )}
+
                         {isLoading
                             ? 'loading'
                             : recipesData.map((r, i) => (
-                                  <li key={i}>
+                                  <li
+                                      key={i}
+                                      className="card_recipe"
+                                      onClick={() => handleOnClick(r.idRecette)}
+                                  >
                                       <span>Nom : {r.nomRecette} </span>
                                       <br />
-                                      <span>Origine : {r.origin}</span>
-                                      <br />
-                                      <span>
-                                          Ingredient :
-                                          {r.ingredients.map((ingredient) => (
-                                              <li>
-                                                  {ingredient.nomIngredient}
-                                              </li>
-                                          ))}
-                                      </span>
+                                      <span>Origine : {r.origine}</span>
                                       <br />
                                       <span>Details : {r.description}</span>
                                       <button className="button edit_button">
