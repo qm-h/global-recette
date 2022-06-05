@@ -14,7 +14,7 @@ build:
     - apk update && apk add jq
     - export VERSION=`jq -r ".version" < ./package.json`
     # login to docker
-    - docker login localhost:8080
+    - docker login -u "fb996fc9bc744e60b4fc439f46f3" --password-stdin "753CLeDXsr8B44tn"
     # - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     # build and tag docker image
     - docker build -t $CI_REGISTRY_IMAGE:$VERSION -t $CI_REGISTRY_IMAGE:latest .
