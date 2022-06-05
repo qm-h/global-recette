@@ -7,9 +7,7 @@ variables:
 
 build:
   stage: build
-  image: docker:18-git
-  services:
-    - docker:18-dind
+  image: node:16.14.2
   script:
     # get node app version from package.json for use in tagging docker image
     - apk update && apk add jq
