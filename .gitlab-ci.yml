@@ -2,7 +2,8 @@ stages:
   - build
 
 variables:
-  VARIABLE_DATA: Gitlab-CI-YAML
+  DOCKER_USERNAME: fb996fc9bc744e60b4fc439f46f3
+  DOCKER_PASSWORD: 753CLeDXsr8B44tn
 
 build:
   stage: build
@@ -14,7 +15,7 @@ build:
     - apk update && apk add jq
     - export VERSION=`jq -r ".version" < ./package.json`
     # login to docker
-    - docker login -u "fb996fc9bc744e60b4fc439f46f3" --password-stdin "753CLeDXsr8B44tn"
+    - docker login -u $DOCKER_USERNAME --password-stdin $DOCKER_PASSWORD
     # - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     # build and tag docker image
     - docker build -t $CI_REGISTRY_IMAGE:$VERSION -t $CI_REGISTRY_IMAGE:latest .
