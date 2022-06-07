@@ -10,7 +10,7 @@ variables:
     CONTAINER_TEST_IMAGE: $CI_REGISTRY_TEST:$CI_COMMIT_REF_SLUG
     CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
 before_script:
-    - docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY_PASSWORD
+    - docker login -u "fb996fc9bc744e60b4fc439f46f3" --password-stdin "753CLeDXsr8B44tn"
 build:
     stage: build
     script:
@@ -33,3 +33,4 @@ deploy-server:
         - local_docker
     script:
         - docker pull $CONTAINER_RELEASE_IMAGE
+        - docker run -d -p 3001:3001 $CONTAINER_RELEASE_IMAGE
