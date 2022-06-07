@@ -1,6 +1,8 @@
 stages:
     - containerization
     - deploy
+services:
+  - docker:dind
 containerization:
     stage: containerization # must match the stage name declared above
     script:
