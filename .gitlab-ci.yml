@@ -1,32 +1,35 @@
+image: docker:20.10.16
+services:
+    - docker:20.10.16-dind
 stages:
     - build
+    - test
+    - release
     - deploy
-build_app:
-    stage: build
-    image: node:16-alpine
-    script:
-        - npm ci --only=production
-    artifacts:
-        paths:
-            - node_modules/
-            - server/server.ts
+variables:
+    CONTAINER_TEST_IMAGE: $CI_REGISTRY_TEST:$CI_COMMIT_REF_SLUG
+    CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
+before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
 build:
-    stage: build # must match the stage name declared above
-    services:
-        - docker:dind
+    stage: build
     script:
-        # Build the container image
-        - docker build -t webapp-devops .
-        # Push the container image to the registry
-        - docker push webapp-devops
-        # Cleanup by removing the local image
-        - docker image rm webapp-devops
-deployment:
-    stage: deploy # must match the stage name declared above
+        - docker build -t $CONTAINER_TEST_IMAGE .
+        - docker push $CONTAINER_TEST_IMAGE
+test:
+    stage: test
     script:
-        # create/update the kubernetes resources
-        - kubectl apply -f kubernetes_manifest.yml
-        # Restart the deployment so as to pull the latest version of the container image
-        - kubectl rollout restart deployment/webapp-devops
-    environment:
-        name: production
+        - docker pull $CONTAINER_TEST_IMAGE
+        - docker run $CONTAINER_TEST_IMAGE npm test
+release-image:
+    stage: release
+    script:
+        - docker pull $CONTAINER_TEST_IMAGE
+        - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+        - docker push $CONTAINER_RELEASE_IMAGE
+deploy-server:
+    stage: deploy
+    tags:
+        - local_docker
+    script:
+        - docker pull $CONTAINER_RELEASE_IMAGE
