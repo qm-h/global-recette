@@ -1,10 +1,21 @@
 stages:
-    - containerization
+    - build
     - deploy
-services:
-  - docker:dind
-containerization:
-    stage: containerization # must match the stage name declared above
+before_script:
+    - docker info
+build_app:
+    stage: build
+    image: node:16-alpine
+    script:
+        - npm ci --only=production
+    artifacts:
+        paths:
+            - node_modules/
+            - server/server.ts
+build:
+    stage: build # must match the stage name declared above
+    services:
+        - docker:dind
     script:
         # Build the container image
         - docker build -t webapp-devops .
