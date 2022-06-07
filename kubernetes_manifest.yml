@@ -1,0 +1,35 @@
+# This section will create a deployment in the Kubernetes cluster
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: webapp-devops
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: webapp-devops
+    template:
+        metadata:
+            labels:
+                app: webapp-devops
+        spec:
+            containers:
+                - name: webapp-devops
+                  image: webapp-devops:latest
+                  imagePullPolicy: Always
+                  ports:
+                      - containerPort: 3000
+---
+# This section will create a service in the Kubernetes cluster
+# so that the deployment can be accessed from the outside
+apiVersion: v1
+kind: Service
+metadata:
+    name: webapp-devops
+spec:
+    ports:
+        - port: 3000
+          nodePort: 31234
+    selector:
+        app: webapp-devops
+    type: NodePort

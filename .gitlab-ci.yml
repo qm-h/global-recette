@@ -1,22 +1,21 @@
 stages:
-  - build
-
-variables:
-  DOCKER_USERNAME: fb996fc9bc744e60b4fc439f46f3
-  DOCKER_PASSWORD: 753CLeDXsr8B44tn
-
-build:
-  stage: build
-  image: node:16.14.2
-  script:
-    # get node app version from package.json for use in tagging docker image
-    - apk update && apk add jq
-    - export VERSION=`jq -r ".version" < ./package.json`
-    # login to docker
-    - docker login -u $DOCKER_USERNAME --password-stdin $DOCKER_PASSWORD
-    # - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    # build and tag docker image
-    - docker build -t $CI_REGISTRY_IMAGE:$VERSION -t $CI_REGISTRY_IMAGE:latest .
-    # publish finished image
-    - docker push $CI_REGISTRY_IMAGE:$VERSION
-    - docker push $CI_REGISTRY_IMAGE:latest
+    - containerization
+    - deploy
+containerization:
+    stage: containerization # must match the stage name declared above
+    script:
+        # Build the container image
+        - docker build -t webapp-devops .
+        # Push the container image to the registry
+        - docker push webapp-devops
+        # Cleanup by removing the local image
+        - docker image rm webapp-devops
+deployment:
+    stage: deploy # must match the stage name declared above
+    script:
+        # create/update the kubernetes resources
+        - kubectl apply -f kubernetes_manifest.yml
+        # Restart the deployment so as to pull the latest version of the container image
+        - kubectl rollout restart deployment/webapp-devops
+    environment:
+        name: production
