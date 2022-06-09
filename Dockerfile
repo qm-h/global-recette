@@ -16,9 +16,9 @@ RUN npm ci --quiet --no-optional --no-audit --prefix server
 ## SERVER CONFIG FILES
 COPY server/tsconfig.json /home/$WEBAPPDEVOPS_DIR/server/
 ## SERVER FILES
-COPY server/src/shared/ /home/$WEBAPPDEVOPS_DIR/server/src/shared
-COPY server/src/routes/ /home/$WEBAPPDEVOPS_DIR/server/src/routes
-COPY server/src/config/ /home/$WEBAPPDEVOPS_DIR/server/src/config
+COPY server/shared/ /home/$WEBAPPDEVOPS_DIR/server/shared
+COPY server/routes/ /home/$WEBAPPDEVOPS_DIR/server/routes
+COPY server/config/ /home/$WEBAPPDEVOPS_DIR/server/config
 
 ## CLIENT INIT
 COPY client/package.json client/package-lock.json /home/$WEBAPPDEVOPS_DIR/client/
