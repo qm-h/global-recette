@@ -29,7 +29,6 @@ COPY client/tsconfig.json /home/$WEBAPPDEVOPS_DIR/client
 COPY client/public /home/$WEBAPPDEVOPS_DIR/client/public
 COPY client/src/api /home/$WEBAPPDEVOPS_DIR/client/src/api
 COPY client/src/pages /home/$WEBAPPDEVOPS_DIR/client/src/pages
-COPY client/src/utils /home/$WEBAPPDEVOPS_DIR/client/src/utils
 
 # build dependencies
 COPY ./package.json ./package-lock.json /home/$WEBAPPDEVOPS_DIR/
