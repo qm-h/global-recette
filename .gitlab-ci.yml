@@ -8,7 +8,7 @@ before_script:
 build:
     image: docker:20.10.16
     stage: build
-    tag: 
+    tags: 
         - build
     script:
         - docker build -t $CONTAINER_RELEASE_IMAGE .
