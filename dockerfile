@@ -35,8 +35,5 @@ COPY client/src/utils /home/$WEBAPPDEVOPS_DIR/client/src/utils
 COPY ./package.json ./package-lock.json /home/$WEBAPPDEVOPS_DIR/
 RUN npm ci --quiet --no-optional --no-audit --prefix .
 
-# copy in source code
-COPY --chown=node:node ./ ./
-
 # start express server
 CMD [ "npm", "start" ]
