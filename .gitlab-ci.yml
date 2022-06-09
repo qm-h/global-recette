@@ -1,47 +1,46 @@
 stages:
     - build
-    # - test
-    # - release
-    # - deploy
-# variables:
-#     CONTAINER_TEST_IMAGE: $CI_REGISTRY_TEST:$CI_COMMIT_REF_SLUG
-#     CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
+    - test
+    - release
+    - deploy
+variables:
+    CONTAINER_TEST_IMAGE: $CI_REGISTRY_TEST:$CI_COMMIT_REF_SLUG
+    CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
 
 build:
     image: docker:20.10.16
     stage: build
-    # services:
-    #     - docker:20.10.16-dind
-    # before_script:
-    #     - docker login -u "fb996fc9bc744e60b4fc439f46f3" --password-stdin "753CLeDXsr8B44tn"
+    services:
+        - docker:20.10.16-dind
+    before_script:
+        - docker login -u "fb996fc9bc744e60b4fc439f46f3" --password-stdin "753CLeDXsr8B44tn"
     script:
-        - docker version --format '{{.Server.Version}}'
-        # - docker build -t $CONTAINER_TEST_IMAGE .
-        # - docker push $CONTAINER_TEST_IMAGE
-# test:
-#     image: docker:20.10.16
-#     stage: test
-#     services:
-#         - docker:20.10.16-dind
-#     script:
-#         - docker pull $CONTAINER_TEST_IMAGE
-#         - docker run $CONTAINER_TEST_IMAGE npm test
-# release-image:
-#     image: docker:20.10.16
-#     stage: release
-#     services:
-#         - docker:20.10.16-dind
-#     script:
-#         - docker pull $CONTAINER_TEST_IMAGE
-#         - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
-#         - docker push $CONTAINER_RELEASE_IMAGE
-# deploy-server:
-#     image: docker:20.10.16
-#     stage: deploy
-#     tags:
-#         - local_docker
-#     services:
-#         - docker:20.10.16-dind
-#     script:
-#         - docker pull $CONTAINER_RELEASE_IMAGE
-#         - docker run -d -p 3001:3001 $CONTAINER_RELEASE_IMAGE
+        - docker build -t $CONTAINER_TEST_IMAGE .
+        - docker push $CONTAINER_TEST_IMAGE
+test:
+    image: docker:20.10.16
+    stage: test
+    services:
+        - docker:20.10.16-dind
+    script:
+        - docker pull $CONTAINER_TEST_IMAGE
+        - docker run $CONTAINER_TEST_IMAGE npm test
+release-image:
+    image: docker:20.10.16
+    stage: release
+    services:
+        - docker:20.10.16-dind
+    script:
+        - docker pull $CONTAINER_TEST_IMAGE
+        - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+        - docker push $CONTAINER_RELEASE_IMAGE
+deploy-server:
+    image: docker:20.10.16
+    stage: deploy
+    tags:
+        - local_docker
+    services:
+        - docker:20.10.16-dind
+    script:
+        - docker pull $CONTAINER_RELEASE_IMAGE
+        - docker run -d -p 3001:3001 $CONTAINER_RELEASE_IMAGE
