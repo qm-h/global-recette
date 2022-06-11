@@ -29,7 +29,8 @@ RUN npm ci --quiet --no-optional --no-audit --prefix client
 # COPY client/src/api /home/$WEBAPPDEVOPS_DIR/client/src/api
 # COPY client/src/pages /home/$WEBAPPDEVOPS_DIR/client/src/pages
 
-RUN npm run build
+RUN npm run build --prefix server
+RUN npm run build --prefix client
 
 ## SERVER BUILD
 COPY server/build/ /home/$WEBAPPDEVOPS_DIR/server/
