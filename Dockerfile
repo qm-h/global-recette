@@ -34,6 +34,8 @@ COPY client/src/pages /home/$WEBAPPDEVOPS_DIR/client/src/pages
 COPY ./package.json ./package-lock.json /home/$WEBAPPDEVOPS_DIR/
 RUN npm ci --quiet --no-optional --no-audit --prefix .
 
+# run tests
+CMD [ "npm", "run", "test" ]
 
 # start express server
 CMD [ "npm", "start" ]
