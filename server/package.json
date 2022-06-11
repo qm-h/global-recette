@@ -4,11 +4,12 @@
     "description": "",
     "main": "server.ts",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node server",
+        "build": "tsc",
+        "clean": "rimraf ./build",
+        "start": "export NODE_ENV=production && node ./build/server.js",
         "dev": "nodemon server"
     },
-    "author": "",
+    "author": "Moreau Quentin",
     "license": "ISC",
     "dependencies": {
         "axios": "0.27.2",

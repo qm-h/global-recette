@@ -1,12 +1,12 @@
-import { Router, Request, Response } from 'express'
+import { Request, Response, Router } from 'express'
 import {
+    addIngredientQuery,
+    addRecipeIngredientQuery,
+    addRecipeQuery,
+    deleteRecipeQuery,
     selectAllRecipesQuery,
     selectIngredientQuery,
     selectRecipeQuery,
-    addRecipeQuery,
-    deleteRecipeQuery,
-    addIngredientQuery,
-    addRecipeIngredientQuery,
     updateRecipeQuery,
 } from '../shared/utils/queries'
 import {

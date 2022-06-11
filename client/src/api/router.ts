@@ -1,30 +1,31 @@
 import { FullRecette, Ingredients, Recipe } from '../../../server/shared/types'
+
 import axios from 'axios'
 
 export function getAllRecipes(): Promise<Recipe[]> {
     return axios
-        .get('http://localhost:3001')
+        .get('http://localhost:3001/api/')
         .then((res) => res.data)
         .catch((err) => console.log(err))
 }
 
 export function getRecipesById(id: string): Promise<Recipe> {
     return axios
-        .get(`http://localhost:3001/recipe/${id}`)
+        .get(`http://localhost:3001/api/recipe/${id}`)
         .then((res) => res.data[0])
         .catch((err) => console.log(err))
 }
 
 export function getRecipesIngredients(id: string): Promise<Ingredients[]> {
     return axios
-        .get(`http://localhost:3001/ingredients/${id}`)
+        .get(`http://localhost:3001/api/ingredients/${id}`)
         .then((res) => res.data)
         .catch((err) => console.log(err))
 }
 
 export function addRecipe(data: Recipe): Promise<number | void> {
     return axios
-        .post('/addrecipe', {
+        .post('/api/addrecipe', {
             nomRecette: data.nomRecette,
             origine: data.origine,
             description: data.description,
@@ -35,7 +36,7 @@ export function addRecipe(data: Recipe): Promise<number | void> {
 
 export function addIngredients(data: Ingredients): Promise<number | void> {
     return axios
-        .post('/addingredient', {
+        .post('/api/addingredient', {
             nomIngredient: data.nomIngredient,
         })
         .then((res) => res.status)
@@ -46,7 +47,7 @@ export function addRecipeIngredients(
     data: FullRecette
 ): Promise<number | void> {
     return axios
-        .post('/addrecipeingredient', {
+        .post('/api/addrecipeingredient', {
             idIngredient: data.idIngredient,
             idRecette: data.idRecette,
         })
@@ -56,7 +57,7 @@ export function addRecipeIngredients(
 
 export function updateRecipe(data: Recipe): Promise<number | void> {
     return axios
-        .post('/updaterecipe', {
+        .post('/api/updaterecipe', {
             idRecette: data.idRecette,
             nomRecette: data.nomRecette,
             origine: data.origine,
@@ -68,7 +69,7 @@ export function updateRecipe(data: Recipe): Promise<number | void> {
 
 export function deleteRecipesIngredients(id: string): Promise<number | void> {
     return axios
-        .get(`http://localhost:3001/delete/recipe/${id}`)
+        .get(`http://localhost:3001/api/delete/recipe/${id}`)
         .then((res) => res.status)
         .catch((err) => console.log(err))
 }

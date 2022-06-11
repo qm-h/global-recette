@@ -1,9 +1,9 @@
-import express from 'express'
-import path from 'path'
+import { connection } from './config/connectDatabase'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import { createRecipeRouter } from './routes/recipesRouter'
-import { connection } from './config/connectDatabase'
+import express from 'express'
+import path from 'path'
 
 const port = process.env.PORT || 3001
 const url = `http://localhost:${port}/`
@@ -17,7 +17,14 @@ app.use(cookieParser())
 app.use(cors())
 app.use(express.static(path.join(__dirname, 'public')))
 
-app.use('/', createRecipeRouter)
+app.use('/api/*', createRecipeRouter)
+console.log(process.env.NODE_ENV)
+
+if (process.env.NODE_ENV === 'production') {
+    console.log('Production mode')
+    console.log(__dirname)
+    app.use(express.static(path.join(__dirname, 'client')))
+}
 
 connection.connect((err) => {
     if (err) {
