@@ -19,4 +19,4 @@ deploy:
         - deploy
     script:
         - docker pull $CONTAINER_RELEASE_IMAGE
-        - docker run -d -p 8080:8080 $CONTAINER_RELEASE_IMAGE
+        - docker run -d -p 8080:8080 $CONTAINER_RELEASE_IMAGE -n webapp_devops
