@@ -11,7 +11,7 @@ build:
     tags: 
         - build
     script:
-        - docker build -t $CONTAINER_RELEASE_IMAGE .
+        - docker build --no-cache -t $CONTAINER_RELEASE_IMAGE .
         - docker push $CONTAINER_RELEASE_IMAGE
 deploy:
     stage: deploy

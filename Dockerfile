@@ -18,10 +18,6 @@ COPY client/ /home/$WEBAPPDEVOPS_DIR/client
 RUN npm ci --quiet --no-optional --no-audit --prefix client
 # CLIENT CONFIG FILES
 
-RUN npm run build
-
-## SERVER BUILD
-COPY server/build/ /home/$WEBAPPDEVOPS_DIR/server/
 
 # build dependencies
 COPY ./package.json ./package-lock.json /home/$WEBAPPDEVOPS_DIR/
@@ -29,6 +25,8 @@ RUN npm ci --quiet --no-optional --no-audit --prefix .
 
 # run tests
 RUN  npm run test --prefix .
+
+RUN npm run build
 
 # start express server
 CMD [ "npm", "start" ]
