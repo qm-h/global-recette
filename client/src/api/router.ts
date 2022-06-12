@@ -4,21 +4,21 @@ import axios from 'axios'
 
 export function getAllRecipes(): Promise<Recipe[]> {
     return axios
-        .get('http://localhost:3001/api/')
+        .get('/api/')
         .then((res) => res.data)
         .catch((err) => console.log(err))
 }
 
 export function getRecipesById(id: string): Promise<Recipe> {
     return axios
-        .get(`http://localhost:3001/api/recipe/${id}`)
+        .get(`/api/recipe/${id}`)
         .then((res) => res.data[0])
         .catch((err) => console.log(err))
 }
 
 export function getRecipesIngredients(id: string): Promise<Ingredients[]> {
     return axios
-        .get(`http://localhost:3001/api/ingredients/${id}`)
+        .get(`/api/ingredients/${id}`)
         .then((res) => res.data)
         .catch((err) => console.log(err))
 }
@@ -69,7 +69,7 @@ export function updateRecipe(data: Recipe): Promise<number | void> {
 
 export function deleteRecipesIngredients(id: string): Promise<number | void> {
     return axios
-        .get(`http://localhost:3001/api/delete/recipe/${id}`)
+        .get(`/api/delete/recipe/${id}`)
         .then((res) => res.status)
         .catch((err) => console.log(err))
 }
