@@ -7,8 +7,6 @@ import path from 'path'
 
 const port = process.env.PORT || 3001
 const url = `http://localhost:${port}/`
-const databaseUrl =
-    'http://localhost/phpmyadmin/index.php?route=/database/structure&server=1&db=id18905711_restomiam'
 const app = express()
 
 app.use(express.json())
@@ -28,9 +26,7 @@ connection.connect((err) => {
     if (err) {
         console.log('erreur', err)
     } else {
-        console.log(
-            `Connecté à la base de données MySQL! c'est ici ▶︎${databaseUrl} 💾`
-        )
+        console.log(`Connecté à la base de données MySQL!💾`)
     }
 })
 app.listen(port, () => {
