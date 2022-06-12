@@ -1,4 +1,4 @@
-import { deleteRecipeQuery } from '../server/shared/utils/queries'
+import { deleteRecipeQuery } from '../shared/utils/queries'
 
 test('delete recipe with good id', async () => {
     const id = '1'
