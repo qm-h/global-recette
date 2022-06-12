@@ -1,7 +1,6 @@
 image: docker:20.10.16
 stages:
     - build
-    - build_mysql
     - deploy
 variables:
     CONTAINER_RELEASE_IMAGE: $CI_REGISTRY/qm-h/webapp-devops:latest
@@ -15,11 +14,6 @@ build:
     script:
         - docker build --no-cache -t $CONTAINER_RELEASE_IMAGE .
         - docker push $CONTAINER_RELEASE_IMAGE
-build_mysql:
-    stage: build_mysql
-    tags:
-        - build_mysql
-    script:
         - docker build --no-cache -f mysql.Dockerfile -t $CONTAINER_MYSQL_IMAGE .
         - docker push $CONTAINER_MYSQL_IMAGE
 deploy:
