@@ -4,7 +4,7 @@ stages:
     - deploy
 variables:
     CONTAINER_RELEASE_IMAGE: $CI_REGISTRY/qm-h/webapp-devops:latest
-    CONTAINER_MYSQL_IMAGE: $CI_REGISTRY/qm-h/mysql-devops:latest
+    CONTAINER_MYSQL_IMAGE: $CI_REGISTRY/qm-h/webapp-devops/mysql-devops:latest
 before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 build:
