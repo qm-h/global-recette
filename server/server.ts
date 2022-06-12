@@ -6,7 +6,9 @@ import express from 'express'
 import path from 'path'
 
 const port = process.env.PORT || 3001
+const portProd = 8080
 const url = `http://localhost:${port}/`
+const urlProd = `http://localhost:${portProd}/`
 const app = express()
 
 app.use(express.json())
@@ -29,8 +31,17 @@ connection.connect((err) => {
         console.log(`Connecté à la base de données MySQL!💾`)
     }
 })
-app.listen(port, () => {
-    console.log(`Server app listening on port ${port} ✅`)
-    console.log(`Go to with ${url} 🚀`)
-})
+
+if (process.env.NODE_ENV === 'production') {
+    app.listen(portProd, () => {
+        console.log(`Server app listening on port ${portProd} ✅`)
+        console.log(`Server is on production mode on ${urlProd} 🚀`)
+    })
+} else {
+    app.listen(port, () => {
+        console.log(`Server listening on port ${port} ✅`)
+        console.log(`Server is on development mode on ${url} 🚀`)
+    })
+}
+
 module.exports = app

@@ -7,7 +7,7 @@
         "build": "tsc",
         "clean": "rimraf ./build",
         "start": "export NODE_ENV=production && node ./build/server.js",
-        "dev": "nodemon server"
+        "dev": "export NODE_ENV=dev && nodemon server"
     },
     "author": "Moreau Quentin",
     "license": "ISC",
