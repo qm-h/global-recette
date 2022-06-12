@@ -1,9 +1,11 @@
 image: docker:20.10.16
 stages:
     - build
+    - build_mysql
     - deploy
 variables:
     CONTAINER_RELEASE_IMAGE: $CI_REGISTRY/qm-h/webapp-devops:latest
+    CONTAINER_MYSQL_IMAGE: $CI_REGISTRY/qm-h/mysql-devops:latest
 before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 build:
@@ -13,10 +15,20 @@ build:
     script:
         - docker build --no-cache -t $CONTAINER_RELEASE_IMAGE .
         - docker push $CONTAINER_RELEASE_IMAGE
+build_mysql:
+    stage: build_mysql
+    tags:
+        - build_mysql
+    script:
+        - docker build --no-cache -f mysql.Dockerfile -t $CONTAINER_MYSQL_IMAGE .
+        - docker push $CONTAINER_MYSQL_IMAGE
 deploy:
     stage: deploy
     tags:
         - deploy
     script:
+        - docker network create devops
+        - docker pull $CONTAINER_MYSQL_IMAGE
+        - docker run --network devops -d -p 3306:3306 --name mysql_db $CONTAINER_MYSQL_IMAGE
         - docker pull $CONTAINER_RELEASE_IMAGE
-        - docker run -d -p 127.0.0.1:8080:8080 --name webapp_devops $CONTAINER_RELEASE_IMAGE
+        - docker run --network devops -d -p 8080:8080 --name webapp_devops $CONTAINER_RELEASE_IMAGE
