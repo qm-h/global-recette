@@ -28,8 +28,5 @@ RUN  npm run test --prefix .
 # RUN BUILD CLIENT AND SERVER 
 RUN npm run build
 
-# GO TO SERVER DIRECTORY
-RUN cd server
-
 # start express server
-CMD [ "npm", "start" ]
+CMD [ "npm", "run", "server"]
