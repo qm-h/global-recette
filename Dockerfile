@@ -21,6 +21,7 @@ RUN npm ci --quiet --no-optional --no-audit --prefix client
 
 # build dependencies
 COPY ./package.json ./package-lock.json /home/$WEBAPPDEVOPS_DIR/
+COPY ./jest.config.js /home/$WEBAPPDEVOPS_DIR/
 RUN npm ci --quiet --no-optional --no-audit --prefix .
 
 # run tests
