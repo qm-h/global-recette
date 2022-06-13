@@ -1,14 +1,16 @@
-import ListRecipes from './pages/ListRecipes'
 import './App.css'
-import { Routes, Route } from 'react-router-dom'
+import './styles/ListRecipes.scss';
+
+import { Route, Routes } from 'react-router-dom'
+
+import ListRecipes from './pages/ListRecipes'
 import RecipeDetails from './pages/components/RecipeDetails'
-import '../styles/ListRecipes.scss';
 
 const App = () => (
     <>
         <Routes>
             <Route path="/" element={<ListRecipes />} />
-            <Route path="detail/:id" element={<RecipeDetails />} />
+            <Route path="detail/:id" element={<RecipeDetails/>} />
         </Routes>
     </>
 )

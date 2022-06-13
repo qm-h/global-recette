@@ -9,12 +9,14 @@ import { useNavigate } from 'react-router-dom'
 const ListRecipes = () => {
     const [addRecipes, setAddRecipes] = useState(false)
     const [recipesData, setRecipesData] = useState<Recipe[]>([])
+    const [recipeList, setRecipeList] = useState<Recipe[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [counter, setCounter] = useState(0)
     const [errorEmptyField, setErrorEmptyField] = useState('')
     const [removeRecipe, setRemoveRecipe] = useState(false)
     const [removeRecipeAction, setRemoveRecipeAction] = useState(false)
     const [recipeRemoveId, setRecipeRemoveId] = useState('')
+    const [searchRecipe, setSearchRecipe] = useState('')
 
     const navigate = useNavigate()
     const handleOnClick = useCallback(
@@ -63,6 +65,19 @@ const ListRecipes = () => {
         setRemoveRecipe(false)
     }
 
+    const handleSearchRecipe = (e) => {
+        setSearchRecipe(e.target.value)
+        setRecipeList(recipesData)
+    }
+
+    const handleclick = () => {        
+        if(searchRecipe !== ""){
+            let newList = recipesData.filter(re => re.nomRecette.toLowerCase().startsWith(searchRecipe.toLowerCase()))
+            setRecipeList(newList)
+        }
+        setSearchRecipe("")
+    }
+
     useEffect(() => {
         ;(async () => {
             const promiseResult = await Promise.all([getAllRecipes()])
@@ -70,6 +85,11 @@ const ListRecipes = () => {
             setIsLoading(false)
         })()
     }, [removeRecipeAction])
+
+    useEffect(() => {
+        setRecipeList(recipesData)
+    }, [recipesData])
+    
 
     return (
         <>
@@ -79,6 +99,11 @@ const ListRecipes = () => {
                 </div>
 
                 <div className="card">
+                    <input 
+                        onFocus={handleSearchRecipe} 
+                        onChange={handleSearchRecipe}/>
+                    <button onClick={handleclick}>Chercher</button>
+
                     <AddRecipeButton
                         addRecipes={addRecipes}
                         handleClose={handleClose}
@@ -117,7 +142,7 @@ const ListRecipes = () => {
 
                         {isLoading
                             ? 'loading'
-                            : recipesData.map((r, i) => (
+                            : recipeList.map((r, i) => (
                                   <>
                                       <li
                                           key={i}
@@ -133,9 +158,6 @@ const ListRecipes = () => {
                                           <br />
                                           <span>Details: {r.description}</span>
                                       </li>
-                                      <button className="edit_button">
-                                          Edit this recipe
-                                      </button>
                                       <button
                                           onClick={() => setRemoveRecipe(true)}
                                           className="delete_button"

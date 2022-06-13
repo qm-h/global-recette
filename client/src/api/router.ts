@@ -71,7 +71,6 @@ export function updateRecipe(data: Recipe): Promise<number | void> {
         .post('/api/updaterecipe', {
             idRecette: data.idRecette,
             nomRecette: data.nomRecette,
-            origine: data.origine,
             description: data.description,
         })
         .then((res) => res.status)

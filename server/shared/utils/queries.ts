@@ -50,7 +50,7 @@ export const addRecipeIngredientQuery = (req: Request, _res: Response) => {
 
 export const updateRecipeQuery = (req: Request, _res: Response) => {
     const responseQuery = req.body
-    const query = `UPDATE ${DataTableType.RECETTE} SET nomRecette = '${responseQuery.nomRecette}',origine = '${responseQuery.origine}',description = '${responseQuery.description}' WHERE idRecette = ${responseQuery.idRecette}`
+    const query = `UPDATE ${DataTableType.RECETTE} SET nomRecette = '${responseQuery.nomRecette}',description = '${responseQuery.description}' WHERE idRecette = ${responseQuery.idRecette}`
     return query
 }
 
