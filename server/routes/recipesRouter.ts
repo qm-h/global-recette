@@ -3,7 +3,9 @@ import {
     addIngredientQuery,
     addRecipeIngredientQuery,
     addRecipeQuery,
+    deleteRecipeIngredientQuery,
     deleteRecipeQuery,
+    selectAllIngredientsQuery,
     selectAllRecipesQuery,
     selectIngredientQuery,
     selectRecipeQuery,
@@ -28,6 +30,9 @@ class RecipeRouter {
         this.router.get('/ingredients/:id', (_req: Request, res: Response) =>
             this.getIngredientById(_req, res)
         )
+        this.router.get('/ingredients', (_req: Request, res: Response) =>
+            this.getAllIngredients(_req, res)
+        )
         this.router.post('/addrecipe', (_req: Request, res: Response) =>
             this.addRecipe(_req, res)
         )
@@ -46,10 +51,19 @@ class RecipeRouter {
             `${this.deleteRoute}/recipe/:id`,
             (_req: Request, res: Response) => this.removeRecipe(_req, res)
         )
+        this.router.delete(
+            `${this.deleteRoute}/recipeingredient/:id`,
+            (_req: Request, res: Response) =>
+                this.removeRecipeIngredient(_req, res)
+        )
     }
 
     private getAllRecipesData(req: Request, res: Response) {
         return getQuery(req, res, selectAllRecipesQuery)
+    }
+
+    private getAllIngredients(req: Request, res: Response) {
+        return getQuery(req, res, selectAllIngredientsQuery)
     }
 
     private getRecipeById(req: Request, res: Response) {
@@ -78,6 +92,10 @@ class RecipeRouter {
 
     private removeRecipe(req: Request, res: Response) {
         return deleteQuery(req, res, deleteRecipeQuery(req.params.id))
+    }
+
+    private removeRecipeIngredient(req: Request, res: Response) {
+        return deleteQuery(req, res, deleteRecipeIngredientQuery(req.params.id))
     }
 }
 

@@ -11,20 +11,30 @@ const url = `http://localhost:${port}/`
 const urlProd = `http://localhost:${portProd}/`
 const app = express()
 
-
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(cors())
 app.use(express.static(path.join(__dirname, 'public')))
 
-app.use('/api/*', createRecipeRouter)
+app.use('/api/', createRecipeRouter)
 
-if (process.env.NODE_ENV === 'production') {
-    console.log('Production mode')
-    app.use(express.static(path.join(__dirname, 'client')))
-}
-
+// if (process.env.NODE_ENV === 'production') {
+//     console.log('Production mode')
+//     app.use(express.static(path.join(__dirname, 'client')))
+//     prodConnection.connect((err) => {
+//         if (err) {
+//             console.log('erreur', err)
+//         } else {
+//             console.log(`Connecté à la base de données MySQL!💾`)
+//         }
+//     })
+//     app.listen(portProd, () => {
+//         console.log(`Server app listening on port ${portProd} ✅`)
+//         console.log(`Server is on production mode on ${urlProd} 🚀`)
+//     })
+// } else {
+console.log('Development mode')
 connection.connect((err) => {
     if (err) {
         console.log('erreur', err)
@@ -32,17 +42,10 @@ connection.connect((err) => {
         console.log(`Connecté à la base de données MySQL!💾`)
     }
 })
-
-if (process.env.NODE_ENV === 'production') {
-    app.listen(portProd, () => {
-        console.log(`Server app listening on port ${portProd} ✅`)
-        console.log(`Server is on production mode on ${urlProd} 🚀`)
-    })
-} else {
-    app.listen(port, () => {
-        console.log(`Server listening on port ${port} ✅`)
-        console.log(`Server is on development mode on ${url} 🚀`)
-    })
-}
+app.listen(port, () => {
+    console.log(`Server listening on port ${port} ✅`)
+    console.log(`Server is on development mode on ${url} 🚀`)
+})
+// }
 
 module.exports = app

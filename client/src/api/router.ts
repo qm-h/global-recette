@@ -23,7 +23,16 @@ export function getRecipesIngredients(id: string): Promise<Ingredients[]> {
         .catch((err) => console.log(err))
 }
 
+export function getAllIngredients(): Promise<Ingredients[]> {
+    return axios
+        .get(`/api/ingredients`)
+        .then((res) => res.data)
+        .catch((err) => console.log(err))
+}
+
 export function addRecipe(data: Recipe): Promise<number | void> {
+    console.log(data)
+
     return axios
         .post('/api/addrecipe', {
             nomRecette: data.nomRecette,
@@ -46,6 +55,8 @@ export function addIngredients(data: Ingredients): Promise<number | void> {
 export function addRecipeIngredients(
     data: FullRecette
 ): Promise<number | void> {
+    console.log(data)
+
     return axios
         .post('/api/addrecipeingredient', {
             idIngredient: data.idIngredient,
@@ -67,9 +78,17 @@ export function updateRecipe(data: Recipe): Promise<number | void> {
         .catch((err) => console.log(err))
 }
 
-export function deleteRecipesIngredients(id: string): Promise<number | void> {
+export function deleteRecipe(id: number): Promise<number | void> {
     return axios
-        .get(`/api/delete/recipe/${id}`)
+        .delete(`/api/delete/recipe/${id}`)
+        .then((res) => res.status)
+        .catch((err) => console.log(err))
+}
+
+export function deleteRecipeIngredient(id: number): Promise<number | void> {
+    console.log(id)
+    return axios
+        .delete(`/api/delete/recipeingredient/${id}`)
         .then((res) => res.status)
         .catch((err) => console.log(err))
 }

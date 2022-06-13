@@ -1,7 +1,8 @@
-import { MysqlError } from 'mysql'
-import { connection } from '../../config/connectDatabase'
-import { Recipe } from '../types'
 import { Request, Response } from 'express'
+
+import { MysqlError } from 'mysql'
+import { Recipe } from '../types'
+import { connection } from '../../config/connectDatabase'
 
 export const getQuery = (_req: Request, res: Response, sqlQuery: string) =>
     connection.query(sqlQuery, (err: MysqlError, results: Recipe[]) => {
