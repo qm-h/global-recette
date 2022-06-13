@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import AddRecipeButton from './components/AddRecipesButton'
 import AddRecipeComponent from './components/addRecipeComponent'
 import { Recipe } from '../../../server/shared/types'
+import { SpinnerCircular } from 'spinners-react'
 import { useNavigate } from 'react-router-dom'
 
 const ListRecipes = () => {
@@ -27,9 +28,7 @@ const ListRecipes = () => {
     const handleAdd = () => {
         setAddRecipes(true)
     }
-    const handleAddIngredient = () => {
-        setCounter(counter + 1)
-    }
+
     const handleClose = () => {
         setAddRecipes(false)
         setCounter(0)
@@ -59,7 +58,6 @@ const ListRecipes = () => {
     }, [])
 
     const handleRemoveRecipe = (id: number) => {
-        console.log(id)
         deleteRecipe(id)
         setRemoveRecipeAction(true)
         setRemoveRecipe(false)
@@ -70,12 +68,16 @@ const ListRecipes = () => {
         setRecipeList(recipesData)
     }
 
-    const handleclick = () => {        
-        if(searchRecipe !== ""){
-            let newList = recipesData.filter(re => re.nomRecette.toLowerCase().startsWith(searchRecipe.toLowerCase()))
+    const handleclick = () => {
+        if (searchRecipe !== '') {
+            let newList = recipesData.filter((re) =>
+                re.nomRecette
+                    .toLowerCase()
+                    .startsWith(searchRecipe.toLowerCase())
+            )
             setRecipeList(newList)
         }
-        setSearchRecipe("")
+        setSearchRecipe('')
     }
 
     useEffect(() => {
@@ -89,86 +91,95 @@ const ListRecipes = () => {
     useEffect(() => {
         setRecipeList(recipesData)
     }, [recipesData])
-    
 
     return (
         <>
-            <div className="card_container">
-                <div className="title_card">
-                    <h1>Recettes</h1>
-                </div>
-
-                <div className="card">
-                    <input 
-                        onFocus={handleSearchRecipe} 
-                        onChange={handleSearchRecipe}/>
-                    <button onClick={handleclick}>Chercher</button>
-
-                    <AddRecipeButton
-                        addRecipes={addRecipes}
-                        handleClose={handleClose}
-                        handleAddIngredient={handleAddIngredient}
-                        handleAdd={handleAdd}
-                    />
-
-                    <ul>
-                        {addRecipes && (
-                            <AddRecipeComponent
-                                errorMessage={errorEmptyField}
-                                counter={counter}
-                                handleSave={handleSave}
+            {' '}
+            {isLoading ? (
+                <SpinnerCircular />
+            ) : (
+                <>
+                    <div className="card_container">
+                        <div className="card">
+                            <div className="title_card">
+                                <h1>Recettes</h1>
+                            </div>
+                            <input
+                                onFocus={handleSearchRecipe}
+                                onChange={handleSearchRecipe}
                             />
-                        )}
-                        {removeRecipe && (
-                            <>
-                                <input
-                                    type="text"
-                                    name="recipeID"
-                                    onChange={(event) =>
-                                        setRecipeRemoveId(event.target.value)
-                                    }
-                                />
-                                <button
-                                    onClick={() =>
-                                        handleRemoveRecipe(
-                                            parseInt(recipeRemoveId)
-                                        )
-                                    }
-                                >
-                                    Remove
-                                </button>
-                            </>
-                        )}
+                            <button onClick={handleclick}>Chercher</button>
+                            <AddRecipeButton
+                                addRecipes={addRecipes}
+                                handleClose={handleClose}
+                                handleAdd={handleAdd}
+                            />
+                            <ul>
+                                {addRecipes && (
+                                    <AddRecipeComponent
+                                        errorMessage={errorEmptyField}
+                                        counter={counter}
+                                        handleSave={handleSave}
+                                    />
+                                )}
+                                {removeRecipe && (
+                                    <>
+                                        <input
+                                            type="text"
+                                            name="recipeID"
+                                            onChange={(event) =>
+                                                setRecipeRemoveId(
+                                                    event.target.value
+                                                )
+                                            }
+                                        />
+                                        <button
+                                            onClick={() =>
+                                                handleRemoveRecipe(
+                                                    parseInt(recipeRemoveId)
+                                                )
+                                            }
+                                        >
+                                            Remove
+                                        </button>
+                                    </>
+                                )}
 
-                        {isLoading
-                            ? 'loading'
-                            : recipeList.map((r, i) => (
-                                  <>
-                                      <li
-                                          key={i}
-                                          className="card_recipe"
-                                          onClick={() =>
-                                              handleOnClick(r.idRecette)
-                                          }
-                                      >
-                                          <span>id: {r.idRecette}</span>
-                                          <span>Nom: {r.nomRecette} </span>
-                                          <br />
-                                          <span>Origine: {r.origine}</span>
-                                          <br />
-                                          <span>Details: {r.description}</span>
-                                      </li>
-                                      <button
-                                          onClick={() => setRemoveRecipe(true)}
-                                          className="delete_button"
-                                      >
-                                          Remove this recipe
-                                      </button>
-                                  </>
-                              ))}
-                    </ul>
-                </div>
-            </div>
+                                {recipeList.map((r, i) => (
+                                    <>
+                                        <li
+                                            key={i}
+                                            className="card_recipe"
+                                            onClick={() =>
+                                                handleOnClick(r.idRecette)
+                                            }
+                                        >
+                                            <span>Numéro: {r.idRecette}</span>
+                                            <br />
+
+                                            <span>Nom: {r.nomRecette} </span>
+                                            <br />
+                                            <span>Origine: {r.origine}</span>
+                                            <br />
+                                            <span>
+                                                Details: {r.description}
+                                            </span>
+                                        </li>
+                                        <button
+                                            onClick={() =>
+                                                setRemoveRecipe(true)
+                                            }
+                                            className="delete_button"
+                                        >
+                                            Remove this recipe
+                                        </button>
+                                    </>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </>
+            )}
         </>
     )
 }

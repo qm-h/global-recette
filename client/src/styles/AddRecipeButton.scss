@@ -2,18 +2,22 @@
     font-size: 18px !important;
     padding: 8px 16px !important;
     border-radius: 5px !important;
-
-}    
+}
 
 .add_button {
     position: absolute;
-    top: 25px;
-    right: 25px;
-    border: none !important;
-    background-color: white !important;
-    color: black !important;
+    top: 15px;
+    right: 15px;
+    border: none;
+    background-color: rgb(0, 128, 255);
+    color: rgb(255, 255, 255);
     font-weight: bold;
-} 
+}
+
+.add_button:hover {
+    box-shadow: none;
+    background-color: rgb(0, 90, 180);
+}
 
 .close_button {
     position: absolute;

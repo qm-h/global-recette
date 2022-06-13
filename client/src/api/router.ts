@@ -68,7 +68,7 @@ export function addRecipeIngredients(
 
 export function updateRecipe(data: Recipe): Promise<number | void> {
     return axios
-        .post('/api/updaterecipe', {
+        .put('/api/updaterecipe', {
             idRecette: data.idRecette,
             nomRecette: data.nomRecette,
             description: data.description,

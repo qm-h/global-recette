@@ -62,8 +62,10 @@ const RecipeDetails = () => {
             setRecipeData(recipe)
             setIngredientsData(ingredients)
             setAllIngredients(allIngredients)
+            setNewRecipeName(recipe.nomRecette)
+            setNewDescription(recipe.description)
         })
-    }, [id, addIngredientAction, removeIngredientAction])
+    }, [id, addIngredientAction, removeIngredientAction, isEditable])
 
     const recipeDetail = (recipe: Recipe) => (
         <>
@@ -72,38 +74,58 @@ const RecipeDetails = () => {
             <p>{recipe.origine}</p>
             <p>{recipe.description}</p>
         </>
-   )
+    )
 
-   const recipeDetailEditable = (recipe: Recipe) => (
-    <>
-        <h3>Edition :</h3>
-        <input type='text' name='nomRecette' onChange={(e) => setNewRecipeName(e.target.value)}  value={newRecipeName ? newRecipeName : recipe.nomRecette}/>
-        <input type='text' name='description' onChange={(e) => setNewDescription(e.target.value)} value={newDescription ? newDescription : recipe.description} />
-        <button onClick={()=> handleUpdateRecipe({
-            idRecette: recipe.idRecette,
-            nomRecette: newRecipeName,
-            origine: recipe.origine,
-            description: newDescription
-        })}>Sauvegarder</button>
-    </>
-)
+    const recipeDetailEditable = (recipe: Recipe) => (
+        <>
+            <h3>Edition :</h3>
+            <input
+                type="text"
+                name="nomRecette"
+                onChange={(e) => setNewRecipeName(e.target.value)}
+                value={newRecipeName}
+            />
+            <input
+                type="text"
+                name="description"
+                onChange={(e) => setNewDescription(e.target.value)}
+                value={newDescription}
+            />
+            <button
+                onClick={() =>
+                    handleUpdateRecipe({
+                        idRecette: recipe.idRecette,
+                        nomRecette: newRecipeName,
+                        origine: recipe.origine,
+                        description: newDescription,
+                    })
+                }
+            >
+                Sauvegarder
+            </button>
+        </>
+    )
 
     const handleUpdateRecipe = (data: Recipe) => {
         updateRecipe(data)
         setIsEditable(false)
     }
 
-   const handleEditAction = (state: boolean) => setIsEditable(state)
+    const handleEditAction = (state: boolean) => setIsEditable(state)
 
     return (
         <div className="card">
             <Link to={'/'}>Retour</Link>
             <h1>Detail</h1>
-            {
-                !isEditable  ? (<button onClick={() => handleEditAction(true)}>
-                Editer cette recette
-            </button>) : (<button onClick={() => handleEditAction(false)}>Arrêter l'Edition</button>)
-            }
+            {!isEditable ? (
+                <button onClick={() => handleEditAction(true)}>
+                    Editer cette recette
+                </button>
+            ) : (
+                <button onClick={() => handleEditAction(false)}>
+                    Arrêter l'Edition
+                </button>
+            )}
             <div>
                 <p>Voulez vous ajouter un ingrédient ?</p>
                 <select onChange={handleChange} value={ingredientID}>
@@ -131,14 +153,12 @@ const RecipeDetails = () => {
                     Ajouter
                 </button>
             </div>
-            {
-                !isEditable ? (
-                    <div>{recipeData ? recipeDetail(recipeData) : 'aucun'}</div>
-                ) : (
-                    recipeDetailEditable(recipeData)
-                )
-            }
-            
+            {!isEditable ? (
+                <div>{recipeData ? recipeDetail(recipeData) : 'aucun'}</div>
+            ) : (
+                recipeDetailEditable(recipeData)
+            )}
+
             <div>
                 <h3>Ingredients :</h3>
                 {ingredientsData

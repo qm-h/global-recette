@@ -1,24 +1,12 @@
-import '../../styles/AddRecipeButton.scss';
+import '../../styles/AddRecipeButton.scss'
 
 type Props = {
     addRecipes: boolean
     handleClose: () => void
     handleAdd: () => void
-    handleAddIngredient: () => void
 }
 
-const AddRecipeButton = ({
-    addRecipes,
-    handleClose,
-    handleAdd,
-    handleAddIngredient,
-}: Props) => {
-    const addIngredient = (
-        <button className="button add_button" onClick={handleAddIngredient}>
-            Ajouter un ingrédient
-        </button>
-    )
-
+const AddRecipeButton = ({ addRecipes, handleClose, handleAdd }: Props) => {
     return (
         <>
             {addRecipes ? (
@@ -29,14 +17,12 @@ const AddRecipeButton = ({
                     >
                         Annuler
                     </button>
-                    {/* {addIngredient} */}
                 </>
             ) : (
                 <>
                     <button className="button add_button" onClick={handleAdd}>
-                    Ajouter une recette
+                        Ajouter une recette
                     </button>
-                    {/* {addIngredient} */}
                 </>
             )}
         </>
