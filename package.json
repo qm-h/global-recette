@@ -17,7 +17,8 @@
         "start": "npm run build && npm run server && npm run clean:client & npm run clean:server",
         "server": "npm start --prefix server",
         "lint-staged": "lint-staged",
-        "pq": "pretty-quick"
+        "pq": "pretty-quick",
+        "install:all": "npm install && npm run install:dependencies --prefix server && npm run install:dependencies --prefix client"
     },
     "lint-staged": {
         "**/*.{ts,tsx}": [

@@ -24,7 +24,8 @@
         "start": "react-scripts start",
         "build": "react-scripts build",
         "clean": "rimraf ./build",
-        "test": "react-scripts test"
+        "test": "react-scripts test",
+        "install:dependencies": "npm install"
     },
     "eslintConfig": {
         "extends": [
