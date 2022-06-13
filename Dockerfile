@@ -28,5 +28,6 @@ RUN  npm run test --prefix .
 # RUN BUILD CLIENT AND SERVER 
 RUN npm run build
 
+ENV NODE_ENV=prod
 # start express server
 CMD [ "npm", "run", "server"]
