@@ -65,14 +65,17 @@ const RecipeDetails = () => {
             setNewRecipeName(recipe.nomRecette)
             setNewDescription(recipe.description)
         })
+
+        setRemoveIngredientAction(false)
+        setAddIngredientAction(false)
+        
     }, [id, addIngredientAction, removeIngredientAction, isEditable])
 
     const recipeDetail = (recipe: Recipe) => (
         <>
-            <h3>Recette :</h3>
-            <p>{recipe.nomRecette}</p>
-            <p>{recipe.origine}</p>
-            <p>{recipe.description}</p>
+            <p className="recipe__content--name">{recipe.nomRecette}</p>
+            <p className="recipe__content--origin"><strong>Origine :</strong> {recipe.origine}</p>
+            <p className="recipe__content--description">{recipe.description}</p>
         </>
     )
 
@@ -114,9 +117,11 @@ const RecipeDetails = () => {
     const handleEditAction = (state: boolean) => setIsEditable(state)
 
     return (
-        <div className="card">
-            <Link to={'/'}>Retour</Link>
-            <h1>Detail</h1>
+        <div className="card__recipe">
+            <div className="container__back">
+                <Link to={'/'} className="content__back">Retour</Link>
+            </div>
+            <h1 className="">Details</h1>
             {!isEditable ? (
                 <button onClick={() => handleEditAction(true)}>
                     Editer cette recette
@@ -126,8 +131,8 @@ const RecipeDetails = () => {
                     Arrêter l'Edition
                 </button>
             )}
-            <div>
-                <p>Voulez vous ajouter un ingrédient ?</p>
+            <div className="recipe__content">
+                <p className="recipe__content__title">Voulez vous ajouter un ingrédient ?</p>
                 <select onChange={handleChange} value={ingredientID}>
                     <option
                         selected
@@ -136,7 +141,9 @@ const RecipeDetails = () => {
                     >
                         Selectionner un ingrédient
                     </option>
-                    {allIngredients.map((ingredient) => (
+                    {allIngredients.filter(el => {
+                        return !ingredientsData.find(el2 => el2.idIngredient === el.idIngredient)
+                    }).map((ingredient) => (
                         <option
                             key={ingredient.idIngredient}
                             value={ingredient.idIngredient}
@@ -146,6 +153,7 @@ const RecipeDetails = () => {
                     ))}
                 </select>
                 <button
+                    className="button__add"
                     onClick={() =>
                         handleAddIngredient(ingredientID, recipeData.idRecette)
                     }
@@ -160,20 +168,21 @@ const RecipeDetails = () => {
             )}
 
             <div>
-                <h3>Ingredients :</h3>
+                <h3 className="recipe__content--h3">Ingredients :</h3>
                 {ingredientsData
                     ? ingredientsData.map((ing, index) => (
-                          <>
+                          <div className="container__deleteelement">
                               <p key={index}>{ing.nomIngredient}</p>
                               <button
-                                  key={ing.idIngredient}
+                                  className="button__delete"
+                                  key={ing.nomIngredient}
                                   onClick={() =>
                                       removeRecipeIngredient(ing.idIngredient)
                                   }
                               >
                                   Supprimer cet ingredient
                               </button>
-                          </>
+                          </div>
                       ))
                     : 'aucun'}
             </div>

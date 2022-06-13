@@ -1,9 +1,19 @@
 .card_container {
     width: 1440px;
     position: relative;
-    margin: 24px;
+    margin-top: 110px;
+    margin-bottom: 20px;
 
     .card {
+        padding: 24px;
+
+        .container__card_recipe {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
         .card_recipe {
             min-width: 45%;
             max-width: 45%;
@@ -45,5 +55,41 @@
             padding: 12px 24px 12px 24px;
             margin: 12px 0;
         }
+    }
+
+    .edit_button {
+        padding: 8px 16px;
+        color: white;
+        background-color: #0cb490;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .delete_button {
+        padding: 8px 16px !important;
+        margin-left: 24px;
+        color: white;
+        background-color: #c54525;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        max-height: 34px;
+    }
+
+    .container__card_recipe {
+        position: relative;
+        width: 100%;
+        display: flex;
+        flex-grow: 2;
+    }
+
+    .container__idName {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .recipe__desc {
+        margin-top: 24px !important;
     }
 }

@@ -5,6 +5,8 @@ import { Route, Routes } from 'react-router-dom'
 
 import ListRecipes from './pages/ListRecipes'
 import RecipeDetails from './pages/components/RecipeDetails'
+import '../src/styles/ListRecipes.scss';
+import '../src/styles/RecipeDetails.scss';
 
 const App = () => (
     <>

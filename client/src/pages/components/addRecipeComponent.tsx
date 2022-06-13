@@ -27,14 +27,14 @@ const AddRecipeComponent = ({ errorMessage, handleSave, counter }: Props) => {
             <label>Origine</label>
             <input
                 id="origin"
-                onChange={(event) => setRecipeDetails(event.target.value)}
+                onChange={(event) => setRecipeOrigin(event.target.value)}
                 name="origin"
                 type="text"
             />
             <label>Details</label>
             <input
                 id="detail"
-                onChange={(event) => setRecipeOrigin(event.target.value)}
+                onChange={(event) => setRecipeDetails(event.target.value)}
                 name="detail"
                 type="text"
             />

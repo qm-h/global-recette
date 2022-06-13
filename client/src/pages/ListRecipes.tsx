@@ -146,25 +146,23 @@ const ListRecipes = () => {
                                 )}
 
                                 {recipeList.map((r, i) => (
-                                    <>
+                                    <div className="container__card_recipe">
                                         <li
+                                            
                                             key={i}
                                             className="card_recipe"
                                             onClick={() =>
                                                 handleOnClick(r.idRecette)
                                             }
                                         >
-                                            <span>Numéro: {r.idRecette}</span>
+                                            <div className="container__idName">
+                                                <span>Numéro {r.idRecette} : {r.nomRecette}</span>
+                                            </div>
                                             <br />
-
-                                            <span>Nom: {r.nomRecette} </span>
+                                            <span className="recipe__origin">Origine: {r.origine}</span>
                                             <br />
-                                            <span>Origine: {r.origine}</span>
-                                            <br />
-                                            <span>
-                                                Details: {r.description}
-                                            </span>
-                                        </li>
+                                            <span className="recipe__desc">{r.description}</span>
+                                      </li>
                                         <button
                                             onClick={() =>
                                                 setRemoveRecipe(true)
@@ -173,7 +171,7 @@ const ListRecipes = () => {
                                         >
                                             Remove this recipe
                                         </button>
-                                    </>
+                                    </div>
                                 ))}
                             </ul>
                         </div>

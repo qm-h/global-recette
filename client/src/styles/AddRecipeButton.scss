@@ -2,7 +2,9 @@
     font-size: 18px !important;
     padding: 8px 16px !important;
     border-radius: 5px !important;
-}
+    z-index: 25;
+
+}    
 
 .add_button {
     position: absolute;
@@ -27,5 +29,5 @@
     background-color: red !important;
     color: white !important;
     font-weight: bold;
-    z-index: 10;
+    z-index: 25;
 }
