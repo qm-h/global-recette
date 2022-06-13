@@ -60,6 +60,10 @@ It will also launch the tests and build the application that will be rendered by
 
 The second one will create the `docker image of the database `based on the sql file of the database
 
+### `In french` 🇫🇷
+
+Si vous lancez la ci docker, n'oublier pas de restart le conteneur de l'application. Je n'ai pas mis de sleep pour que le conteneur mysql soit bien lancé.
+
 ## Gitlab CI
 
 The `gitlab` file will make `two stages`, a build which will build the docker image of the `application` and the `database`, and then push them.
