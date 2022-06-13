@@ -1,5 +1,5 @@
 import { addRecipe, deleteRecipe, getAllRecipes } from '../api/router'
-import { SetStateAction, useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import AddRecipeButton from './components/AddRecipesButton'
 import AddRecipeComponent from './components/addRecipeComponent'
@@ -63,19 +63,21 @@ const ListRecipes = () => {
     }
 
     const handleSearchRecipe = (event) => {
-        let value = event.target.value;
-        let newList = recipesData.filter((re) => re.nomRecette.toLowerCase().startsWith(value.toLowerCase()))
+        let value = event.target.value
+        let newList = recipesData.filter((re) =>
+            re.nomRecette.toLowerCase().startsWith(value.toLowerCase())
+        )
         setRecipeList(newList)
     }
 
     useEffect(() => {
-        (async () => {
+        ;(async () => {
             const promiseResult = await Promise.all([getAllRecipes()])
             setRecipesData(promiseResult[0])
             setIsLoading(false)
-            setRemoveRecipe(false)
+            setRemoveRecipeAction(false)
         })()
-    }, [removeRecipeAction])
+    }, [removeRecipe, removeRecipeAction])
 
     useEffect(() => {
         setRecipeList(recipesData)
@@ -95,11 +97,9 @@ const ListRecipes = () => {
                             </div>
                             <div className="container__search">
                                 <input
-                                    // onFocus={handleSearchRecipe}
                                     onChange={handleSearchRecipe}
                                     placeholder="Produit recherché "
                                 />
-                                {/* <button className="button__search" onClick={handleclick}>Chercher</button> */}
                             </div>
                             <AddRecipeButton
                                 addRecipes={addRecipes}
@@ -118,7 +118,7 @@ const ListRecipes = () => {
                                     <div className="container_remove_button">
                                         <input
                                             type="text"
-                                            placeholder='Entrez le numéro de la recette à supprimer'
+                                            placeholder="Entrez le numéro de la recette à supprimer"
                                             name="recipeID"
                                             onChange={(event) =>
                                                 setRecipeRemoveId(
@@ -142,7 +142,6 @@ const ListRecipes = () => {
                                 {recipeList.map((r, i) => (
                                     <div className="container__card_recipe">
                                         <li
-                                            
                                             key={i}
                                             className="card_recipe"
                                             onClick={() =>
@@ -150,13 +149,20 @@ const ListRecipes = () => {
                                             }
                                         >
                                             <div className="container__idName">
-                                                <span>Numéro {r.idRecette} : {r.nomRecette}</span>
+                                                <span>
+                                                    Numéro {r.idRecette} :{' '}
+                                                    {r.nomRecette}
+                                                </span>
                                             </div>
                                             <br />
-                                            <span className="recipe__origin">Origine: {r.origine}</span>
+                                            <span className="recipe__origin">
+                                                Origine: {r.origine}
+                                            </span>
                                             <br />
-                                            <span className="recipe__desc">{r.description}</span>
-                                      </li>
+                                            <span className="recipe__desc">
+                                                {r.description}
+                                            </span>
+                                        </li>
                                         <button
                                             onClick={() =>
                                                 setRemoveRecipe(true)
