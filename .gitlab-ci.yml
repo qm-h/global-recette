@@ -23,6 +23,6 @@ deploy:
     script:
         - docker network create devops
         - docker pull $CONTAINER_MYSQL_IMAGE
-        - docker run --network devops -d -p 4406:4406 --name mysql_db $CONTAINER_MYSQL_IMAGE
+        - docker run --network devops -d -p 3306:3306 --name mysql_db $CONTAINER_MYSQL_IMAGE
         - docker pull $CONTAINER_RELEASE_IMAGE
         - docker run --network devops -d -p 8080:8080 --name webapp_devops $CONTAINER_RELEASE_IMAGE
