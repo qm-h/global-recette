@@ -1,0 +1,27 @@
+.button {
+    font-size: 18px !important;
+    padding: 8px 16px !important;
+    border-radius: 5px !important;
+
+}    
+
+.add_button {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    border: none !important;
+    background-color: white !important;
+    color: black !important;
+    font-weight: bold;
+} 
+
+.close_button {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    border: none !important;
+    background-color: red !important;
+    color: white !important;
+    font-weight: bold;
+    z-index: 10;
+}

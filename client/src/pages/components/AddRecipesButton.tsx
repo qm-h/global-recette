@@ -1,3 +1,5 @@
+import '../../styles/AddRecipeButton.scss';
+
 type Props = {
     addRecipes: boolean
     handleClose: () => void
@@ -25,16 +27,16 @@ const AddRecipeButton = ({
                         className="button close_button"
                         onClick={handleClose}
                     >
-                        x
+                        Annuler
                     </button>
-                    {addIngredient}
+                    {/* {addIngredient} */}
                 </>
             ) : (
                 <>
                     <button className="button add_button" onClick={handleAdd}>
-                        +
+                    Ajouter une recette
                     </button>
-                    {addIngredient}
+                    {/* {addIngredient} */}
                 </>
             )}
         </>

@@ -2,6 +2,7 @@ import ListRecipes from './pages/ListRecipes'
 import './App.css'
 import { Routes, Route } from 'react-router-dom'
 import RecipeDetails from './pages/components/RecipeDetails'
+import '../styles/ListRecipes.scss';
 
 const App = () => (
     <>

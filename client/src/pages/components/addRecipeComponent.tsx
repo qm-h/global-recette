@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import '../../styles/addRecipeComponent.scss';
 
 type Props = {
     errorMessage: string
@@ -12,9 +13,11 @@ const AddRecipeComponent = ({ errorMessage, handleSave, counter }: Props) => {
     const [recipeOrigin, setRecipeOrigin] = useState('')
 
     return (
+        
         <div className="add_component_container">
+            <h2>Ajouter une recette</h2>
             {errorMessage && <h3>{errorMessage}</h3>}
-            <span>Nom</span>
+            <label>Nom</label>
             <input
                 onChange={(event) => setRecipeName(event.target.value)}
                 id="name"
@@ -42,7 +45,7 @@ const AddRecipeComponent = ({ errorMessage, handleSave, counter }: Props) => {
                     handleSave(recipeName, recipeOrigin, recipeDetails)
                 }
             >
-                Save
+                Sauvegarder
             </button>
         </div>
     )
