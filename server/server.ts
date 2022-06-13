@@ -1,10 +1,12 @@
 import { connection } from './config/connectDatabase'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
+import dotenv from 'dotenv'
 import { createRecipeRouter } from './routes/recipesRouter'
 import express from 'express'
 import path from 'path'
 
+dotenv.config()
 const port = process.env.PORT || 3001
 const portProd = 8080
 const url = `http://localhost:${port}/`
@@ -18,22 +20,21 @@ app.use(cors())
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/api/', createRecipeRouter)
-
-// if (process.env.NODE_ENV === 'production') {
-//     console.log('Production mode')
-//     app.use(express.static(path.join(__dirname, 'client')))
-//     prodConnection.connect((err) => {
-//         if (err) {
-//             console.log('erreur', err)
-//         } else {
-//             console.log(`Connecté à la base de données MySQL!💾`)
-//         }
-//     })
-//     app.listen(portProd, () => {
-//         console.log(`Server app listening on port ${portProd} ✅`)
-//         console.log(`Server is on production mode on ${urlProd} 🚀`)
-//     })
-// } else {
+if (process.env.NODE_ENV === 'prod') {
+    console.log('Production mode')
+    app.use(express.static(path.join(__dirname, 'client')))
+    connection.connect((err) => {
+        if (err) {
+            console.log('erreur', err)
+        } else {
+            console.log(`Connecté à la base de données MySQL!💾`)
+        }
+    })
+    app.listen(portProd, () => {
+        console.log(`Server app listening on port ${portProd} ✅`)
+        console.log(`Server is on production mode on ${urlProd} 🚀`)
+    })
+} else {
 console.log('Development mode')
 connection.connect((err) => {
     if (err) {
@@ -46,6 +47,6 @@ app.listen(port, () => {
     console.log(`Server listening on port ${port} ✅`)
     console.log(`Server is on development mode on ${url} 🚀`)
 })
-// }
+}
 
 module.exports = app

@@ -6,14 +6,15 @@
     "scripts": {
         "build": "tsc",
         "clean": "rimraf ./build",
-        "start": "export NODE_ENV=production && node ./build/server.js",
-        "dev": "export NODE_ENV=dev && nodemon --watch './*' -e ts --exec 'ts-node' ./server.ts"
+        "start": "node ./build/server.js",
+        "dev": "nodemon server"
     },
     "author": "Moreau Quentin",
     "license": "ISC",
     "dependencies": {
         "axios": "0.27.2",
         "cors": "2.8.5",
+        "dotenv": "^16.0.1",
         "express": "4.18.1",
         "mysql": "2.18.1",
         "mysql2": "2.3.3",
