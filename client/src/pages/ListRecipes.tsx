@@ -1,5 +1,5 @@
 import { addRecipe, deleteRecipe, getAllRecipes } from '../api/router'
-import { useCallback, useEffect, useState } from 'react'
+import { SetStateAction, useCallback, useEffect, useState } from 'react'
 
 import AddRecipeButton from './components/AddRecipesButton'
 import AddRecipeComponent from './components/addRecipeComponent'
@@ -17,7 +17,6 @@ const ListRecipes = () => {
     const [removeRecipe, setRemoveRecipe] = useState(false)
     const [removeRecipeAction, setRemoveRecipeAction] = useState(false)
     const [recipeRemoveId, setRecipeRemoveId] = useState('')
-    const [searchRecipe, setSearchRecipe] = useState('')
 
     const navigate = useNavigate()
     const handleOnClick = useCallback(
@@ -63,28 +62,18 @@ const ListRecipes = () => {
         setRemoveRecipe(false)
     }
 
-    const handleSearchRecipe = (e) => {
-        setSearchRecipe(e.target.value)
-        setRecipeList(recipesData)
-    }
-
-    const handleclick = () => {
-        if (searchRecipe !== '') {
-            let newList = recipesData.filter((re) =>
-                re.nomRecette
-                    .toLowerCase()
-                    .startsWith(searchRecipe.toLowerCase())
-            )
-            setRecipeList(newList)
-        }
-        setSearchRecipe('')
+    const handleSearchRecipe = (event) => {
+        let value = event.target.value;
+        let newList = recipesData.filter((re) => re.nomRecette.toLowerCase().startsWith(value.toLowerCase()))
+        setRecipeList(newList)
     }
 
     useEffect(() => {
-        ;(async () => {
+        (async () => {
             const promiseResult = await Promise.all([getAllRecipes()])
             setRecipesData(promiseResult[0])
             setIsLoading(false)
+            setRemoveRecipe(false)
         })()
     }, [removeRecipeAction])
 
@@ -104,11 +93,14 @@ const ListRecipes = () => {
                             <div className="title_card">
                                 <h1>Recettes</h1>
                             </div>
-                            <input
-                                onFocus={handleSearchRecipe}
-                                onChange={handleSearchRecipe}
-                            />
-                            <button onClick={handleclick}>Chercher</button>
+                            <div className="container__search">
+                                <input
+                                    // onFocus={handleSearchRecipe}
+                                    onChange={handleSearchRecipe}
+                                    placeholder="Produit recherché "
+                                />
+                                {/* <button className="button__search" onClick={handleclick}>Chercher</button> */}
+                            </div>
                             <AddRecipeButton
                                 addRecipes={addRecipes}
                                 handleClose={handleClose}
@@ -123,9 +115,10 @@ const ListRecipes = () => {
                                     />
                                 )}
                                 {removeRecipe && (
-                                    <>
+                                    <div className="container_remove_button">
                                         <input
                                             type="text"
+                                            placeholder='Entrez le numéro de la recette à supprimer'
                                             name="recipeID"
                                             onChange={(event) =>
                                                 setRecipeRemoveId(
@@ -134,6 +127,7 @@ const ListRecipes = () => {
                                             }
                                         />
                                         <button
+                                            className="delete_button"
                                             onClick={() =>
                                                 handleRemoveRecipe(
                                                     parseInt(recipeRemoveId)
@@ -142,7 +136,7 @@ const ListRecipes = () => {
                                         >
                                             Remove
                                         </button>
-                                    </>
+                                    </div>
                                 )}
 
                                 {recipeList.map((r, i) => (

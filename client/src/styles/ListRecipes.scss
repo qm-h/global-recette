@@ -1,17 +1,32 @@
 .card_container {
     width: 1440px;
     position: relative;
-    margin-top: 110px;
-    margin-bottom: 20px;
+    max-height: 90vh;
+    overflow-y: auto;
+   
+
+    &::-webkit-scrollbar {
+        background: none;
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #050505b2;
+        border-radius: 5px;
+    }
 
     .card {
         padding: 24px;
+        // max-height: 90vh;
+        background-color: white; 
+        border-radius: 15px;
 
         .container__card_recipe {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             width: 100%;
+            
         }
 
         .card_recipe {
@@ -66,6 +81,13 @@
         cursor: pointer;
     }
 
+    .container_remove_button {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     .delete_button {
         padding: 8px 16px !important;
         margin-left: 24px;
@@ -91,5 +113,38 @@
 
     .recipe__desc {
         margin-top: 24px !important;
+    }
+
+    .container__search {
+        display: flex;
+        justify-content: center;
+        margin: 35px 0;
+
+        input {
+            width: 50%;
+            border: none;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.39);
+        }
+
+        button {
+            padding: 8px 16px !important;
+            margin-left: 24px;
+            color: white;
+            background-color: #1ea2e0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            max-height: 34px;
+
+        }
+
+        input:focus-visible {
+            outline: none !important;
+            border-bottom: 2px solid black;
+        }
+        input:focus {
+            outline: none !important;
+            border-bottom: 2px solid black;
+        }
     }
 }
