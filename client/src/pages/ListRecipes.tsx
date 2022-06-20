@@ -1,22 +1,23 @@
-import { addRecipe, deleteRecipe, getAllRecipes } from '../api/router'
+import {
+    Card,
+    Container,
+    Grid,
+    Input,
+    Loading,
+    Row,
+    Spacer,
+    Text,
+} from '@nextui-org/react'
 import { useCallback, useEffect, useState } from 'react'
 
-import AddRecipeButton from './components/AddRecipesButton'
-import AddRecipeComponent from './components/addRecipeComponent'
-import { Recipe } from '../../../server/shared/types'
-import { SpinnerCircular } from 'spinners-react'
+import { Recipe } from '../../../server/src/shared/types'
+import { getAllRecipesWithUser } from '../api/recipesRouter'
 import { useNavigate } from 'react-router-dom'
 
 const ListRecipes = () => {
-    const [addRecipes, setAddRecipes] = useState(false)
     const [recipesData, setRecipesData] = useState<Recipe[]>([])
     const [recipeList, setRecipeList] = useState<Recipe[]>([])
     const [isLoading, setIsLoading] = useState(true)
-    const [counter, setCounter] = useState(0)
-    const [errorEmptyField, setErrorEmptyField] = useState('')
-    const [removeRecipe, setRemoveRecipe] = useState(false)
-    const [removeRecipeAction, setRemoveRecipeAction] = useState(false)
-    const [recipeRemoveId, setRecipeRemoveId] = useState('')
 
     const navigate = useNavigate()
     const handleOnClick = useCallback(
@@ -24,161 +25,99 @@ const ListRecipes = () => {
         [navigate]
     )
 
-    const handleAdd = () => {
-        setAddRecipes(true)
-    }
-
-    const handleClose = () => {
-        setAddRecipes(false)
-        setCounter(0)
-        setErrorEmptyField('')
-    }
-
-    const handleSave = (name: string, origine: string, details: string) => {
-        if (name !== '' && origine !== '' && details !== '') {
-            const data: Recipe = {
-                idRecette: 0,
-                nomRecette: name,
-                description: details,
-                origine: origine,
-            }
-            setAddRecipes(false)
-            setCounter(0)
-            addRecipe(data)
-            fetchRecipes()
-        } else {
-            setErrorEmptyField('Les champs ne doivent pas être vides')
-        }
-    }
-
-    const fetchRecipes = useCallback(async () => {
-        const recipes = await getAllRecipes()
-        setRecipesData(recipes)
-    }, [])
-
-    const handleRemoveRecipe = (id: number) => {
-        deleteRecipe(id)
-        setRemoveRecipeAction(true)
-        setRemoveRecipe(false)
-    }
-
     const handleSearchRecipe = (event) => {
         let value = event.target.value
         let newList = recipesData.filter((re) =>
-            re.nomRecette.toLowerCase().startsWith(value.toLowerCase())
+            re.name.toLowerCase().startsWith(value.toLowerCase())
         )
         setRecipeList(newList)
     }
 
     useEffect(() => {
         ;(async () => {
-            const promiseResult = await Promise.all([getAllRecipes()])
+            const promiseResult = await Promise.all([getAllRecipesWithUser()])
             setRecipesData(promiseResult[0])
             setIsLoading(false)
-            setRemoveRecipeAction(false)
         })()
-    }, [removeRecipe, removeRecipeAction])
+    }, [])
 
     useEffect(() => {
         setRecipeList(recipesData)
     }, [recipesData])
 
     return (
-        <>
-            {' '}
-            {isLoading ? (
-                <SpinnerCircular />
-            ) : (
-                <>
-                    <div className="card_container">
-                        <div className="card">
-                            <div className="title_card">
-                                <h1>Recettes</h1>
-                            </div>
-                            <div className="container__search">
-                                <input
-                                    onChange={handleSearchRecipe}
-                                    placeholder="Produit recherché "
-                                />
-                            </div>
-                            <AddRecipeButton
-                                addRecipes={addRecipes}
-                                handleClose={handleClose}
-                                handleAdd={handleAdd}
-                            />
-                            <ul>
-                                {addRecipes && (
-                                    <AddRecipeComponent
-                                        errorMessage={errorEmptyField}
-                                        counter={counter}
-                                        handleSave={handleSave}
-                                    />
-                                )}
-                                {removeRecipe && (
-                                    <div className="container_remove_button">
-                                        <input
-                                            type="text"
-                                            placeholder="Entrez le numéro de la recette à supprimer"
-                                            name="recipeID"
-                                            onChange={(event) =>
-                                                setRecipeRemoveId(
-                                                    event.target.value
-                                                )
-                                            }
-                                        />
-                                        <button
-                                            className="delete_button"
-                                            onClick={() =>
-                                                handleRemoveRecipe(
-                                                    parseInt(recipeRemoveId)
-                                                )
-                                            }
-                                        >
-                                            Remove
-                                        </button>
-                                    </div>
-                                )}
-
-                                {recipeList.map((r, i) => (
-                                    <div className="container__card_recipe">
-                                        <li
-                                            key={i}
-                                            className="card_recipe"
-                                            onClick={() =>
-                                                handleOnClick(r.idRecette)
-                                            }
-                                        >
-                                            <div className="container__idName">
-                                                <span>
-                                                    Numéro {r.idRecette} :{' '}
-                                                    {r.nomRecette}
-                                                </span>
-                                            </div>
-                                            <br />
-                                            <span className="recipe__origin">
-                                                Origine: {r.origine}
-                                            </span>
-                                            <br />
-                                            <span className="recipe__desc">
-                                                {r.description}
-                                            </span>
-                                        </li>
-                                        <button
-                                            onClick={() =>
-                                                setRemoveRecipe(true)
-                                            }
-                                            className="delete_button"
-                                        >
-                                            Remove this recipe
-                                        </button>
-                                    </div>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
-                </>
-            )}
-        </>
+        <Container
+            css={{
+                h: '100vh',
+                w: '90%',
+            }}
+            display="flex"
+            justify="center"
+            alignItems="center"
+            responsive
+        >
+            <Card css={{ w: '50%', h: '70%', borderRadius: '6px' }}>
+                <Card.Header>
+                    <Row justify="center">
+                        <Text h2 b>
+                            Recette du Moment 🚀
+                        </Text>
+                    </Row>
+                </Card.Header>
+                <Card.Divider />
+                <Spacer />
+                <Row justify="center">
+                    <Input
+                        css={{ w: '50%' }}
+                        clearable
+                        bordered
+                        color="warning"
+                        onChange={handleSearchRecipe}
+                        placeholder="Rechercher une recette"
+                    />
+                </Row>
+                <Card.Body css={{ p: '2em', w: '100%' }}>
+                    <Spacer />
+                    <Grid.Container
+                        gap={2}
+                        wrap="wrap"
+                        justify={isLoading ? 'center' : 'space-around'}
+                        alignItems="center"
+                        alignContent="center"
+                    >
+                        {isLoading ? (
+                            <Loading type="points" />
+                        ) : (
+                            recipeList.map((r, i) => (
+                                <Grid key={i} xs={4}>
+                                    <Card
+                                        variant="bordered"
+                                        css={{ borderRadius: '6px' }}
+                                        isPressable
+                                    >
+                                        <Card.Header>
+                                            <Text h4 b>
+                                                {r.name}
+                                            </Text>
+                                        </Card.Header>
+                                        <Card.Body>
+                                            <Text>
+                                                Origine de la recette :{' '}
+                                                {r.origine}
+                                            </Text>
+                                            <Text>
+                                                Note concernant la recette :{' '}
+                                                {r.note}
+                                            </Text>
+                                        </Card.Body>
+                                    </Card>
+                                </Grid>
+                            ))
+                        )}
+                    </Grid.Container>
+                </Card.Body>
+            </Card>
+        </Container>
     )
 }
 

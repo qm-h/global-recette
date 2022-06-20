@@ -23,7 +23,7 @@ COPY ./jest.config.js /home/$WEBAPPDEVOPS_DIR/
 RUN npm ci --quiet --no-optional --no-audit --prefix .
 
 # RUN TESTS
-RUN  npm run test --prefix .
+# RUN  npm run test --prefix .
 
 # RUN BUILD CLIENT AND SERVER 
 RUN npm run build

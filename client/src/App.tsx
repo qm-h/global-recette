@@ -1,20 +1,36 @@
 import './App.css'
-import './styles/ListRecipes.scss';
 
-import { Route, Routes } from 'react-router-dom'
+import { AppContext } from './lib/context/Context'
+import CustomsRoutes from './Routes'
+import HeaderCommon from './pages/components/common/HeaderCommon'
+import { Toaster } from 'react-hot-toast'
+import { User } from '../../server/src/shared/types'
+import { useState } from 'react'
 
-import ListRecipes from './pages/ListRecipes'
-import RecipeDetails from './pages/components/RecipeDetails'
-import '../src/styles/ListRecipes.scss';
-import '../src/styles/RecipeDetails.scss';
+const App = () => {
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+    const [user, setUser] = useState<User>()
 
-const App = () => (
-    <>
-        <Routes>
-            <Route path="/" element={<ListRecipes />} />
-            <Route path="detail/:id" element={<RecipeDetails/>} />
-        </Routes>
-    </>
-)
+    return (
+        <>
+            <HeaderCommon
+                isAuthenticated={isAuthenticated}
+                userHasAuthenticated={setIsAuthenticated}
+                user={user}
+            />
+            <Toaster position="top-center" reverseOrder={true} />
+            <AppContext.Provider
+                value={{
+                    isAuthenticated,
+                    setIsAuthenticated,
+                    user,
+                    setUser,
+                }}
+            >
+                <CustomsRoutes />
+            </AppContext.Provider>
+        </>
+    )
+}
 
 export default App

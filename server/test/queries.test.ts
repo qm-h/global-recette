@@ -1,10 +1,10 @@
-import { DataTableType, dataTable } from '../shared/dataTable'
+import { DataTableType, dataTable } from '../src/shared/utils/dataTable'
 import {
     deleteIngredientQuery,
     deleteRecipeIngredientQuery,
     deleteRecipeQuery,
     selectAllRecipesQuery,
-} from '../shared/utils/queries'
+} from '../src/express/api/queries/recipe/recipeCrudQueries'
 
 test('delete recipe with good id', async () => {
     const id = '1'
