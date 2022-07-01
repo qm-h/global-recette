@@ -1,6 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express'
-
-import authService from './services/authService'
+import express from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import createAuthRouter from './express/routes/authRouter'
@@ -8,6 +6,7 @@ import createRecipeRouter from './express/routes/recipesRouter'
 import dotenv from 'dotenv'
 import path from 'path'
 import { supabase } from './database/supabase'
+import createIngredientsRouter from './express/routes/ingredientsRouter'
 
 dotenv.config()
 const port = process.env.PORT || 3001
@@ -24,7 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/api/recipe', createRecipeRouter)
 app.use('/api/auth', createAuthRouter)
-
+app.use('/api/ingredients', createIngredientsRouter)
 supabase.auth
     .signIn({
         provider: 'github',

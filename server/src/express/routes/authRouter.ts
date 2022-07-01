@@ -1,8 +1,10 @@
-import { Request, Response, Router } from 'express'
+import { NextFunction, Request, Response, Router } from 'express'
 import {
-    authenticateUserQuery,
-    registerUserQuery,
-} from '../api/commands/auth/authCrudCommands'
+    authenticateUser,
+    registerUser,
+} from '../api/commands/auth/authCommands'
+
+import authService from '../../services/authService'
 
 class AuthRouter {
     public readonly router: Router
@@ -10,20 +12,32 @@ class AuthRouter {
     constructor() {
         this.router = Router()
         this.router.get('/', [])
-        this.router.post('/register', (req: Request, res: Response) => [
+        this.router.post('/signup', (req: Request, res: Response) => [
             this.registerUser(req, res),
         ])
-        this.router.post('/login', (req: Request, res: Response) => [
-            this.authenticateUser(req, res),
+        this.router.post(
+            '/signin',
+            (req: Request, res: Response, next: NextFunction) => [
+                this.authenticateUser(req, res, next),
+            ]
+        )
+        this.router.post('/signout', (req: Request, res: Response) => [
+            this.logout(req, res),
         ])
     }
 
     private registerUser(req: Request, res: Response) {
-        return registerUserQuery(req, res)
+        return registerUser(req, res)
     }
 
-    private authenticateUser(req: Request, res: Response) {
-        return authenticateUserQuery(req, res)
+    private authenticateUser(req: Request, res: Response, next: NextFunction) {
+        return authenticateUser(req, res, next)
+    }
+
+    private logout(req: Request, res: Response) {
+        authService.deleteToken(req, res, () => {
+            res.sendStatus(200)
+        })
     }
 }
 

@@ -1,21 +1,10 @@
-import {
-    FullRecette,
-    Ingredients,
-    Recipe,
-} from '../../../server/src/shared/types'
+import { Recipe, RecipeIngredient } from '../../../server/src/shared/types'
 
 import axios from 'axios'
 
-export function getAllRecipes(): Promise<Recipe[]> {
-    return axios
-        .get('/api/recipe')
-        .then((res) => res.data)
-        .catch((err) => console.log(err))
-}
-
 export function getAllRecipesWithUser(): Promise<Recipe[]> {
     return axios
-        .get('/api/recipe/withUser')
+        .get('/api/recipe')
         .then((res) => res.data)
         .catch((err) => console.log(err))
 }
@@ -27,61 +16,60 @@ export function getRecipesByID(id: number): Promise<Recipe> {
         .catch((err) => console.log(err))
 }
 
-export function getRecipeByUserID(id: number): Promise<Recipe[]> {
+export function getRecipeByName(recipeName: string): Promise<Recipe> {
     return axios
-        .get(`/api/recipe/user/${id}`)
+        .post(`/api/recipe/name`, { recipeName: recipeName })
+        .then((res) => res.data[0])
+        .catch((err) => console.log(err))
+}
+
+export function getRecipeByUserID(
+    id: number,
+    accessUserUUID
+): Promise<Recipe[]> {
+    return axios
+        .post(`/api/recipe/user/${id}`, {
+            userUUID: accessUserUUID,
+            userID: id,
+        })
         .then((res) => res.data)
         .catch((err) => console.log(err))
 }
 
-export function getRecipesIngredientsByRecipeID(
-    id: number
-): Promise<Ingredients[]> {
+export function createRecipe(recipe: Recipe) {
     return axios
-        .get(`/api/recipe//ingredients/${id}`)
-        .then((res) => res.data)
-        .catch((err) => console.log(err))
-}
-
-export function getAllIngredients(): Promise<Ingredients[]> {
-    return axios
-        .get(`/api/recipe/ingredients`)
-        .then((res) => res.data)
-        .catch((err) => console.log(err))
-}
-
-export function addRecipe(data: Recipe): Promise<number | void> {
-    console.log(data)
-
-    return axios
-        .post('/api/recipe/addrecipe', {
-            name: data.name,
-            origine: data.origine,
-            note: data.note,
+        .post('/api/recipe/createrecipe', {
+            name: recipe.name,
+            origin: recipe.origin,
+            note: recipe.note,
+            user_id: recipe.user_id,
+            created_at: recipe.created_at,
         })
         .then((res) => res.status)
         .catch((err) => console.log(err))
 }
 
-export function addIngredients(data: Ingredients): Promise<number | void> {
-    return axios
-        .post('/api/recipe/addingredient', {
-            nomIngredient: data.name,
-        })
-        .then((res) => res.status)
-        .catch((err) => console.log(err))
-}
-
-export function addRecipeIngredients(
-    data: FullRecette
+export function insertRecipeIngredients(
+    recipeIngredient: RecipeIngredient
 ): Promise<number | void> {
-    console.log(data)
-
     return axios
-        .post('/api/recipe/addrecipeingredient', {
-            idIngredient: data.idIngredient,
-            idRecette: data.idRecette,
+        .post('/api/recipe/insertrecipeingredient', {
+            recipeIngredient: recipeIngredient,
         })
+        .then((res) => res.status)
+        .catch((err) => console.log(err))
+}
+
+export function publishRecipe(id: number): Promise<number | void> {
+    return axios
+        .post(`/api/recipe/publish`, { id: id })
+        .then((res) => res.status)
+        .catch((err) => console.log(err))
+}
+
+export function unpublishRecipe(id: number): Promise<number | void> {
+    return axios
+        .post(`/api/recipe/unpublish`, { id: id })
         .then((res) => res.status)
         .catch((err) => console.log(err))
 }
@@ -98,8 +86,9 @@ export function updateRecipe(data: Recipe): Promise<number | void> {
 }
 
 export function deleteRecipe(id: number): Promise<number | void> {
+    console.log(id)
     return axios
-        .delete(`/api/recipe/delete/recipe/${id}`)
+        .delete(`/api/recipe/delete/${id}`)
         .then((res) => res.status)
         .catch((err) => console.log(err))
 }

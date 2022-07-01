@@ -1,26 +1,40 @@
-import { Avatar, Grid, Link, Switch, Text, useTheme } from '@nextui-org/react'
+import {
+    Avatar,
+    Grid,
+    Link,
+    Switch,
+    Text,
+    Tooltip,
+    useTheme,
+} from '@nextui-org/react'
 
+import { LoginIcon } from '../../../lib/theme/Icons/LoginIcon'
 import MenuList from './commonComponents/MenuList'
-import MoonIcon from '../../../lib/theme/MoonIcon'
-import SunIcon from '../../../lib/theme/SunIcon'
-import { User } from '../../../../../server/src/shared/types'
+import MoonIcon from '../../../lib/theme/Icons/MoonIcon'
+import SunIcon from '../../../lib/theme/Icons/SunIcon'
 import UserMenu from './commonComponents/UserMenu'
+import { User as UserType } from '../../../../../server/src/shared/types'
+import { useNavigate } from 'react-router-dom'
 import { useTheme as useNextTheme } from 'next-themes'
 
 interface Props {
     isAuthenticated: boolean
-    userHasAuthenticated: (val: boolean) => void
-    user: User
+    setIsAuthenticated: (val: boolean) => void
+    user: UserType
+    setUser: (user: UserType) => void
+    setUserUUID: (uuid: string) => void
 }
 
 const HeaderCommon = ({
     isAuthenticated,
-    userHasAuthenticated,
+    setIsAuthenticated,
     user,
+    setUser,
+    setUserUUID,
 }: Props) => {
     const { setTheme } = useNextTheme()
     const { isDark } = useTheme()
-
+    const navigate = useNavigate()
     return (
         <div
             className={`header_common ${
@@ -29,7 +43,12 @@ const HeaderCommon = ({
         >
             <Grid.Container justify="space-between">
                 <Grid xs={3} alignItems="center">
-                    <Text h1 weight="bold">
+                    <Text
+                        onClick={() => navigate('/')}
+                        h1
+                        b
+                        css={{ cursor: 'pointer' }}
+                    >
                         Global Recette 🍔
                     </Text>
                 </Grid>
@@ -65,10 +84,29 @@ const HeaderCommon = ({
                 </Grid>
                 <Grid xs={1} alignItems="center">
                     {isAuthenticated ? (
-                        <UserMenu user={user} />
+                        <UserMenu
+                            setUser={setUser}
+                            setIsAuthenticated={setIsAuthenticated}
+                            setUserUUID={setUserUUID}
+                            user={user}
+                        />
                     ) : (
-                        <Link block href="/login" color="warning">
-                            Login
+                        <Link animated href="/login" color="primary">
+                            <Tooltip
+                                content={'Connexion'}
+                                hideArrow
+                                placement="bottom"
+                                shadow
+                                rounded
+                                color="primary"
+                            >
+                                <Avatar
+                                    squared
+                                    pointer
+                                    color="primary"
+                                    icon={<LoginIcon />}
+                                />
+                            </Tooltip>
                         </Link>
                     )}
                 </Grid>

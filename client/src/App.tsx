@@ -1,6 +1,7 @@
 import './App.css'
 
-import { AppContext } from './lib/context/Context'
+import { AppContext } from './lib/context/context'
+import Cookie from 'js-cookie'
 import CustomsRoutes from './Routes'
 import HeaderCommon from './pages/components/common/HeaderCommon'
 import { Toaster } from 'react-hot-toast'
@@ -8,15 +9,26 @@ import { User } from '../../server/src/shared/types'
 import { useState } from 'react'
 
 const App = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
-    const [user, setUser] = useState<User>()
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
+        !!Cookie.get('user')
+    )
+    const [user, setUser] = useState<User>(
+        Cookie.get('user') ? JSON.parse(Cookie.get('user') as string) : null
+    )
+    const [userUUID, setUserUUID] = useState<string>(
+        Cookie.get('userUUID')
+            ? JSON.parse(Cookie.get('userUUID') as string)
+            : null
+    )
 
     return (
         <>
             <HeaderCommon
                 isAuthenticated={isAuthenticated}
-                userHasAuthenticated={setIsAuthenticated}
+                setIsAuthenticated={setIsAuthenticated}
+                setUserUUID={setUserUUID}
                 user={user}
+                setUser={setUser}
             />
             <Toaster position="top-center" reverseOrder={true} />
             <AppContext.Provider
@@ -25,6 +37,8 @@ const App = () => {
                     setIsAuthenticated,
                     user,
                     setUser,
+                    userUUID,
+                    setUserUUID,
                 }}
             >
                 <CustomsRoutes />

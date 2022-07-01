@@ -1,0 +1,5 @@
+
+]typescript:S1117"5'ingredients' is already declared in the upper scope.(¼„µ‘ùÿÿÿÿ8¨¡¸€™0
+xtypescript:S2201-"UConsider using "forEach" instead of "map" as its return value is not being used here.(Œ¯Êœ8Ëå¸€™0
+gtypescript:S3358b"DExtract this nested ternary operation into an independent statement.(€¶†Å8Ìå¸€™0
+_typescript:S3358f"DExtract this nested ternary operation into an independent statement.(‚ñ”]

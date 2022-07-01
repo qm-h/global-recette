@@ -1,6 +1,6 @@
 import { AuthResponse, AuthUser, User } from '../../../server/src/shared/types'
 
-import { AuthRequest } from './../../../server/src/shared/types'
+import { AuthRequest } from '../../../server/src/shared/types'
 import axios from 'axios'
 
 export function getUser(id: number): Promise<User> {
@@ -12,20 +12,21 @@ export function getUser(id: number): Promise<User> {
 
 export function registerUser(data: AuthRequest): Promise<number | void> {
     return axios
-        .post('/api/auth/register', {
+        .post('/api/auth/signup', {
             username: data.username,
             firstname: data.firstname,
             lastname: data.lastname,
             email: data.email,
             password: data.password,
+            avatar: data.avatar,
         })
         .then((res) => res.status)
         .catch((err) => console.log(err))
 }
 
-export function authentication(data: AuthUser): Promise<AuthResponse> {
+export function userAuth(data: AuthUser): Promise<AuthResponse> {
     return axios
-        .post('/api/auth/login', {
+        .post('/api/auth/signin', {
             email: data.email,
             password: data.password,
         })
@@ -33,5 +34,14 @@ export function authentication(data: AuthUser): Promise<AuthResponse> {
             const user = res.data
             return { ...user }
         })
+        .catch((err) => console.log(err))
+}
+
+export function userLogout(userID: number) {
+    return axios
+        .post('/api/auth/signout', {
+            userID: userID,
+        })
+        .then((res) => res.status)
         .catch((err) => console.log(err))
 }

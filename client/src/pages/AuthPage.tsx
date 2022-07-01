@@ -1,30 +1,30 @@
 import { Container } from '@nextui-org/react'
 import LoginForm from './components/auth/AuthForm'
 import RegisterForm from './components/auth/register/RegisterForm'
-import { useAppContext } from '../lib/context/Context'
+import { useAppContext } from '../lib/context/context'
 import { useState } from 'react'
 
-const LoginPage = () => {
+const AuthPage = () => {
     const [noAccount, setNoAccount] = useState<boolean>(false)
-    const { setIsAuthenticated, setUser } = useAppContext()
-
+    const { setIsAuthenticated, setUser, setUserUUID } = useAppContext()
     const handleSetNoAccount = (val: boolean) => setNoAccount(val)
     return (
         <Container
             css={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
                 h: '100vh',
-                w: '100%',
+                w: '90%',
             }}
+            display="flex"
+            justify="center"
+            alignItems="center"
+            responsive
         >
             {!noAccount ? (
                 <LoginForm
-                    userHasAuthenticated={setIsAuthenticated}
+                    setIsAuthenticated={setIsAuthenticated}
                     noAccount={handleSetNoAccount}
                     setUser={setUser}
+                    setUserUUID={setUserUUID}
                 />
             ) : (
                 <RegisterForm noAccount={handleSetNoAccount} />
@@ -33,4 +33,4 @@ const LoginPage = () => {
     )
 }
 
-export default LoginPage
+export default AuthPage

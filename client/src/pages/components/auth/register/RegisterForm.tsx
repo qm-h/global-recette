@@ -9,7 +9,8 @@ import {
 } from '@nextui-org/react'
 
 import { User } from '../../../../../../server/src/shared/types'
-import { registerUser } from '../../../../api/authRouter'
+import { randomAvatar } from '../../../../lib/utils/randomAvatar'
+import { registerUser } from '../../../../router/authRouter'
 import toast from 'react-hot-toast'
 import { useState } from 'react'
 
@@ -32,13 +33,15 @@ const RegisterForm = ({ noAccount }: Props) => {
     const handleRegister = async () => {
         if (validateEmail()) {
             if (username && password && email && firstname && lastname) {
+                const avatar = randomAvatar()
                 const user: User = {
+                    id: 0,
                     username,
                     password,
                     email,
                     firstname,
                     lastname,
-                    id: 0,
+                    avatar,
                 }
                 setIsLoading(true)
                 await registerUser(user)
@@ -51,9 +54,7 @@ const RegisterForm = ({ noAccount }: Props) => {
                             : toast.error('Création du compte échouée', {
                                   duration: 3000,
                               })
-                        setTimeout(() => {
-                            noAccount(false)
-                        }, 2000)
+                        noAccount(false)
                     })
                     .catch((err) => {
                         console.log(err)
@@ -87,6 +88,7 @@ const RegisterForm = ({ noAccount }: Props) => {
                         width="50%"
                         animated
                         clearable
+                        aria-label="Username"
                         label="Nom d'utilisateur"
                         placeholder="Entrer un nom d'utilisateur"
                         value={username}
@@ -105,6 +107,7 @@ const RegisterForm = ({ noAccount }: Props) => {
                         bordered={isDark ? true : false}
                         label="Nom"
                         animated
+                        aria-label="Lastname"
                         required
                         clearable
                         placeholder="Entrer votre nom"
@@ -123,6 +126,7 @@ const RegisterForm = ({ noAccount }: Props) => {
                         bordered={isDark ? true : false}
                         animated
                         required
+                        aria-label="Firstname"
                         clearable
                         placeholder="Entrer votre prénom"
                         value={firstname}
@@ -139,6 +143,7 @@ const RegisterForm = ({ noAccount }: Props) => {
                         bordered={isDark ? true : false}
                         clearable
                         animated
+                        aria-label="Email"
                         required
                         onChange={(e) => setEmail(e.target.value)}
                         type="email"
@@ -156,6 +161,7 @@ const RegisterForm = ({ noAccount }: Props) => {
                         width="50%"
                         animated
                         clearable
+                        aria-label="Password"
                         bordered={isDark ? true : false}
                         required
                         label="Mot de passe"

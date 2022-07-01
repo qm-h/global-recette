@@ -7,23 +7,20 @@ import {
     Row,
     Spacer,
     Text,
+    useTheme,
 } from '@nextui-org/react'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
+import CardRecipes from './components/allRecipe/CardRecipes'
+import DataNotFound from './components/wrongPage/DataNotFound'
 import { Recipe } from '../../../server/src/shared/types'
-import { getAllRecipesWithUser } from '../api/recipesRouter'
-import { useNavigate } from 'react-router-dom'
+import { getAllRecipesWithUser } from '../router/recipesRouter'
 
 const ListRecipes = () => {
     const [recipesData, setRecipesData] = useState<Recipe[]>([])
     const [recipeList, setRecipeList] = useState<Recipe[]>([])
     const [isLoading, setIsLoading] = useState(true)
-
-    const navigate = useNavigate()
-    const handleOnClick = useCallback(
-        (id) => navigate(`/detail/${id}`, { replace: true }),
-        [navigate]
-    )
+    const { isDark } = useTheme()
 
     const handleSearchRecipe = (event) => {
         let value = event.target.value
@@ -31,6 +28,14 @@ const ListRecipes = () => {
             re.name.toLowerCase().startsWith(value.toLowerCase())
         )
         setRecipeList(newList)
+    }
+
+    const renderRecipesWithNoData = (recipes: Recipe[]): JSX.Element => {
+        if (recipes.length === 0) {
+            return <DataNotFound />
+        } else {
+            return <CardRecipes recipes={recipes} isDark={isDark} />
+        }
     }
 
     useEffect(() => {
@@ -56,7 +61,7 @@ const ListRecipes = () => {
             alignItems="center"
             responsive
         >
-            <Card css={{ w: '50%', h: '70%', borderRadius: '6px' }}>
+            <Card css={{ w: '100%', h: '85%', mt: '$28', borderRadius: '6px' }}>
                 <Card.Header>
                     <Row justify="center">
                         <Text h2 b>
@@ -64,14 +69,14 @@ const ListRecipes = () => {
                         </Text>
                     </Row>
                 </Card.Header>
-                <Card.Divider />
                 <Spacer />
                 <Row justify="center">
                     <Input
                         css={{ w: '50%' }}
                         clearable
                         bordered
-                        color="warning"
+                        aria-label="Search"
+                        color="primary"
                         onChange={handleSearchRecipe}
                         placeholder="Rechercher une recette"
                     />
@@ -88,31 +93,7 @@ const ListRecipes = () => {
                         {isLoading ? (
                             <Loading type="points" />
                         ) : (
-                            recipeList.map((r, i) => (
-                                <Grid key={i} xs={4}>
-                                    <Card
-                                        variant="bordered"
-                                        css={{ borderRadius: '6px' }}
-                                        isPressable
-                                    >
-                                        <Card.Header>
-                                            <Text h4 b>
-                                                {r.name}
-                                            </Text>
-                                        </Card.Header>
-                                        <Card.Body>
-                                            <Text>
-                                                Origine de la recette :{' '}
-                                                {r.origine}
-                                            </Text>
-                                            <Text>
-                                                Note concernant la recette :{' '}
-                                                {r.note}
-                                            </Text>
-                                        </Card.Body>
-                                    </Card>
-                                </Grid>
-                            ))
+                            renderRecipesWithNoData(recipeList)
                         )}
                     </Grid.Container>
                 </Card.Body>
