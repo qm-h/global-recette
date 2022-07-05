@@ -1,6 +1,5 @@
 import {
     Card,
-    Container,
     Grid,
     Input,
     Loading,
@@ -15,13 +14,15 @@ import CardRecipes from './components/allRecipe/CardRecipes'
 import DataNotFound from './components/wrongPage/DataNotFound'
 import { Recipe } from '../../../server/src/shared/types'
 import { getAllRecipesWithUser } from '../router/recipesRouter'
+import { useAppContext } from '../lib/context/context'
 
 const ListRecipes = () => {
     const [recipesData, setRecipesData] = useState<Recipe[]>([])
     const [recipeList, setRecipeList] = useState<Recipe[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const { isDark } = useTheme()
-
+    const { user } = useAppContext()
+    const userID: number | undefined = user?.id
     const handleSearchRecipe = (event) => {
         let value = event.target.value
         let newList = recipesData.filter((re) =>
@@ -34,16 +35,21 @@ const ListRecipes = () => {
         if (recipes.length === 0) {
             return <DataNotFound />
         } else {
-            return <CardRecipes recipes={recipes} isDark={isDark} />
+            return (
+                <CardRecipes
+                    authUserID={userID}
+                    recipes={recipes}
+                    isDark={isDark}
+                />
+            )
         }
     }
 
     useEffect(() => {
-        ;(async () => {
-            const promiseResult = await Promise.all([getAllRecipesWithUser()])
-            setRecipesData(promiseResult[0])
+        Promise.all([getAllRecipesWithUser()]).then(([recipes]) => {
+            setRecipesData(recipes)
             setIsLoading(false)
-        })()
+        })
     }, [])
 
     useEffect(() => {
@@ -51,16 +57,7 @@ const ListRecipes = () => {
     }, [recipesData])
 
     return (
-        <Container
-            css={{
-                h: '100vh',
-                w: '90%',
-            }}
-            display="flex"
-            justify="center"
-            alignItems="center"
-            responsive
-        >
+        <>
             <Card css={{ w: '100%', h: '85%', mt: '$28', borderRadius: '6px' }}>
                 <Card.Header>
                     <Row justify="center">
@@ -74,7 +71,7 @@ const ListRecipes = () => {
                     <Input
                         css={{ w: '50%' }}
                         clearable
-                        bordered
+                        bordered={isDark ? true : false}
                         aria-label="Search"
                         color="primary"
                         onChange={handleSearchRecipe}
@@ -84,21 +81,21 @@ const ListRecipes = () => {
                 <Card.Body css={{ p: '2em', w: '100%' }}>
                     <Spacer />
                     <Grid.Container
-                        gap={2}
+                        gap={1}
                         wrap="wrap"
                         justify={isLoading ? 'center' : 'space-around'}
                         alignItems="center"
                         alignContent="center"
                     >
                         {isLoading ? (
-                            <Loading type="points" />
+                            <Loading size="xl" color="primary" />
                         ) : (
                             renderRecipesWithNoData(recipeList)
                         )}
                     </Grid.Container>
                 </Card.Body>
             </Card>
-        </Container>
+        </>
     )
 }
 

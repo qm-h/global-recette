@@ -2,10 +2,10 @@ import { Grid, theme, useTheme } from '@nextui-org/react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
-import { User } from '../../../../../../server/src/shared/types'
+import { SuccessAuthUser } from '../../../../../../server/src/shared/types'
 
 interface Props {
-    user: User
+    user: SuccessAuthUser
 }
 
 const MenuList = ({ user }: Props) => {
@@ -18,10 +18,10 @@ const MenuList = ({ user }: Props) => {
             case '/':
                 setActive('home')
                 break
-            case '/mesrecettes':
+            case '/mes-recettes':
                 setActive('recettes')
                 break
-            case '/mesfavoris':
+            case '/mes-favoris':
                 setActive('favoris')
                 break
             default:
@@ -47,7 +47,7 @@ const MenuList = ({ user }: Props) => {
                 <>
                     <Grid xs={4}>
                         <NavLink
-                            to="/mesrecettes"
+                            to="/mes-recettes"
                             className={`link ${
                                 isDark ? 'dark_link' : 'light_link'
                             } ${
@@ -72,7 +72,7 @@ const MenuList = ({ user }: Props) => {
                                     active === 'favoris' &&
                                     'active_light'
                                 }`}
-                            to="/mesfavoris"
+                            to="/mes-favoris"
                         >
                             Mes Favoris
                         </NavLink>

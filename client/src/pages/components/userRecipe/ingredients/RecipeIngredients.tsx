@@ -1,8 +1,8 @@
-import { Ingredients, Recipe } from '../../../../../server/src/shared/types'
+import { Ingredients, Recipe } from '../../../../../../server/src/shared/types'
 import { Loading, Row, Text } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 
-import { getAllIngredientsByRecipeID } from '../../../router/ingredientsRouter'
+import { getAllIngredientsByRecipeID } from '../../../../router/ingredientsRouter'
 
 interface Props {
     recipe: Recipe
@@ -38,7 +38,7 @@ const RecipeIngredients = ({ recipe }: Props) => {
                 ))
             ) : (
                 <Row justify="flex-start" css={{ p: '$5' }}>
-                    <Loading size="xs" type="default" />
+                    <Loading color="currentColor" size="sm" />
                 </Row>
             )}
         </>

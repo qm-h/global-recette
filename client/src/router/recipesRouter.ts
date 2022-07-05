@@ -1,5 +1,6 @@
 import { Recipe, RecipeIngredient } from '../../../server/src/shared/types'
 
+import { ExpressResponseMessageType } from './../../../server/src/shared/types'
 import axios from 'axios'
 
 export function getAllRecipesWithUser(): Promise<Recipe[]> {
@@ -32,71 +33,82 @@ export function getRecipeByUserID(
             userUUID: accessUserUUID,
             userID: id,
         })
-        .then((res) => res.data)
+        .then((res) => {
+            console.log(res.data)
+            return res.data
+        })
         .catch((err) => console.log(err))
 }
 
-export function createRecipe(recipe: Recipe) {
+export function createRecipe(
+    recipe: Recipe
+): Promise<ExpressResponseMessageType> {
     return axios
         .post('/api/recipe/createrecipe', {
             name: recipe.name,
             origin: recipe.origin,
             note: recipe.note,
-            user_id: recipe.user_id,
+            user_id: recipe.created_by,
             created_at: recipe.created_at,
         })
-        .then((res) => res.status)
+        .then((res) => res.data)
         .catch((err) => console.log(err))
 }
 
 export function insertRecipeIngredients(
     recipeIngredient: RecipeIngredient
-): Promise<number | void> {
+): Promise<ExpressResponseMessageType> {
     return axios
         .post('/api/recipe/insertrecipeingredient', {
             recipeIngredient: recipeIngredient,
         })
-        .then((res) => res.status)
+        .then((res) => res.data)
         .catch((err) => console.log(err))
 }
 
-export function publishRecipe(id: number): Promise<number | void> {
+export function publishRecipe(id: number): Promise<ExpressResponseMessageType> {
     return axios
         .post(`/api/recipe/publish`, { id: id })
-        .then((res) => res.status)
+        .then((res) => res.data)
         .catch((err) => console.log(err))
 }
 
-export function unpublishRecipe(id: number): Promise<number | void> {
+export function unpublishRecipe(
+    id: number
+): Promise<ExpressResponseMessageType> {
     return axios
         .post(`/api/recipe/unpublish`, { id: id })
-        .then((res) => res.status)
+        .then((res) => res.data)
         .catch((err) => console.log(err))
 }
 
-export function updateRecipe(data: Recipe): Promise<number | void> {
+export function updateRecipe(
+    data: Recipe
+): Promise<ExpressResponseMessageType> {
     return axios
         .put('/api/recipe/updaterecipe', {
             id: data.id,
             name: data.name,
             note: data.note,
         })
-        .then((res) => res.status)
+        .then((res) => res.data)
         .catch((err) => console.log(err))
 }
 
-export function deleteRecipe(id: number): Promise<number | void> {
+export function deleteRecipe(id: number): Promise<ExpressResponseMessageType> {
     console.log(id)
     return axios
         .delete(`/api/recipe/delete/${id}`)
-        .then((res) => res.status)
+        .then((res) => res.data)
         .catch((err) => console.log(err))
 }
 
-export function deleteRecipeIngredient(id: number): Promise<number | void> {
+export function deleteRecipeIngredient(
+    id: number
+): Promise<ExpressResponseMessageType> {
     console.log(id)
     return axios
         .delete(`/api/recipe/delete/recipeingredient/${id}`)
-        .then((res) => res.status)
+        .then((res) => res.data)
         .catch((err) => console.log(err))
 }

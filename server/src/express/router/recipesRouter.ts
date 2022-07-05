@@ -1,15 +1,15 @@
 import { Request, Response, Router } from 'express'
 import {
-    createRecipe,
-    deleteRecipeQuery,
-    publishRecipe,
-    unpublishRecipe,
+    createRecipeHandler,
+    deleteRecipeHandler,
+    publishRecipeHandler,
+    unpublishRecipeHandler,
 } from '../api/commands/recipe/recipeCommands'
 import {
-    getAllRecipesWithUser,
-    getRecipeById,
-    getRecipeByName,
-    getRecipeByUserID,
+    getAllRecipesWithUserHandler,
+    getRecipeByIDHandler,
+    getRecipeByNameHandler,
+    getRecipeByUserIDHandler,
 } from '../api/queries/recipe/recipeQueries'
 
 import authService from '../../services/authService'
@@ -46,38 +46,30 @@ class RecipeRouter {
         this.router.post('/unpublish', (_req: Request, res: Response) =>
             this.unpublishRecipe(_req, res)
         )
-        this.router.put('/updaterecipe', (_req: Request, res: Response) =>
-            this.updateRecipe(_req, res)
-        )
         this.router.delete(
             `${this.deleteRoute}/:id`,
             (_req: Request, res: Response) => this.removeRecipe(_req, res)
         )
-        this.router.delete(
-            `${this.deleteRoute}/recipeingredient/:id`,
-            (_req: Request, res: Response) =>
-                this.removeRecipeIngredient(_req, res)
-        )
     }
 
     private async getAllRecipesWithUser(req: Request, res: Response) {
-        return getAllRecipesWithUser(req, res)
+        return getAllRecipesWithUserHandler(req, res)
     }
 
     private async getAllRecipesByUserID(req: Request, res: Response) {
-        return getRecipeByUserID(req, res)
+        return getRecipeByUserIDHandler(req, res)
     }
 
     private getRecipeById(req: Request, res: Response) {
-        return getRecipeById(req, res)
+        return getRecipeByIDHandler(req, res)
     }
 
     private getRecipeByName(req: Request, res: Response) {
-        return getRecipeByName(req, res)
+        return getRecipeByNameHandler(req, res)
     }
 
     private createRecipeRouter(req: Request, res: Response) {
-        return createRecipe(req, res)
+        return createRecipeHandler(req, res)
     }
 
     private insertRecipeIngredient(req: Request, res: Response) {
@@ -85,22 +77,14 @@ class RecipeRouter {
     }
 
     private publishRecipe(req: Request, res: Response) {
-        return publishRecipe(req, res)
+        return publishRecipeHandler(req, res)
     }
     private unpublishRecipe(req: Request, res: Response) {
-        return unpublishRecipe(req, res)
-    }
-
-    private updateRecipe(req: Request, res: Response) {
-        return
+        return unpublishRecipeHandler(req, res)
     }
 
     private removeRecipe(req: Request, res: Response) {
-        return deleteRecipeQuery(req, res)
-    }
-
-    private removeRecipeIngredient(req: Request, res: Response) {
-        return
+        return deleteRecipeHandler(req, res)
     }
 }
 

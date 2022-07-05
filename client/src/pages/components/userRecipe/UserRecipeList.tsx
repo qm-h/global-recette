@@ -16,7 +16,7 @@ import {
 
 import { FaTrashAlt } from 'react-icons/fa'
 import { Recipe } from '../../../../../server/src/shared/types'
-import RecipeIngredients from './RecipeIngredients'
+import RecipeIngredients from './ingredients/RecipeIngredients'
 import { toasterSuccessCommon } from '../../../lib/theme/toaster'
 
 interface Props {
@@ -28,19 +28,19 @@ const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
     const { isDark } = useTheme()
 
     const handleDeleteRecipe = async (recipe: Recipe) =>
-        await deleteRecipe(recipe.id).then((res) => {
+        await deleteRecipe(recipe.id).then(() => {
             toasterSuccessCommon(isDark, 'Recette supprimée')
             fetchRecipe()
         })
 
     const handlePublishRecipe = async (recipe: Recipe) =>
-        await publishRecipe(recipe.id).then((res) => {
+        await publishRecipe(recipe.id).then(() => {
             toasterSuccessCommon(isDark, 'Recette publié avec succès')
             fetchRecipe()
         })
 
     const handleUnpublishRecipes = async (recipe: Recipe) =>
-        await unpublishRecipe(recipe.id).then((res) => {
+        await unpublishRecipe(recipe.id).then(() => {
             toasterSuccessCommon(isDark, 'Recette dépublié avec succès')
             fetchRecipe()
         })
@@ -109,6 +109,7 @@ const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
                                     <Button
                                         auto
                                         flat
+                                        color="error"
                                         onPress={() =>
                                             handleUnpublishRecipes(recipe)
                                         }
@@ -119,6 +120,7 @@ const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
                                     <Button
                                         auto
                                         flat
+                                        color="success"
                                         onPress={() =>
                                             handlePublishRecipe(recipe)
                                         }

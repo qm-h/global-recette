@@ -1,78 +1,79 @@
 import { Request, Response } from 'express'
 
-import { DataTableType } from '../../../../shared/utils/dataTable'
+import { Recipe } from '../../../../shared/types'
+import { logger } from '../../../../server'
 import { supabase } from './../../../../database/supabase'
 
-export const createRecipe = async (req: Request, res: Response) => {
+export const createRecipeHandler = async (req: Request, res: Response) => {
     const { name, origin, note, user_id, created_at } = req.body
-    const result = await supabase.from('recipes').insert([
+    const result = await supabase.from<Recipe>('recipes').insert([
         {
             name: name,
             origin: origin,
             note: note,
-            user_id: user_id,
+            created_by: user_id,
             created_at: created_at,
         },
     ])
     if (result.status === 400) {
         console.log('error', result.error)
     }
-    result.status === 201 ? res.sendStatus(200) : res.sendStatus(500)
+    result.status === 201
+        ? res.status(200).send({ status: 200, message: 'Création réussie' })
+        : res
+              .status(500)
+              .send({ status: 500, message: 'Erreur lors de la création' })
 }
 
-export const addRecipeIngredientQuery = (req: Request, _res: Response) => {
-    const responseQuery = req.body
-    console.log(responseQuery)
-    const query = `INSERT INTO ${DataTableType.RECIPE_INGREDIENT_CONNECTION} (idIngredient,idRecette) VALUES ('${responseQuery.idIngredient}','${responseQuery.idRecette}')`
-    return query
-}
-
-export const publishRecipe = async (req: Request, res: Response) => {
+export const publishRecipeHandler = async (req: Request, res: Response) => {
     const { id } = req.body
     const result = await supabase
-        .from('recipes')
+        .from<Recipe>('recipes')
         .update({ published: true })
         .eq('id', id)
-    result.status === 200 ? res.sendStatus(200) : res.sendStatus(500)
+    result.status === 200
+        ? res.status(200).send({ status: 200, message: 'Publication réussie' })
+        : res
+              .status(500)
+              .send({ status: 500, message: 'Erreur lors de la publication' })
 }
 
-export const unpublishRecipe = async (req: Request, res: Response) => {
+export const unpublishRecipeHandler = async (req: Request, res: Response) => {
     const { id } = req.body
     const result = await supabase
-        .from('recipes')
+        .from<Recipe>('recipes')
         .update({ published: false })
         .eq('id', id)
-    result.status === 200 ? res.sendStatus(200) : res.sendStatus(500)
+    result.status === 200
+        ? res
+              .status(200)
+              .send({ status: 200, message: 'Dépublication réussie' })
+        : res
+              .status(500)
+              .send({ status: 500, message: 'Erreur lors de la dépublication' })
 }
 
-export const updateRecipeQuery = (req: Request, _res: Response) => {
-    const responseQuery = req.body
-    const query = `UPDATE ${DataTableType.RECIPE} SET nomRecette = '${responseQuery.nomRecette}',description = '${responseQuery.description}' WHERE idRecette = ${responseQuery.idRecette}`
-    return query
-}
-
-export const deleteRecipeQuery = async (req: Request, res: Response) => {
+export const deleteRecipeHandler = async (req: Request, res: Response) => {
     const { id } = req.params
     const result = await supabase
         .from('recipe_ingredient')
         .delete()
         .eq('recipe_id', id)
     const removeRecipeResult = await supabase
-        .from('recipes')
+        .from<Recipe>('recipes')
         .delete()
         .eq('id', id)
 
     if (result.status === 400) {
-        console.log('error', result.error)
+        logger.error(JSON.stringify(result.error))
     }
     if (removeRecipeResult.status === 409) {
-        console.log('error', result.error)
+        logger.error(JSON.stringify(removeRecipeResult.error))
     }
 
-    return removeRecipeResult.status === 200
-        ? res.sendStatus(200)
-        : res.sendStatus(500)
+    result.status === 200
+        ? res.status(200).send({ status: 200, message: 'Suppression réussie' })
+        : res
+              .status(500)
+              .send({ status: 500, message: 'Erreur lors de la suppression' })
 }
-
-export const deleteRecipeIngredientQuery = (id: string) =>
-    `DELETE FROM ${DataTableType.RECIPE_INGREDIENT_CONNECTION} where idIngredient = ${id}`

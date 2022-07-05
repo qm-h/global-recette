@@ -1,8 +1,8 @@
-# Welcom to the WEBAPP-DEVOPS 🙈 🙉 🙊
+# Welcom to the Global-Recette 🍔
 
-## Authors 👨🏼‍💻
+## Author 👨🏼‍💻
 
-`Quentin Moreau`, `Zaki Mazog`, `Wilhelm Dassie`, `Nicolas Cammareri`
+`Quentin Moreau`
 
 ## Available Scripts 📟
 
@@ -69,17 +69,3 @@ Si vous lancez la ci docker, n'oublier pas de restart le conteneur de l'applicat
 The `gitlab` file will make `two stages`, a build which will build the docker image of the `application` and the `database`, and then push them.
 
 And the deploy stage which will create a `network` so that the `two containers` can talk and then it will pull the images created before and run them in containers.
-
-#
-
-# Database 💾
-
-Login : `root`
-
-PSW : `admin`
-
-File : `id18905711_restomiam.sql`
-
-Database : `id18905711_restomiam`
-
-Mysql Container : `mysql_db`

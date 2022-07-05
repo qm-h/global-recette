@@ -1,7 +1,7 @@
 import { Dropdown, Text, User, useTheme } from '@nextui-org/react'
 
 import { Key } from 'react'
-import { User as UserType } from '../../../../../../server/src/shared/types'
+import { SuccessAuthUser as UserType } from '../../../../../../server/src/shared/types'
 import { logout } from '../../../../lib/auth/logout'
 import { toasterSuccessLogout } from '../../../../lib/theme/toaster'
 import { useNavigate } from 'react-router-dom'
@@ -24,15 +24,12 @@ const UserMenu = ({
     const navigate = useNavigate()
     const handleLogout = async (key: Key) => {
         if (key === 'sign_out') {
-            await userLogout(user.id)
-                .then(() => {
-                    logout(setUser, setIsAuthenticated, setUserUUID)
-                    toasterSuccessLogout(isDark)
-                    navigate('/')
-                })
-                .catch(() => {
-                    console.log('')
-                })
+            await userLogout(user.id).then(() => {
+                logout(setUser, setIsAuthenticated, setUserUUID)
+                setIsAuthenticated(false)
+                toasterSuccessLogout(isDark)
+                navigate('/')
+            })
         }
     }
 
@@ -44,7 +41,7 @@ const UserMenu = ({
                     as="button"
                     pointer
                     size="lg"
-                    color="gradient"
+                    color="primary"
                     name={`${user.firstname} ${user.lastname}`}
                     description={`@${user.username}`}
                     src={user.avatar}
@@ -52,7 +49,8 @@ const UserMenu = ({
             </Dropdown.Trigger>
             <Dropdown.Menu
                 onAction={(key: Key) => handleLogout(key)}
-                color="primary"
+                color="success"
+                disabledKeys={['help_and_feedback', 'settings']}
                 aria-label="User Actions"
             >
                 <Dropdown.Item
@@ -70,14 +68,14 @@ const UserMenu = ({
                     withDivider
                     textValue={'Settings'}
                 >
-                    My Settings
+                    Préférences
                 </Dropdown.Item>
                 <Dropdown.Item
                     textValue={'Help & Feedback'}
                     css={{ height: '$12' }}
                     key="help_and_feedback"
                 >
-                    Help & Feedback
+                    Bientôt : Aide
                 </Dropdown.Item>
                 <Dropdown.Section title="Danger zone">
                     <Dropdown.Item

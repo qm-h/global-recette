@@ -1,28 +1,28 @@
 import {
-    AuthResponse,
-    SuccessAuthUser,
-    User,
-} from '../../../../../server/src/shared/types'
-import {
     Button,
     Card,
-    Input,
-    Loading,
+    Checkbox,
+    Grid,
     Row,
     Text,
     useTheme,
 } from '@nextui-org/react'
+import { forgotPassword, userAuth } from '../../../router/authRouter'
 import {
     toasterErrorAuth,
+    toasterErrorCommon,
     toasterSuccessAuth,
+    toasterSuccessCommon,
     toasterUserNotFound,
 } from '../../../lib/theme/toaster'
 
-import Cookie from 'js-cookie'
+import ConfirmationModal from './confirmationRegister/ConfirmationModal'
+import ConnectionForm from './connection/ConnectionForm'
+import ForgotPwdModal from './resetPassword/ForgotPwdModal'
+import { SuccessAuthUser } from '../../../../../server/src/shared/types'
 import { createCookies } from '../../../lib/utils/create'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { userAuth } from '../../../router/authRouter'
 
 interface Props {
     noAccount: (val: boolean) => void
@@ -37,28 +37,43 @@ const AuthForm = ({
     setUser,
     setUserUUID,
 }: Props) => {
-    const [email, setEmail] = useState<string>('')
-    const [password, setPassword] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [openForgotModal, setOpenForgotModal] = useState(false)
+    const [openConfirm, setOpenConfirm] = useState(false)
+    const [email, setEmail] = useState<string>('')
+    const [rememberMe, setRememberMe] = useState<boolean>(false)
     const navigate = useNavigate()
     const { isDark } = useTheme()
 
-    const handleConnection = async () => {
+    const handleConnection = async (email, password) => {
         if (email && password) {
             setIsLoading(true)
             await userAuth({ email, password })
                 .then((res) => {
                     setIsLoading(false)
-                    if (res) {
-                        setIsAuthenticated(true)
-                        createCookies('user', res.user, 7)
-                        createCookies('userUUID', res.accessUUID, 7)
-                        setUserUUID(res.accessUUID)
-                        setUser(res.user)
-                        toasterSuccessAuth(isDark)
-                        navigate('/')
-                    } else {
-                        toasterUserNotFound(isDark)
+                    switch (res.status) {
+                        case 200:
+                            if (rememberMe) {
+                                createCookies('user', res.user, 7)
+                                createCookies('userUUID', res.accessUUID, 7)
+                            } else {
+                                createCookies('user', res.user, 1)
+                                createCookies('userUUID', res.accessUUID, 1)
+                            }
+                            setUserUUID(res.accessUUID)
+                            setUser(res.user)
+                            setIsAuthenticated(true)
+                            toasterSuccessAuth(isDark)
+                            navigate('/')
+                            break
+                        case 401:
+                            setOpenConfirm(true)
+                            break
+                        case 404:
+                            toasterUserNotFound(isDark)
+                            break
+                        default:
+                            break
                     }
                 })
                 .catch(() => {
@@ -67,6 +82,31 @@ const AuthForm = ({
                 })
         }
     }
+
+    const handleForgotPassword = async (email) => {
+        if (email) {
+            setIsLoading(true)
+            await forgotPassword(email)
+                .then((res) => {
+                    setIsLoading(false)
+                    setOpenForgotModal(false)
+                    if (res.status === 200) {
+                        toasterSuccessCommon(
+                            isDark,
+                            'Un email vous a été envoyé afin de réinitialiser votre mot de passe'
+                        )
+                    } else {
+                        toasterErrorCommon(isDark, 'Une erreur est survenue')
+                    }
+                })
+                .catch(() => {
+                    setOpenForgotModal(false)
+                    setIsLoading(false)
+                    toasterErrorCommon(isDark, 'Une erreur est survenue')
+                })
+        }
+    }
+
     return (
         <Card css={{ w: '50%' }}>
             <Card.Header>
@@ -78,83 +118,79 @@ const AuthForm = ({
             </Card.Header>
             <Card.Divider />
             <Card.Body>
-                <Row
-                    justify="center"
-                    align="center"
-                    css={{ marginTop: '$10', marginBottom: '$10' }}
-                >
-                    <Input
-                        width="50%"
-                        type="email"
-                        animated
-                        clearable
-                        color="primary"
-                        aria-label="Email"
-                        placeholder="Entrer votre email"
-                        value={email}
-                        bordered={isDark ? true : false}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                </Row>
-                <Row
-                    justify="center"
-                    align="center"
-                    css={{ marginTop: '$10', marginBottom: '$10' }}
-                >
-                    <Input.Password
-                        width="50%"
-                        animated
-                        aria-label="Password"
-                        required
-                        color="primary"
-                        type="password"
-                        clearable
-                        bordered={isDark ? true : false}
-                        placeholder="Entrer votre mot de passe"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </Row>
-                <Row
-                    justify="center"
-                    align="center"
-                    css={{ marginTop: '$10', marginBottom: '$10' }}
-                >
-                    {!isLoading ? (
-                        <Button
-                            rounded
-                            shadow
-                            onPress={() => handleConnection()}
-                        >
-                            Connexion ✨
-                        </Button>
-                    ) : (
-                        <Button
-                            disabled
-                            auto
-                            rounded
-                            color="success"
-                            css={{ px: '$13' }}
-                        >
-                            <Loading
-                                type="points"
-                                color="currentColor"
-                                size="sm"
-                            />
-                        </Button>
-                    )}
-                </Row>
-                <Row justify="center" align="center">
-                    <Button
-                        light
-                        auto
-                        color="primary"
-                        onClick={() => noAccount(true)}
-                    >
-                        Je ne possède pas de compte 🥹
-                    </Button>
-                </Row>
+                <ConnectionForm
+                    handleConnection={handleConnection}
+                    isLoading={isLoading}
+                    isDark={isDark}
+                    setEmail={setEmail}
+                    email={email}
+                />
+                <ForgotPwdModal
+                    isLoading={isLoading}
+                    setOpenForgotModal={setOpenForgotModal}
+                    visible={openForgotModal}
+                    handleForgotPassword={handleForgotPassword}
+                />
+                <ConfirmationModal
+                    email={email}
+                    isDark={isDark}
+                    openConfirm={openConfirm}
+                    setOpenConfirm={setOpenConfirm}
+                />
             </Card.Body>
+            <Card.Footer>
+                <Grid.Container justify="space-between" alignItems="center">
+                    <Grid md={3} justify="center">
+                        <Checkbox
+                            color="success"
+                            size="sm"
+                            defaultChecked={false}
+                            isSelected={rememberMe}
+                            onChange={setRememberMe}
+                        >
+                            <Text
+                                size={14}
+                                className="hoverText"
+                                css={
+                                    rememberMe
+                                        ? { color: '#19C964' }
+                                        : {
+                                              color: isDark
+                                                  ? '#313538'
+                                                  : '#bebebe',
+                                          }
+                                }
+                            >
+                                Remember me
+                            </Text>
+                        </Checkbox>
+                    </Grid>
+                    <Grid md={5} justify="center">
+                        <Button
+                            light
+                            auto
+                            color="success"
+                            className="hoverText"
+                            css={{ color: isDark ? '#313538' : '#bebebe' }}
+                            onClick={() => noAccount(true)}
+                        >
+                            Je ne possède pas de compte 🥹
+                        </Button>
+                    </Grid>
+                    <Grid md={4} justify="center">
+                        <Button
+                            light
+                            auto
+                            color="success"
+                            className="hoverText"
+                            css={{ color: isDark ? '#313538' : '#bebebe' }}
+                            onClick={() => setOpenForgotModal(true)}
+                        >
+                            Mot de passe oublié ?
+                        </Button>
+                    </Grid>
+                </Grid.Container>
+            </Card.Footer>
         </Card>
     )
 }

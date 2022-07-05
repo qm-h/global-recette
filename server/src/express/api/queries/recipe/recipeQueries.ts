@@ -3,24 +3,29 @@ import { Request, Response } from 'express'
 import { Recipe } from './../../../../shared/types'
 import { supabase } from '../../../../database/supabase'
 
-export const getAllRecipesWithUser = async (_req: Request, res: Response) => {
+export const getAllRecipesWithUserHandler = async (
+    _req: Request,
+    res: Response
+) => {
     const results = await supabase
         .from<Recipe>('recipes')
         .select(`*, user(*)`)
         .eq('published', true)
         .order('created_at', { ascending: false })
-    results.status === 200 ? res.send(results.data) : res.send(results.error)
+    results.status === 200 && res.send(results.data)
 }
 
-export const getRecipeByUserID = async (req: Request, res: Response) => {
-    const results = await supabase
+export const getRecipeByUserIDHandler = async (req: Request, res: Response) => {
+    const recipesResult = await supabase
         .from<Recipe>('recipes')
         .select(`*, user(*)`)
-        .eq('user_id', req.params.id)
-    results.status === 200 ? res.send(results.data) : res.send(results.error)
+        .eq('created_by', req.params.id)
+    recipesResult.status === 200
+        ? res.send(recipesResult.data)
+        : res.send(recipesResult.error)
 }
 
-export const getRecipeById = async (req: Request, res: Response) => {
+export const getRecipeByIDHandler = async (req: Request, res: Response) => {
     const result = await supabase
         .from<Recipe>('recipes')
         .select()
@@ -28,7 +33,7 @@ export const getRecipeById = async (req: Request, res: Response) => {
     result.status === 200 ? res.send(result.data) : res.send(result.error)
 }
 
-export const getRecipeByName = async (req: Request, res: Response) => {
+export const getRecipeByNameHandler = async (req: Request, res: Response) => {
     const { recipeName } = req.body
     const result = await supabase
         .from<Recipe>('recipes')

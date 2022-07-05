@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { Dropdown } from '@nextui-org/react'
-import { Ingredients } from '../../../../../server/src/shared/types'
+import { Ingredients } from '../../../../../../server/src/shared/types'
 import { Selection } from '@nextui-org/react/dropdown'
 
 interface Props {
@@ -35,7 +35,7 @@ const IngredientDropDown = ({
                 {selectedValue === '' ? 'Choisir un ingrédient' : selectedValue}
             </Dropdown.Button>
             <Dropdown.Menu
-                color="primary"
+                color="default"
                 disallowEmptySelection
                 variant="flat"
                 selectionMode="single"

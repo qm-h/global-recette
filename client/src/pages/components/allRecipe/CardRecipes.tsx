@@ -4,20 +4,24 @@ import {
     TiSocialInstagramCircular,
     TiSocialTwitterCircular,
 } from 'react-icons/ti'
+import { useEffect, useState } from 'react'
 
+import FavoritesButton from '../common/commonComponents/FavoritesButton'
 import { FiShare } from 'react-icons/fi'
 import { MdOutlineOpenInFull } from 'react-icons/md'
 import ModalRecipeDetail from './ModalRecipeDetail'
 import { Recipe } from '../../../../../server/src/shared/types'
-import { useState } from 'react'
+import { getSavedRecipes } from '../../../router/userRouter'
 
-interface Props {
+interface CardRecipesProps {
+    authUserID?: number
     recipes: Recipe[]
     isDark: boolean
 }
 
-const CardRecipes = ({ recipes, isDark }: Props) => {
+const CardRecipes = ({ authUserID, recipes, isDark }: CardRecipesProps) => {
     const [isOpen, setIsOpen] = useState(false)
+    const [hasSaved, setHasSaved] = useState(false)
 
     const handleOpen = () => {
         setIsOpen(true)
@@ -26,6 +30,20 @@ const CardRecipes = ({ recipes, isDark }: Props) => {
     const handleClose = () => {
         setIsOpen(false)
     }
+
+    useEffect(() => {
+        Promise.all([getSavedRecipes(authUserID)])
+            .then(([res]) => {
+                res.forEach((recipe) => {
+                    if (recipe.recipe_id === recipes[0].id) {
+                        setHasSaved(true)
+                    }
+                })
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }, [authUserID, recipes])
 
     return (
         <>
@@ -40,12 +58,24 @@ const CardRecipes = ({ recipes, isDark }: Props) => {
                     >
                         <Card.Header>
                             <Grid.Container gap={1} alignItems="center">
-                                <Grid xs={6} md={4}>
+                                <Grid xs={6} md={5}>
                                     <Text h4 b>
                                         {r.name}
                                     </Text>
+                                    {authUserID !== undefined &&
+                                        authUserID !== r.created_by && (
+                                            <Grid xs={1} md={3}>
+                                                <FavoritesButton
+                                                    hasSaved={hasSaved}
+                                                    setHasSaved={setHasSaved}
+                                                    authUserID={authUserID}
+                                                    isDark={isDark}
+                                                    recipe={r}
+                                                />
+                                            </Grid>
+                                        )}
                                 </Grid>
-                                <Grid xs={6} md={2}>
+                                <Grid xs={2} md={2}>
                                     <Button
                                         auto
                                         light
@@ -53,7 +83,7 @@ const CardRecipes = ({ recipes, isDark }: Props) => {
                                         icon={<MdOutlineOpenInFull />}
                                     />
                                 </Grid>
-                                <Grid xs={6} md={6} justify="flex-end">
+                                <Grid xs={6} md={4} justify="flex-end">
                                     <Avatar
                                         size="lg"
                                         src={r.user.avatar}
@@ -76,7 +106,7 @@ const CardRecipes = ({ recipes, isDark }: Props) => {
                                 alignItems="center"
                             >
                                 <Grid xs={6} md={7}>
-                                    <Text color="primary">
+                                    <Text css={{ color: '$accents5' }}>
                                         Publié par @{r.user.username}
                                     </Text>
                                 </Grid>
@@ -86,17 +116,22 @@ const CardRecipes = ({ recipes, isDark }: Props) => {
                                             <Button
                                                 auto
                                                 flat
+                                                css={{
+                                                    backgroundColor:
+                                                        '$accents2',
+                                                    color: '$accents9',
+                                                }}
                                                 icon={<FiShare />}
                                             />
                                         </Popover.Trigger>
-                                        <Popover.Content>
-                                            <Grid.Container gap={1}>
+                                        <Popover.Content css={{ p: '$3' }}>
+                                            <Grid.Container gap={0}>
                                                 <Grid xs={6} md={4}>
                                                     <Button
                                                         auto
                                                         rounded
                                                         light
-                                                        color="primary"
+                                                        color="success"
                                                         icon={
                                                             <TiSocialFacebookCircular
                                                                 size={'2em'}
@@ -109,7 +144,7 @@ const CardRecipes = ({ recipes, isDark }: Props) => {
                                                         auto
                                                         rounded
                                                         light
-                                                        color="primary"
+                                                        color="success"
                                                         icon={
                                                             <TiSocialTwitterCircular
                                                                 size={'2em'}
@@ -122,7 +157,7 @@ const CardRecipes = ({ recipes, isDark }: Props) => {
                                                         auto
                                                         rounded
                                                         light
-                                                        color="primary"
+                                                        color="success"
                                                         icon={
                                                             <TiSocialInstagramCircular
                                                                 size={'2em'}

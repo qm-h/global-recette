@@ -63,11 +63,15 @@ const toasterErrorAuth = (dark: boolean) => {
     }
 }
 
-const toasterSuccessCommon = (dark: boolean, message: string) => {
+const toasterSuccessCommon = (
+    dark: boolean,
+    message: string,
+    icon?: string
+) => {
     switch (dark) {
         case true:
             toast.success(message, {
-                icon: '👏',
+                icon: icon,
                 duration: 5000,
                 style: {
                     background: '#333',
@@ -77,7 +81,7 @@ const toasterSuccessCommon = (dark: boolean, message: string) => {
             break
         default:
             toast.success(message, {
-                icon: '👏',
+                icon: icon,
                 duration: 5000,
             })
             break

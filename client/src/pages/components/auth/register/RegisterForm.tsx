@@ -7,6 +7,10 @@ import {
     Text,
     useTheme,
 } from '@nextui-org/react'
+import {
+    toasterErrorCommon,
+    toasterSuccessCommon,
+} from '../../../../lib/theme/toaster'
 
 import { User } from '../../../../../../server/src/shared/types'
 import { randomAvatar } from '../../../../lib/utils/randomAvatar'
@@ -47,14 +51,28 @@ const RegisterForm = ({ noAccount }: Props) => {
                 await registerUser(user)
                     .then((res) => {
                         setIsLoading(false)
-                        res === 200
-                            ? toast.success('Vous êtes inscrit !', {
-                                  duration: 5000,
-                              })
-                            : toast.error('Création du compte échouée', {
-                                  duration: 3000,
-                              })
-                        noAccount(false)
+                        console.log(res.status, res.message)
+                        switch (res.status) {
+                            case 200:
+                                toasterSuccessCommon(
+                                    isDark,
+                                    'Inscription réussie, un email de confirmation vous a été envoyé'
+                                )
+                                noAccount(false)
+                                break
+                            case 400:
+                                toasterErrorCommon(
+                                    isDark,
+                                    'Cet email est déjà utilisé'
+                                )
+                                break
+                            default:
+                                toasterErrorCommon(
+                                    isDark,
+                                    'Une erreur est survenue'
+                                )
+                                break
+                        }
                     })
                     .catch((err) => {
                         console.log(err)
@@ -94,6 +112,7 @@ const RegisterForm = ({ noAccount }: Props) => {
                         value={username}
                         bordered={isDark ? true : false}
                         required={true}
+                        color="primary"
                         onChange={(e) => setUsername(e.target.value)}
                     />
                 </Row>
@@ -110,6 +129,7 @@ const RegisterForm = ({ noAccount }: Props) => {
                         aria-label="Lastname"
                         required
                         clearable
+                        color="primary"
                         placeholder="Entrer votre nom"
                         value={lastname}
                         onChange={(e) => setLastname(e.target.value)}
@@ -124,6 +144,7 @@ const RegisterForm = ({ noAccount }: Props) => {
                         width="50%"
                         label="Prénom"
                         bordered={isDark ? true : false}
+                        color="primary"
                         animated
                         required
                         aria-label="Firstname"
@@ -143,6 +164,7 @@ const RegisterForm = ({ noAccount }: Props) => {
                         bordered={isDark ? true : false}
                         clearable
                         animated
+                        color="primary"
                         aria-label="Email"
                         required
                         onChange={(e) => setEmail(e.target.value)}
@@ -161,6 +183,7 @@ const RegisterForm = ({ noAccount }: Props) => {
                         width="50%"
                         animated
                         clearable
+                        color="primary"
                         aria-label="Password"
                         bordered={isDark ? true : false}
                         required
@@ -173,26 +196,16 @@ const RegisterForm = ({ noAccount }: Props) => {
                 <Row justify="center" align="center">
                     {!isLoading ? (
                         <Button
-                            color="primary"
+                            color="success"
                             auto
-                            ghost
+                            flat
                             onPress={() => handleRegister()}
                         >
                             Créer 🚀
                         </Button>
                     ) : (
-                        <Button
-                            disabled
-                            auto
-                            bordered
-                            color="success"
-                            css={{ px: '$13' }}
-                        >
-                            <Loading
-                                type="points"
-                                color="currentColor"
-                                size="sm"
-                            />
+                        <Button disabled auto flat>
+                            <Loading color="currentColor" size="sm" />
                         </Button>
                     )}
                 </Row>
@@ -200,7 +213,7 @@ const RegisterForm = ({ noAccount }: Props) => {
                     <Button
                         light
                         auto
-                        color="primary"
+                        css={{ color: '#bebebe' }}
                         onClick={() => noAccount(false)}
                     >
                         Je possède déjà un compte

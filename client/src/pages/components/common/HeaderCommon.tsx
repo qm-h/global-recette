@@ -13,7 +13,7 @@ import MenuList from './commonComponents/MenuList'
 import MoonIcon from '../../../lib/theme/Icons/MoonIcon'
 import SunIcon from '../../../lib/theme/Icons/SunIcon'
 import UserMenu from './commonComponents/UserMenu'
-import { User as UserType } from '../../../../../server/src/shared/types'
+import { SuccessAuthUser as UserType } from '../../../../../server/src/shared/types'
 import { useNavigate } from 'react-router-dom'
 import { useTheme as useNextTheme } from 'next-themes'
 
@@ -58,6 +58,7 @@ const HeaderCommon = ({
                 <Grid xs={1} alignItems="center">
                     <Switch
                         checked={isDark}
+                        color="success"
                         onChange={(e) =>
                             setTheme(e.target.checked ? 'dark' : 'light')
                         }
@@ -91,19 +92,19 @@ const HeaderCommon = ({
                             user={user}
                         />
                     ) : (
-                        <Link animated href="/login" color="primary">
+                        <Link animated href="/login" color="success">
                             <Tooltip
                                 content={'Connexion'}
                                 hideArrow
                                 placement="bottom"
                                 shadow
                                 rounded
-                                color="primary"
+                                color="success"
                             >
                                 <Avatar
                                     squared
                                     pointer
-                                    color="primary"
+                                    color="success"
                                     icon={<LoginIcon />}
                                 />
                             </Tooltip>

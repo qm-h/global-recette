@@ -1,14 +1,17 @@
-import express from 'express'
+import Logger from './shared/utils/logger'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
-import createAuthRouter from './express/routes/authRouter'
-import createRecipeRouter from './express/routes/recipesRouter'
+import createAuthRouter from './express/router/authRouter'
+import createIngredientsRouter from './express/router/ingredientsRouter'
+import createRecipeRouter from './express/router/recipesRouter'
+import createUserRouter from './express/router/userRouter'
 import dotenv from 'dotenv'
+import express from 'express'
 import path from 'path'
 import { supabase } from './database/supabase'
-import createIngredientsRouter from './express/routes/ingredientsRouter'
 
 dotenv.config()
+export const logger = new Logger()
 const port = process.env.PORT || 3001
 const portProd = 8080
 const url = `http://localhost:${port}/`
@@ -24,30 +27,32 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use('/api/recipe', createRecipeRouter)
 app.use('/api/auth', createAuthRouter)
 app.use('/api/ingredients', createIngredientsRouter)
+app.use('/api/user', createUserRouter)
+
 supabase.auth
     .signIn({
         provider: 'github',
     })
     .then(() => {
-        console.log('Connecté à la base de données Supabase!💾')
+        logger.info('Connecté à la base de données Supabase!💾')
     })
     .catch((err) => {
-        console.log('erreur', err)
+        logger.error(`ERROR: ${err}`)
     })
 
 if (process.env.NODE_ENV === 'prod') {
-    console.log('Production mode')
+    logger.info(`Production mode.`)
     app.use(express.static(path.join(__dirname, 'client')))
     app.listen(portProd, () => {
-        console.log(`Server app listening on port ${portProd} ✅`)
-        console.log(`Server is on production mode on ${urlProd} 🚀`)
+        logger.info(`Server listening on port ${portProd}`)
+        logger.info(`Visit ${urlProd} 🚀`)
     })
 } else {
-    console.log('Development mode')
-
+    logger.debug(`Development mode.`)
     app.listen(port, () => {
-        console.log(`Server listening on port ${port} ✅`)
-        console.log(`Server is on development mode on ${url} 🚀`)
+        logger.debug(`Server listening on port ${port}`)
+        logger.debug(`Visit ${url} 🚀`)
+        logger.warning(`Press CTRL + C to stop server 🛑`)
     })
 }
 

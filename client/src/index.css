@@ -46,13 +46,28 @@ code {
 }
 
 .active_light {
-    color: #0070f3;
+    color: #19c964;
     text-decoration: none;
     font-weight: bold;
 }
 
 .active_dark {
-    color: #0070f3;
+    color: #19c964;
     text-decoration: none;
     font-weight: bold;
+}
+
+.hoverText:hover {
+    transition: all 0.5s ease;
+    color: #8e8e8e;
+}
+
+.favoriteButton {
+    color: #f31461;
+    cursor: pointer;
+}
+
+.favoriteButtonActive {
+    background-color: #f31461;
+    cursor: pointer;
 }

@@ -3,6 +3,7 @@ import {
     Card,
     Grid,
     Input,
+    Loading,
     Row,
     Text,
     Textarea,
@@ -18,14 +19,11 @@ import {
     getRecipeByName,
     insertRecipeIngredients,
 } from '../../../router/recipesRouter'
-import {
-    toasterErrorCommon,
-    toasterSuccessCommon,
-} from '../../../lib/theme/toaster'
 
-import IngredientDropDown from './IngredientDropDown'
-import IngredientQuantity from './IngredientQuantity'
+import IngredientDropDown from './ingredients/IngredientDropDown'
+import IngredientQuantity from './ingredients/IngredientQuantity'
 import { getIngredientByName } from '../../../router/ingredientsRouter'
+import { toasterErrorCommon } from '../../../lib/theme/toaster'
 import { useAppContext } from '../../../lib/context/context'
 import { useState } from 'react'
 
@@ -42,11 +40,13 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
     const [waitingIngredients, setWaitingIngredients] = useState<string[]>([])
     const [waitingIngredientsQuantity, setWaitingIngredientsQuantity] =
         useState<string[]>([])
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const { isDark } = useTheme()
     const { user } = useAppContext()
 
     const handleCreateRecipe = async () => {
+        setIsLoading(true)
         if (
             name !== '' &&
             origin !== '' &&
@@ -58,7 +58,7 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
                 name: name,
                 origin: origin,
                 note: note,
-                user_id: user.id,
+                created_by: user.id,
                 created_at: Date.now(),
             }
 
@@ -82,7 +82,7 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
             })
             recipeIngredient.map(async (ingredient) => {
                 await insertRecipeIngredients(ingredient).then(() => {
-                    toasterSuccessCommon(isDark, 'Recette créée avec succès')
+                    setIsLoading(false)
                     setCreate(false)
                 })
             })
@@ -127,14 +127,21 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
     }
 
     const handleAddIngredient = (ingredient: string) => {
-        if (
-            waitingIngredients.find(
-                (ingredientName) => ingredientName === ingredient
-            )
-        ) {
-            toasterErrorCommon(isDark, 'Cet ingrédient est déjà dans la liste')
+        if (ingredient === '') {
+            toasterErrorCommon(isDark, 'Aucun ingrédient sélectionné')
         } else {
-            setWaitingIngredients([...waitingIngredients, ingredient])
+            if (
+                waitingIngredients.find(
+                    (ingredientName) => ingredientName === ingredient
+                )
+            ) {
+                toasterErrorCommon(
+                    isDark,
+                    'Cet ingrédient est déjà dans la liste'
+                )
+            } else {
+                setWaitingIngredients([...waitingIngredients, ingredient])
+            }
         }
     }
 
@@ -194,6 +201,7 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
                             }
                             flat
                             css={{ ml: '$4' }}
+                            color={'success'}
                             auto
                         >
                             Ajouter
@@ -234,16 +242,22 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
             </Card.Body>
             <Card.Footer>
                 <Row justify="center">
-                    <Button
-                        color="primary"
-                        auto
-                        rounded
-                        shadow
-                        onPress={handleCreateRecipe}
-                        css={{ mb: '$5' }}
-                    >
-                        Créer ma recette
-                    </Button>
+                    {isLoading ? (
+                        <Button auto disabled rounded css={{ mb: '$5' }}>
+                            <Loading color="currentColor" size="md" />
+                        </Button>
+                    ) : (
+                        <Button
+                            color="success"
+                            auto
+                            rounded
+                            ghost
+                            onPress={handleCreateRecipe}
+                            css={{ mb: '$5' }}
+                        >
+                            Créer ma recette
+                        </Button>
+                    )}
                 </Row>
             </Card.Footer>
         </Card>

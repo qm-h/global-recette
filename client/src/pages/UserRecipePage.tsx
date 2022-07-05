@@ -1,8 +1,6 @@
 import {
     Button,
     Card,
-    Collapse,
-    Container,
     Grid,
     Loading,
     Row,
@@ -10,15 +8,12 @@ import {
     Text,
 } from '@nextui-org/react'
 import { Ingredients, Recipe } from '../../../server/src/shared/types'
-import {
-    getAllIngredients,
-    getAllIngredientsByRecipeID,
-} from '../router/ingredientsRouter'
 import { useEffect, useState } from 'react'
 
 import DataNotFound from './components/wrongPage/DataNotFound'
 import UserCreateRecipeComponent from './components/userRecipe/UserCreateRecipeComponent'
 import UserRecipeList from './components/userRecipe/UserRecipeList'
+import { getAllIngredients } from '../router/ingredientsRouter'
 import { getRecipeByUserID } from '../router/recipesRouter'
 import { useAppContext } from '../lib/context/context'
 
@@ -62,16 +57,7 @@ const UserRecipePage = () => {
     }
 
     return (
-        <Container
-            css={{
-                h: '100vh',
-                w: '90%',
-            }}
-            display="flex"
-            justify="center"
-            alignItems="center"
-            responsive
-        >
+        <>
             {createRecipe ? (
                 <UserCreateRecipeComponent
                     setCreate={setCreateRecipe}
@@ -97,6 +83,7 @@ const UserRecipePage = () => {
                                 {!isLoading && userRecipes.length !== 0 && (
                                     <Button
                                         auto
+                                        color={'success'}
                                         flat
                                         onPress={() => setCreateRecipe(true)}
                                     >
@@ -129,6 +116,7 @@ const UserRecipePage = () => {
                                 <Button
                                     auto
                                     flat
+                                    color={'success'}
                                     onPress={() => setCreateRecipe(true)}
                                 >
                                     Créer une recette 🥗
@@ -138,7 +126,7 @@ const UserRecipePage = () => {
                     )}
                 </Card>
             )}
-        </Container>
+        </>
     )
 }
 

@@ -1,12 +1,12 @@
 import { Request, Response } from 'express'
 import {
-    getAllIngredients,
-    getAllIngredientsByRecipeID,
-    getIngredientByID,
+    getAllIngredientsByRecipeIDHandler,
+    getAllIngredientsHandler,
+    getIngredientByIDHandler,
 } from '../api/queries/ingredients/ingredientQueries'
 
 import { Router } from 'express'
-import { getIngredientsForRecipe as getIngredientByName } from '../api/commands/ingredients/ingredientCommands'
+import { getIngredientsForRecipeHandler as getIngredientByName } from '../api/commands/ingredients/ingredientCommands'
 
 class IngredientsRouter {
     public router: Router
@@ -23,15 +23,15 @@ class IngredientsRouter {
     }
 
     private getAllIngredients(req: Request, res: Response) {
-        return getAllIngredients(req, res)
+        return getAllIngredientsHandler(req, res)
     }
 
     private getAllIngredientsByRecipeID(req: Request, res: Response) {
-        return getAllIngredientsByRecipeID(req, res)
+        return getAllIngredientsByRecipeIDHandler(req, res)
     }
 
     private getIngredientById(req: Request, res: Response) {
-        return getIngredientByID(req, res)
+        return getIngredientByIDHandler(req, res)
     }
 
     private createIngredient(req: Request, res: Response) {

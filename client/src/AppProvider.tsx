@@ -1,8 +1,8 @@
-import { NextUIProvider, getDocumentTheme } from '@nextui-org/react'
 import { darkTheme, lightTheme } from './lib/theme/theme'
 
 import App from './App'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
+import { NextUIProvider } from '@nextui-org/react'
 
 const AppProvider = () => (
     <NextThemesProvider

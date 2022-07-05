@@ -111,9 +111,9 @@
 }
 
 .quantity_text {
-    background-color: #dee2ff;
-    color: #0170f3;
-    border: 1px solid #0172f391;
+    background-color: #c8fadd;
+    color: #14a452;
+    border: transparent;
     border-radius: 12px;
     font-weight: 500;
     font-size: 0.95em;
@@ -121,9 +121,9 @@
 }
 
 .dark_quantity_text {
-    background-color: transparent;
-    color: #0170f3;
-    border: 1px solid #0172f391;
+    background-color: #06381b;
+    color: #40ec8a;
+    border: transparent;
     border-radius: 12px;
     font-size: 0.95em;
     font-weight: 500;
