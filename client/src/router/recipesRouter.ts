@@ -1,4 +1,8 @@
-import { Recipe, RecipeIngredient } from '../../../server/src/shared/types'
+import {
+    ExpressResponseUrlType,
+    Recipe,
+    RecipeIngredient,
+} from '../../../server/src/shared/types'
 
 import { ExpressResponseMessageType } from './../../../server/src/shared/types'
 import axios from 'axios'
@@ -40,6 +44,13 @@ export function getRecipeByUserID(
         .catch((err) => console.log(err))
 }
 
+export function getRecipeImage(name: string): Promise<ExpressResponseUrlType> {
+    return axios
+        .get(`/api/recipe/image/${name}`)
+        .then((res) => res.data)
+        .catch((err) => console.log(err))
+}
+
 export function createRecipe(
     recipe: Recipe
 ): Promise<ExpressResponseMessageType> {
@@ -50,6 +61,19 @@ export function createRecipe(
             note: recipe.note,
             user_id: recipe.created_by,
             created_at: recipe.created_at,
+            creator_username: recipe.creator_username,
+            image_path: recipe.image_path,
+        })
+        .then((res) => res.data)
+        .catch((err) => console.log(err))
+}
+
+export function uploadRecipeImage(
+    formData: FormData
+): Promise<ExpressResponseUrlType> {
+    return axios
+        .post('/api/recipe/uploadimage', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
         })
         .then((res) => res.data)
         .catch((err) => console.log(err))

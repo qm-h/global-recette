@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 
 import { RecipeIngredient } from '../../../../shared/types'
-import { supabase } from '../../../../database/supabase'
+import supabase from '../../../../supabase/supabase'
 
 export const insertRecipeIngredientHandler = async (
     req: Request,

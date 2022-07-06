@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 
 import { Ingredients } from './../../../../shared/types'
 import { RecipeIngredient } from '../../../../shared/types'
-import { supabase } from '../../../../database/supabase'
+import supabase from '../../../../supabase/supabase'
 
 export const getAllIngredientsHandler = async (req: Request, res: Response) => {
     const result = await supabase.from('ingredients').select(`*`)

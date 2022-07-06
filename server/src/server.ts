@@ -7,8 +7,9 @@ import createRecipeRouter from './express/router/recipesRouter'
 import createUserRouter from './express/router/userRouter'
 import dotenv from 'dotenv'
 import express from 'express'
+import fileUpload from 'express-fileupload'
 import path from 'path'
-import { supabase } from './database/supabase'
+import supabase from './supabase/supabase'
 
 dotenv.config({ path: path.resolve(__dirname, '../../.env') })
 export const logger = new Logger()
@@ -22,6 +23,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(cors())
+app.use(fileUpload())
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/api/recipe', createRecipeRouter)

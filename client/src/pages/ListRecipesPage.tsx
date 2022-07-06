@@ -58,7 +58,7 @@ const ListRecipes = () => {
 
     return (
         <>
-            <Card css={{ w: '100%', h: '85%', mt: '$28', borderRadius: '6px' }}>
+            <Card css={{ w: '100%', h: '85%', mt: '$28' }}>
                 <Card.Header>
                     <Row justify="center">
                         <Text h2 b>

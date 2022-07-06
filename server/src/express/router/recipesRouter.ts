@@ -4,12 +4,14 @@ import {
     deleteRecipeHandler,
     publishRecipeHandler,
     unpublishRecipeHandler,
+    uploadImageHandler,
 } from '../api/commands/recipe/recipeCommands'
 import {
     getAllRecipesWithUserHandler,
     getRecipeByIDHandler,
     getRecipeByNameHandler,
     getRecipeByUserIDHandler,
+    getRecipeImageHandler,
 } from '../api/queries/recipe/recipeQueries'
 
 import authService from '../../services/authService'
@@ -50,6 +52,12 @@ class RecipeRouter {
             `${this.deleteRoute}/:id`,
             (_req: Request, res: Response) => this.removeRecipe(_req, res)
         )
+        this.router.get('/image/:name', (_req: Request, res: Response) =>
+            this.getRecipeImage(_req, res)
+        )
+        this.router.post('/uploadimage', (_req: Request, res: Response) =>
+            this.savedImage(_req, res)
+        )
     }
 
     private async getAllRecipesWithUser(req: Request, res: Response) {
@@ -68,8 +76,16 @@ class RecipeRouter {
         return getRecipeByNameHandler(req, res)
     }
 
+    private getRecipeImage(req: Request, res: Response) {
+        return getRecipeImageHandler(req, res)
+    }
+
     private createRecipeRouter(req: Request, res: Response) {
         return createRecipeHandler(req, res)
+    }
+
+    private savedImage(req: Request, res: Response) {
+        return uploadImageHandler(req, res)
     }
 
     private insertRecipeIngredient(req: Request, res: Response) {

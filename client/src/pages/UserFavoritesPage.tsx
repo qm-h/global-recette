@@ -1,27 +1,32 @@
-import { Grid, Loading, Text } from '@nextui-org/react'
+import { Grid, Loading, Text, useTheme } from '@nextui-org/react'
 import { Recipe, RecipeUser } from '../../../server/src/shared/types'
 import { useEffect, useState } from 'react'
 
 import UserFavoritesList from './components/userFavorites/FavoritesList'
 import { getAllFavoritesRecipe } from '../router/userRouter'
 import { useAppContext } from '../utils/context/AppContext'
+import { useNavigate } from 'react-router-dom'
 
 const UserFavoritesPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [favorites, setFavorites] = useState<Recipe[]>([])
     const [recipeAuthor, setRecipeAuthor] = useState<RecipeUser[]>()
     const { user } = useAppContext()
+    const { isDark } = useTheme()
     const userID: number | undefined = user?.id
-
+    const navigate = useNavigate()
     useEffect(() => {
-        setIsLoading(true)
-
-        Promise.all([getAllFavoritesRecipe(userID)]).then(([response]) => {
-            setFavorites(response.favorites)
-            setRecipeAuthor(response.users)
-            setIsLoading(false)
-        })
-    }, [userID])
+        if (userID) {
+            setIsLoading(true)
+            Promise.all([getAllFavoritesRecipe(userID)]).then(([response]) => {
+                setFavorites(response.favorites)
+                setRecipeAuthor(response.users)
+                setIsLoading(false)
+            })
+        } else {
+            navigate('/')
+        }
+    }, [isDark, navigate, userID])
 
     return (
         <Grid.Container gap={4} alignItems="center">

@@ -13,7 +13,7 @@ import dotenv from 'dotenv'
 import { logger } from '../server'
 import path from 'path'
 import { sendEmail } from '../shared/utils/sendMethods'
-import { supabase } from '../database/supabase'
+import supabase from '../supabase/supabase'
 import { v4 as uuidv4 } from 'uuid'
 
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') })

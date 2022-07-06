@@ -6,6 +6,7 @@ import {
     Row,
     Spacer,
     Text,
+    useTheme,
 } from '@nextui-org/react'
 import { Ingredients, Recipe } from '../../../server/src/shared/types'
 import { useEffect, useState } from 'react'
@@ -16,6 +17,7 @@ import UserRecipeList from './components/userRecipe/UserRecipeList'
 import { getAllIngredients } from '../router/ingredientsRouter'
 import { getRecipeByUserID } from '../router/recipesRouter'
 import { useAppContext } from '../utils/context/AppContext'
+import { useNavigate } from 'react-router-dom'
 
 const UserRecipePage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -23,7 +25,8 @@ const UserRecipePage = () => {
     const [ingredients, setIngredients] = useState<Ingredients[]>([])
     const [createRecipe, setCreateRecipe] = useState<boolean>(false)
     const { user, userUUID } = useAppContext()
-
+    const navigate = useNavigate()
+    const { isDark } = useTheme()
     const fetchRecipe = async () => {
         Promise.all([getRecipeByUserID(user.id, userUUID)]).then(
             ([recipes]) => {
@@ -34,17 +37,24 @@ const UserRecipePage = () => {
     }
 
     useEffect(() => {
-        setIsLoading(true)
-        Promise.all([getRecipeByUserID(user.id, userUUID), getAllIngredients()])
-            .then(([recipe, ingredients]) => {
-                setUserRecipes(recipe)
-                setIngredients(ingredients)
-                setIsLoading(false)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-    }, [user, userUUID, createRecipe])
+        if (user) {
+            setIsLoading(true)
+            Promise.all([
+                getRecipeByUserID(user.id, userUUID),
+                getAllIngredients(),
+            ])
+                .then(([recipe, ingredients]) => {
+                    setUserRecipes(recipe)
+                    setIngredients(ingredients)
+                    setIsLoading(false)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        } else {
+            navigate('/')
+        }
+    }, [user, userUUID, createRecipe, navigate, isDark])
 
     const renderRecipesWithNoData = (recipes: Recipe[]): JSX.Element => {
         if (recipes.length === 0) {

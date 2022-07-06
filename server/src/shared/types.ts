@@ -5,6 +5,7 @@ export type Recipe = {
     note: string
     created_by: number
     creator_username: string
+    image_path: string
     favorite_id?: number
     favorite_number?: number
     created_at: EpochTimeStamp
@@ -72,6 +73,11 @@ export type UserConfirmation = {
 export type ExpressResponseMessageType = {
     status: number
     message: string
+}
+
+export type ExpressResponseUrlType = {
+    status: number
+    url: string
 }
 
 export type FavoritesRecipe = {

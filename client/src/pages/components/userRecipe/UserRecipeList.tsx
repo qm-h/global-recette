@@ -3,6 +3,7 @@ import {
     Card,
     Collapse,
     Grid,
+    Loading,
     Popover,
     Row,
     Text,
@@ -18,6 +19,7 @@ import { FaTrashAlt } from 'react-icons/fa'
 import { Recipe } from '../../../../../server/src/shared/types'
 import RecipeIngredients from './ingredients/RecipeIngredients'
 import { toasterSuccessCommon } from '../../../utils/theme/toaster'
+import { useState } from 'react'
 
 interface Props {
     recipes: Recipe[]
@@ -26,21 +28,25 @@ interface Props {
 
 const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
     const { isDark } = useTheme()
+    const [isLoading, setIsLoading] = useState(false)
 
-    const handleDeleteRecipe = async (recipe: Recipe) =>
-        await deleteRecipe(recipe.id).then(() => {
+    const handleDeleteRecipe = async (recipeID: number) => {
+        setIsLoading(true)
+        await deleteRecipe(recipeID).then(() => {
             toasterSuccessCommon(isDark, 'Recette supprimée')
+            setIsLoading(false)
             fetchRecipe()
         })
+    }
 
-    const handlePublishRecipe = async (recipe: Recipe) =>
-        await publishRecipe(recipe.id).then(() => {
+    const handlePublishRecipe = async (recipeID: number) =>
+        await publishRecipe(recipeID).then(() => {
             toasterSuccessCommon(isDark, 'Recette publié avec succès')
             fetchRecipe()
         })
 
-    const handleUnpublishRecipes = async (recipe: Recipe) =>
-        await unpublishRecipe(recipe.id).then(() => {
+    const handleUnpublishRecipes = async (recipeID: number) =>
+        await unpublishRecipe(recipeID).then(() => {
             toasterSuccessCommon(isDark, 'Recette dépublié avec succès')
             fetchRecipe()
         })
@@ -58,11 +64,23 @@ const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
                             </Grid>
                             <Grid xs={6} md={5} justify="flex-end">
                                 <Button
-                                    icon={<FaTrashAlt size={'1em'} />}
+                                    icon={
+                                        isLoading ? (
+                                            <Loading
+                                                color="currentColor"
+                                                size="md"
+                                            />
+                                        ) : (
+                                            <FaTrashAlt size={'1em'} />
+                                        )
+                                    }
                                     auto
                                     ghost
+                                    disabled={isLoading}
                                     rounded
-                                    onPress={() => handleDeleteRecipe(recipe)}
+                                    onPress={() =>
+                                        handleDeleteRecipe(recipe.id)
+                                    }
                                     color="error"
                                     css={{ ml: '$5' }}
                                 />
@@ -111,7 +129,7 @@ const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
                                         flat
                                         color="error"
                                         onPress={() =>
-                                            handleUnpublishRecipes(recipe)
+                                            handleUnpublishRecipes(recipe.id)
                                         }
                                     >
                                         Dépublier la recette
@@ -122,7 +140,7 @@ const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
                                         flat
                                         color="success"
                                         onPress={() =>
-                                            handlePublishRecipe(recipe)
+                                            handlePublishRecipe(recipe.id)
                                         }
                                     >
                                         Publié la recette

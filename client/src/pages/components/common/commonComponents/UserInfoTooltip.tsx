@@ -2,15 +2,16 @@ import { Avatar, Button, Col, Grid, Row, Spacer, Text } from '@nextui-org/react'
 
 import React from 'react'
 import { User } from '../../../../../../server/src/shared/types'
+import { useAppContext } from '../../../../utils/context/AppContext'
 
 interface UserInfoTooltipProps {
-    user: User
+    userRecipe: User
     onClick: () => void
 }
 
-const UserInfoTooltip = ({ user, onClick }) => {
+const UserInfoTooltip = ({ userRecipe, onClick }: UserInfoTooltipProps) => {
     const [following, setFollowing] = React.useState(false)
-
+    const { user } = useAppContext()
     return (
         <Grid.Container
             className="user-twitter-card__container"
@@ -23,7 +24,7 @@ const UserInfoTooltip = ({ user, onClick }) => {
         >
             <Row justify="space-between" align="center">
                 <Col span={3}>
-                    <Avatar size="lg" src={user.avatar} />
+                    <Avatar size="lg" src={userRecipe.avatar} />
                 </Col>
                 <Col span={9}>
                     <Row>
@@ -33,7 +34,7 @@ const UserInfoTooltip = ({ user, onClick }) => {
                                 b
                                 size={15}
                             >
-                                {user.firstname} {user.lastname}
+                                {userRecipe.firstname} {userRecipe.lastname}
                             </Text>
                             <Text
                                 className="user-twitter-card__text"
@@ -41,18 +42,22 @@ const UserInfoTooltip = ({ user, onClick }) => {
                                 css={{ mt: '-$3' }}
                                 color="#888888"
                             >
-                                @{user.username}
+                                @{userRecipe.username}
                             </Text>
                         </Grid>
-                        <Button
-                            auto
-                            size="sm"
-                            onClick={() => setFollowing(!following)}
-                            color="success"
-                            flat
-                        >
-                            {following ? 'Unfollow' : 'Follow'}
-                        </Button>
+                        {user && user.id === userRecipe.id ? (
+                            <></>
+                        ) : (
+                            <Button
+                                auto
+                                size="sm"
+                                onClick={() => setFollowing(!following)}
+                                color="success"
+                                flat
+                            >
+                                {following ? 'Unfollow' : 'Follow'}
+                            </Button>
+                        )}
                     </Row>
                 </Col>
             </Row>

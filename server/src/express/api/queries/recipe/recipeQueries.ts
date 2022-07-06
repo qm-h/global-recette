@@ -1,7 +1,8 @@
 import { Request, Response } from 'express'
 
 import { Recipe } from './../../../../shared/types'
-import { supabase } from '../../../../database/supabase'
+import { logger } from './../../../../server'
+import supabase from './../../../../supabase/supabase'
 
 export const getAllRecipesWithUserHandler = async (
     _req: Request,
@@ -40,4 +41,19 @@ export const getRecipeByNameHandler = async (req: Request, res: Response) => {
         .select()
         .eq('name', recipeName)
     result.status === 200 ? res.send(result.data) : res.sendStatus(500)
+}
+
+export const getRecipeImageHandler = async (req: Request, res: Response) => {
+    const { name } = req.params
+    logger.debug(`Getting image for recipe ${name}`)
+    const image = await (
+        await supabase.storage.from('images').createSignedUrl(name, 60)
+    ).signedURL
+
+    if (!image) {
+        logger.debug(`No image found for recipe ${name}`)
+        return res.sendStatus(404)
+    }
+    logger.debug(`Image found for recipe ${name}`)
+    return res.status(200).send({ status: 200, url: image })
 }

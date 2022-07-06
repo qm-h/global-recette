@@ -226,3 +226,7 @@
         stroke-dashoffset: -200;
     }
 }
+
+.labelInput {
+    cursor: pointer;
+}

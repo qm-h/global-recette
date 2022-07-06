@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom'
 
 import Confirmation from './pages/components/auth/confirmationRegister/Confirmation'
 import { Container } from '@nextui-org/react'
-import ListRecipes from './pages/ListRecipes'
+import ListRecipes from './pages/ListRecipesPage'
 import LoginPage from './pages/AuthPage'
 import NotFoundPage from './pages/NotFoundPage'
 import ResetPassword from './pages/components/auth/resetPassword/ResetPassword'

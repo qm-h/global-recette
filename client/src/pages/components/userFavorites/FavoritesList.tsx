@@ -25,8 +25,10 @@ const FavoritesList = ({
         {} as HasSavedRecipe,
     ])
     const [isOpen, setIsOpen] = useState(false)
+    const [recipeID, setRecipeID] = useState(0)
 
-    const handleOpen = () => {
+    const handleOpen = (recipeID: number) => {
+        setRecipeID(recipeID)
         setIsOpen(true)
     }
 
@@ -94,7 +96,7 @@ const FavoritesList = ({
                                     <ModalRecipeDetail
                                         isOpen={isOpen}
                                         onClose={handleClose}
-                                        recipe={r.recipes}
+                                        recipeID={recipeID}
                                     />
                                     <Grid
                                         md={12}

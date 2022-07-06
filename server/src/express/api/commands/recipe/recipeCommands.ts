@@ -2,10 +2,18 @@ import { Request, Response } from 'express'
 
 import { Recipe } from '../../../../shared/types'
 import { logger } from '../../../../server'
-import { supabase } from './../../../../database/supabase'
+import supabase from '../../../../supabase/supabase'
 
 export const createRecipeHandler = async (req: Request, res: Response) => {
-    const { name, origin, note, user_id, created_at } = req.body
+    const {
+        name,
+        origin,
+        note,
+        user_id,
+        created_at,
+        creator_username,
+        image_path,
+    } = req.body
     const result = await supabase.from<Recipe>('recipes').insert([
         {
             name: name,
@@ -13,6 +21,8 @@ export const createRecipeHandler = async (req: Request, res: Response) => {
             note: note,
             created_by: user_id,
             created_at: created_at,
+            creator_username: creator_username,
+            image_path: image_path,
         },
     ])
     if (result.status === 400) {
@@ -23,6 +33,24 @@ export const createRecipeHandler = async (req: Request, res: Response) => {
         : res
               .status(500)
               .send({ status: 500, message: 'Erreur lors de la création' })
+}
+
+export const uploadImageHandler = async (req, res: Response) => {
+    const { image } = req.files
+    console.log('IMAGE:', image)
+    const savedImageResult = await supabase.storage
+        .from('images')
+        .upload(`${image.name}`, image.data)
+
+    if (!savedImageResult.data) {
+        logger.debug('Error while saving image')
+        logger.debug(JSON.stringify(savedImageResult.error))
+        return res
+            .status(500)
+            .send({ status: 500, message: 'Erreur lors de la création' })
+    }
+    logger.debug('Image saved')
+    return res.status(200).send({ status: 200, message: 'Création réussie' })
 }
 
 export const publishRecipeHandler = async (req: Request, res: Response) => {

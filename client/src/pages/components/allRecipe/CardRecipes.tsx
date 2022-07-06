@@ -3,14 +3,15 @@ import {
     Button,
     Card,
     Grid,
+    Image,
     Popover,
+    Row,
     Text,
     Tooltip,
 } from '@nextui-org/react'
 import { HasSavedRecipe, Recipe } from '../../../../../server/src/shared/types'
 import {
     TiSocialFacebookCircular,
-    TiSocialInstagramCircular,
     TiSocialTwitterCircular,
 } from 'react-icons/ti'
 import { useEffect, useState } from 'react'
@@ -29,17 +30,32 @@ interface CardRecipesProps {
 }
 
 const CardRecipes = ({ authUserID, recipes, isDark }: CardRecipesProps) => {
-    const [isOpen, setIsOpen] = useState(false)
+    const [isOpen, setIsOpen] = useState<boolean>(false)
+    const [recipeID, setRecipeID] = useState<number>()
     const [hasSaved, setHasSaved] = useState<HasSavedRecipe[]>([
         {} as HasSavedRecipe,
     ])
 
-    const handleOpen = () => {
-        setIsOpen(true)
+    const handleOpen = (recipeID: number) => {
+        console.log('cardRecipe', recipeID)
+        if (recipeID !== undefined) {
+            setRecipeID(recipeID)
+            setIsOpen(true)
+        }
     }
 
     const handleClose = () => {
         setIsOpen(false)
+    }
+
+    const handleTwitterShare = (url: string) => {
+        const twitterUrl = `https://twitter.com/intent/tweet?text=${url}`
+        window.open(twitterUrl, '_blank')
+    }
+
+    const handleFacebookShare = (url: string) => {
+        const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`
+        window.open(facebookUrl, '_blank')
     }
 
     useEffect(() => {
@@ -55,7 +71,6 @@ const CardRecipes = ({ authUserID, recipes, isDark }: CardRecipesProps) => {
                         }
                         newHasSaved.push(hasSaved)
                     })
-                    console.log(newHasSaved)
                     setHasSaved(newHasSaved)
                 }
             })
@@ -67,6 +82,7 @@ const CardRecipes = ({ authUserID, recipes, isDark }: CardRecipesProps) => {
             {recipes.map((r, i) => (
                 <Grid key={i} xs={4} md={6}>
                     <Card
+                        id={`${r.id}`}
                         variant="bordered"
                         css={{
                             borderRadius: '6px',
@@ -105,7 +121,7 @@ const CardRecipes = ({ authUserID, recipes, isDark }: CardRecipesProps) => {
                                         <Button
                                             auto
                                             light
-                                            onPress={handleOpen}
+                                            onPress={() => handleOpen(r.id)}
                                             icon={<MdOutlineOpenInFull />}
                                         />
                                     </Grid>
@@ -115,9 +131,10 @@ const CardRecipes = ({ authUserID, recipes, isDark }: CardRecipesProps) => {
                                     <Tooltip
                                         placement="top"
                                         animated={false}
+                                        trigger={'click'}
                                         content={
                                             <UserInfoTooltip
-                                                user={r.user}
+                                                userRecipe={r.user}
                                                 onClick={() =>
                                                     console.log('click')
                                                 }
@@ -139,7 +156,9 @@ const CardRecipes = ({ authUserID, recipes, isDark }: CardRecipesProps) => {
                             <ModalRecipeDetail
                                 isOpen={isOpen}
                                 onClose={handleClose}
-                                recipe={r}
+                                recipeID={
+                                    recipeID !== undefined ? recipeID : null
+                                }
                             />
                         </Card.Body>
                         <Card.Footer>
@@ -155,7 +174,7 @@ const CardRecipes = ({ authUserID, recipes, isDark }: CardRecipesProps) => {
                                 <Grid xs={6} md={5} justify="flex-end">
                                     <Popover
                                         isBordered={isDark ? true : false}
-                                        placement="right"
+                                        placement="bottom"
                                     >
                                         <Popover.Trigger>
                                             <Button
@@ -171,12 +190,17 @@ const CardRecipes = ({ authUserID, recipes, isDark }: CardRecipesProps) => {
                                         </Popover.Trigger>
                                         <Popover.Content css={{ p: '$3' }}>
                                             <Grid.Container gap={0}>
-                                                <Grid xs={6} md={4}>
+                                                <Grid xs={6} md={6}>
                                                     <Button
                                                         auto
                                                         rounded
                                                         light
                                                         color="success"
+                                                        onPress={() =>
+                                                            handleFacebookShare(
+                                                                `${window.location.href}${r.id}`
+                                                            )
+                                                        }
                                                         icon={
                                                             <TiSocialFacebookCircular
                                                                 size={'2em'}
@@ -184,27 +208,19 @@ const CardRecipes = ({ authUserID, recipes, isDark }: CardRecipesProps) => {
                                                         }
                                                     />
                                                 </Grid>
-                                                <Grid xs={6} md={4}>
+                                                <Grid xs={6} md={6}>
                                                     <Button
                                                         auto
                                                         rounded
                                                         light
                                                         color="success"
+                                                        onPress={() =>
+                                                            handleTwitterShare(
+                                                                `${window.location.href}${r.id}`
+                                                            )
+                                                        }
                                                         icon={
                                                             <TiSocialTwitterCircular
-                                                                size={'2em'}
-                                                            />
-                                                        }
-                                                    />
-                                                </Grid>
-                                                <Grid xs={6} md={4}>
-                                                    <Button
-                                                        auto
-                                                        rounded
-                                                        light
-                                                        color="success"
-                                                        icon={
-                                                            <TiSocialInstagramCircular
                                                                 size={'2em'}
                                                             />
                                                         }

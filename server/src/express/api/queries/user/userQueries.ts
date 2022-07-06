@@ -7,7 +7,7 @@ import {
 import { Request, Response } from 'express'
 
 import { logger } from '../../../../server'
-import { supabase } from '../../../../database/supabase'
+import supabase from '../../../../supabase/supabase'
 
 export const getSavedRecipesHandler = async (req: Request, res: Response) => {
     const { userID } = req.params

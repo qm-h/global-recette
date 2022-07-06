@@ -18,14 +18,16 @@ import {
     createRecipe,
     getRecipeByName,
     insertRecipeIngredients,
+    uploadRecipeImage,
 } from '../../../router/recipesRouter'
+import { useEffect, useState } from 'react'
 
+import { BiCloudUpload } from 'react-icons/bi'
 import IngredientDropDown from './ingredients/IngredientDropDown'
 import IngredientQuantity from './ingredients/IngredientQuantity'
 import { getIngredientByName } from '../../../router/ingredientsRouter'
 import { toasterErrorCommon } from '../../../utils/theme/toaster'
 import { useAppContext } from '../../../utils/context/AppContext'
-import { useState } from 'react'
 
 interface Props {
     setCreate: (value: boolean) => void
@@ -36,17 +38,20 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
     const [name, setName] = useState<string>('')
     const [origin, setOrigin] = useState<string>('')
     const [note, setNote] = useState<string>('')
+    const [image, setImage] = useState<File>()
     const [selectedIngredients, setSelectedIngredients] = useState<string>()
     const [waitingIngredients, setWaitingIngredients] = useState<string[]>([])
     const [waitingIngredientsQuantity, setWaitingIngredientsQuantity] =
         useState<string[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isDrag, setIsDrag] = useState<boolean>(false)
 
     const { isDark } = useTheme()
     const { user } = useAppContext()
 
     const handleCreateRecipe = async () => {
         setIsLoading(true)
+
         if (
             name !== '' &&
             origin !== '' &&
@@ -59,6 +64,7 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
                 origin: origin,
                 note: note,
                 created_by: user.id,
+                image_path: image.name,
                 created_at: Date.now(),
                 creator_username: user.username,
             }
@@ -70,7 +76,12 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
                     name: waitingIngredients[i],
                 })
             }
+
+            const formData = new FormData()
+            formData.append('image', image)
+
             await createRecipe(recipe)
+            await uploadRecipeImage(formData)
             const createdRecipe = await getRecipeByName(recipe.name)
             await getIngredientByName(ingredients).then((res) => {
                 res.map((ingredient, i) => {
@@ -146,8 +157,12 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
         }
     }
 
+    useEffect(() => {
+        console.log(image)
+    }, [image])
+
     return (
-        <Card css={{ h: '85%', mt: '$28', w: '35%' }}>
+        <Card css={{ h: '85%', mt: '$28', w: '45%' }}>
             <Card.Header>
                 <Grid.Container gap={2} alignItems="center">
                     <Grid xs={6} md={11}>
@@ -159,7 +174,6 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
                         <Button
                             color="error"
                             auto
-                            ghost
                             onPress={() => setCreate(false)}
                         >
                             Annuler
@@ -169,29 +183,40 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
             </Card.Header>
             <Card.Body>
                 <Grid.Container gap={2} justify="center" alignItems="center">
-                    <Grid xs={12} md={12} justify="center" css={{ w: '100%' }}>
+                    <Grid
+                        xs={12}
+                        md={12}
+                        justify="center"
+                        css={{ w: '100%', m: '$5' }}
+                    >
                         <Input
                             width="60%"
-                            label="Origine"
                             bordered={isDark ? true : false}
                             color={'primary'}
-                            helperText="Required"
-                            placeholder="Origine de la recette"
+                            labelPlaceholder="Origine de la recette"
                             onChange={(e) => setOrigin(e.target.value)}
                         />
                     </Grid>
-                    <Grid xs={12} md={12} justify="center" css={{ w: '100%' }}>
+                    <Grid
+                        xs={12}
+                        md={12}
+                        justify="center"
+                        css={{ w: '100%', m: '$5' }}
+                    >
                         <Input
                             width="60%"
                             color={'primary'}
-                            label="Nom"
                             bordered={isDark ? true : false}
-                            helperText="Required"
-                            placeholder="Nom de la recette"
+                            labelPlaceholder="Nom de la recette"
                             onChange={(e) => setName(e.target.value)}
                         />
                     </Grid>
-                    <Grid xs={12} md={12} justify="center" css={{ w: '100%' }}>
+                    <Grid
+                        xs={12}
+                        md={12}
+                        justify="center"
+                        css={{ w: '100%', m: '$5' }}
+                    >
                         <IngredientDropDown
                             setSelectedIngredients={setSelectedIngredients}
                             ingredientsList={ingredients}
@@ -228,12 +253,43 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
                                 />
                             </Grid>
                         ))}
+                    <Grid
+                        xs={12}
+                        md={12}
+                        justify="center"
+                        css={{ w: '100%', m: '$5' }}
+                    >
+                        <input
+                            type="file"
+                            name="file"
+                            id="file"
+                            hidden
+                            className="inputfile"
+                            onChange={(e) => setImage(e.target.files[0])}
+                        />
+                        <Button
+                            color="success"
+                            icon={<BiCloudUpload size="2em" />}
+                            auto
+                            ghost={!image ? true : false}
+                            flat={image ? true : false}
+                            css={{ ml: '$4' }}
+                        >
+                            <label className="labelInput" htmlFor="file">
+                                {isDrag
+                                    ? "Lacher l'image"
+                                    : image && image.name
+                                    ? `${image.name}`
+                                    : 'Choisir une image'}
+                            </label>
+                        </Button>
+                    </Grid>
                     <Grid xs={12} md={12} justify="center" css={{ w: '100%' }}>
                         <Textarea
-                            label="Note"
                             color={'primary'}
                             bordered={isDark ? true : false}
-                            width={'60%'}
+                            width={'80%'}
+                            minRows={5}
                             helperText="Vous avez des notes ? Elles seront affichées sur votre recette"
                             placeholder="Ecrivez vos notes ici"
                             onChange={(e) => setNote(e.target.value)}
@@ -252,7 +308,7 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
                             color="success"
                             auto
                             rounded
-                            ghost
+                            flat
                             onPress={handleCreateRecipe}
                             css={{ mb: '$5' }}
                         >

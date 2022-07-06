@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 
 import { FavoritesRecipe } from '../../../../shared/types'
-import { supabase } from '../../../../database/supabase'
+import supabase from '../../../../supabase/supabase'
 
 export const saveRecipeToFavoriteHandler = async (
     req: Request,
