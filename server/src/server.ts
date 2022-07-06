@@ -10,7 +10,7 @@ import express from 'express'
 import path from 'path'
 import { supabase } from './database/supabase'
 
-dotenv.config()
+dotenv.config({ path: path.resolve(__dirname, '../../.env') })
 export const logger = new Logger()
 const port = process.env.PORT || 3001
 const portProd = 8080

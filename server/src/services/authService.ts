@@ -11,11 +11,12 @@ import { NextFunction, Request, Response } from 'express'
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
 import { logger } from '../server'
+import path from 'path'
 import { sendEmail } from '../shared/utils/sendMethods'
 import { supabase } from '../database/supabase'
 import { v4 as uuidv4 } from 'uuid'
 
-dotenv.config()
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') })
 
 const authService = {
     generateAccessTokenMiddleware: () => {
