@@ -1,18 +1,21 @@
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai'
 import {
+    HasSavedRecipe,
+    Recipe,
+} from '../../../../../../server/src/shared/types'
+import {
     removeSavedRecipe,
     saveRecipeToFavorite,
 } from '../../../../router/userRouter'
 import {
     toasterErrorCommon,
     toasterSuccessCommon,
-} from '../../../../lib/theme/toaster'
-
-import { Recipe } from '../../../../../../server/src/shared/types'
+} from '../../../../utils/theme/toaster'
+import { Button } from '@nextui-org/react'
 
 interface FavoritesButtonProps {
-    hasSaved: boolean
-    setHasSaved: (hasSaved: boolean) => void
+    hasSaved: HasSavedRecipe[]
+    setHasSaved: (hasSaved: HasSavedRecipe[]) => void
     authUserID: number
     isDark: boolean
     recipe: Recipe
@@ -34,7 +37,14 @@ const FavoritesButton = ({
                         'Recette ajoutée à vos favoris',
                         '💚'
                     )
-                    setHasSaved(true)
+                    const newHasSaved: HasSavedRecipe[] = [
+                        ...hasSaved,
+                        {
+                            favorite: true,
+                            recipeID,
+                        },
+                    ]
+                    setHasSaved(newHasSaved)
                 } else {
                     toasterErrorCommon(isDark, 'Une erreur est survenue')
                 }
@@ -48,7 +58,9 @@ const FavoritesButton = ({
     const handleUnSave = async (recipeID: number) => {
         await removeSavedRecipe(recipeID, authUserID).then((res) => {
             if (res.status === 200) {
-                setHasSaved(false)
+                const x = hasSaved.filter((h) => h.recipeID !== recipeID)
+                setHasSaved(x)
+
                 toasterSuccessCommon(isDark, 'Recette retirée de vos favoris')
             } else {
                 toasterErrorCommon(isDark, 'Une erreur est survenue')
@@ -57,7 +69,9 @@ const FavoritesButton = ({
     }
     return (
         <>
-            {hasSaved ? (
+            {hasSaved.find(
+                (h) => h.recipeID === recipe.id && h.favorite === true
+            ) ? (
                 <AiFillHeart
                     className={'favoriteButton'}
                     onClick={() => handleUnSave(recipe.id)}

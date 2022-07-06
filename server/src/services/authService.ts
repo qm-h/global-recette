@@ -376,21 +376,41 @@ const authService = {
             logger.error(`Error. User not found ${email}`)
             return res.status(401).send({ message: 'Error. User not found' })
         } else {
-            const token = uuidv4()
-            const saveToken = await supabase
-                .from<UserResetPassword>('user_reset_password')
-                .insert({
-                    user_id: user.data[0].id,
-                    token: token,
-                    created_at: Date.now(),
-                })
-            if (saveToken.status === 400) {
-                logger.error(`${saveToken.error}`)
+            const existingToken = await supabase
+                .from('user_reset_password')
+                .select()
+                .eq('user_id', user.data[0].id)
+            let savedToken
+            const uuid = uuidv4()
+            if (existingToken.data.length > 0) {
+                await supabase
+                    .from('user_reset_password')
+                    .delete()
+                    .eq('user_id', user.data[0].id)
+                savedToken = await supabase
+                    .from<UserResetPassword>('user_reset_password')
+                    .insert({
+                        user_id: user.data[0].id,
+                        token: uuid,
+                        created_at: Date.now(),
+                    })
+            } else {
+                savedToken = await supabase
+                    .from<UserResetPassword>('user_reset_password')
+                    .insert({
+                        user_id: user.data[0].id,
+                        token: uuid,
+                        created_at: Date.now(),
+                    })
+            }
+
+            if (savedToken.status === 400) {
+                logger.error(`${savedToken.error}`)
                 return res
                     .status(401)
                     .send({ message: 'Error. Error saving token' })
             }
-            const url = `http://localhost:3000/reset-password/${token}`
+            const url = `http://localhost:3000/reset-password/${uuid}`
             const mailOptions = {
                 from: '"Global Recette 🍔"',
                 to: process.env.EMAIL,

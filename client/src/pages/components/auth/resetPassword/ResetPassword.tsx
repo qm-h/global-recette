@@ -1,18 +1,16 @@
 import {
     Button,
-    Col,
     Container,
     Grid,
     Input,
     Loading,
-    Row,
     Text,
     useTheme,
 } from '@nextui-org/react'
 import {
     toasterErrorCommon,
     toasterSuccessCommon,
-} from '../../../../lib/theme/toaster'
+} from '../../../../utils/theme/toaster'
 
 import { CgPassword } from 'react-icons/cg'
 import { resetPassword } from '../../../../router/authRouter'

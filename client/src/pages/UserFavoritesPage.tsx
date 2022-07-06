@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 import UserFavoritesList from './components/userFavorites/FavoritesList'
 import { getAllFavoritesRecipe } from '../router/userRouter'
-import { useAppContext } from '../lib/context/context'
+import { useAppContext } from '../utils/context/AppContext'
 
 const UserFavoritesPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -24,7 +24,7 @@ const UserFavoritesPage = () => {
     }, [userID])
 
     return (
-        <Grid.Container gap={5} alignItems="center">
+        <Grid.Container gap={4} alignItems="center">
             <Grid md={12} justify="center">
                 <Text h2>Mes Favoris</Text>
             </Grid>
@@ -35,6 +35,7 @@ const UserFavoritesPage = () => {
                     <UserFavoritesList
                         authUserID={user.id}
                         favorites={favorites}
+                        recipeAuthor={recipeAuthor}
                         isDark={false}
                     />
                 )}

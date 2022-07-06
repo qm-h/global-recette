@@ -14,7 +14,7 @@ import CardRecipes from './components/allRecipe/CardRecipes'
 import DataNotFound from './components/wrongPage/DataNotFound'
 import { Recipe } from '../../../server/src/shared/types'
 import { getAllRecipesWithUser } from '../router/recipesRouter'
-import { useAppContext } from '../lib/context/context'
+import { useAppContext } from '../utils/context/AppContext'
 
 const ListRecipes = () => {
     const [recipesData, setRecipesData] = useState<Recipe[]>([])
@@ -78,15 +78,16 @@ const ListRecipes = () => {
                         placeholder="Rechercher une recette"
                     />
                 </Row>
-                <Card.Body css={{ p: '2em', w: '100%' }}>
-                    <Spacer />
-                    <Grid.Container
-                        gap={1}
-                        wrap="wrap"
-                        justify={isLoading ? 'center' : 'space-around'}
-                        alignItems="center"
-                        alignContent="center"
-                    >
+                <Card.Body
+                    css={{
+                        w: '100%',
+                        h: 'auto',
+                        display: 'flex',
+                        justifyContent: isLoading && 'center',
+                        alignItems: 'center',
+                    }}
+                >
+                    <Grid.Container wrap="wrap" justify="center" gap={2}>
                         {isLoading ? (
                             <Loading size="xl" color="primary" />
                         ) : (

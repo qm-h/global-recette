@@ -9,31 +9,33 @@ interface Props {
 }
 
 const RecipeIngredients = ({ recipe }: Props) => {
-    const [ingredients, setIngredients] = useState<Ingredients[]>([])
+    const [ingredientsData, setIngredientsData] = useState([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
     useEffect(() => {
         setIsLoading(true)
         Promise.all([getAllIngredientsByRecipeID(recipe.id)]).then(
             ([ingredients]) => {
-                setIngredients(ingredients)
+                setIngredientsData([...ingredients])
                 setIsLoading(false)
             }
         )
     }, [recipe])
-    console.log(ingredients)
 
     return (
         <>
-            {!isLoading && ingredients.length !== 0 ? (
-                ingredients.map((ingredient, index) => (
+            {!isLoading && ingredientsData.length !== 0 ? (
+                ingredientsData.map((ing, index) => (
                     <Row
                         key={index}
-                        justify="flex-start"
-                        css={{ mb: '$5', ml: '$2', w: 'auto' }}
+                        justify="center"
+                        align="center"
+                        css={{ p: '$5' }}
                     >
-                        <Text b color="#9F9F9F">
-                            {ingredient.name}
-                        </Text>
+                        <ul>
+                            <li className="liStyle">
+                                <Text>{ing.ingredients.name}</Text>
+                            </li>
+                        </ul>
                     </Row>
                 ))
             ) : (

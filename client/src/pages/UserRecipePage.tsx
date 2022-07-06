@@ -15,7 +15,7 @@ import UserCreateRecipeComponent from './components/userRecipe/UserCreateRecipeC
 import UserRecipeList from './components/userRecipe/UserRecipeList'
 import { getAllIngredients } from '../router/ingredientsRouter'
 import { getRecipeByUserID } from '../router/recipesRouter'
-import { useAppContext } from '../lib/context/context'
+import { useAppContext } from '../utils/context/AppContext'
 
 const UserRecipePage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true)

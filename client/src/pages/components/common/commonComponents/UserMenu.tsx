@@ -2,8 +2,8 @@ import { Dropdown, Text, User, useTheme } from '@nextui-org/react'
 
 import { Key } from 'react'
 import { SuccessAuthUser as UserType } from '../../../../../../server/src/shared/types'
-import { logout } from '../../../../lib/auth/logout'
-import { toasterSuccessLogout } from '../../../../lib/theme/toaster'
+import { logout } from '../../../../utils/auth/logout'
+import { toasterSuccessLogout } from '../../../../utils/theme/toaster'
 import { useNavigate } from 'react-router-dom'
 import { userLogout } from '../../../../router/authRouter'
 
@@ -34,7 +34,7 @@ const UserMenu = ({
     }
 
     return (
-        <Dropdown placement="top">
+        <Dropdown placement="top-left">
             <Dropdown.Trigger>
                 <User
                     bordered
@@ -42,6 +42,7 @@ const UserMenu = ({
                     pointer
                     size="lg"
                     color="primary"
+                    squared
                     name={`${user.firstname} ${user.lastname}`}
                     description={`@${user.username}`}
                     src={user.avatar}
@@ -50,14 +51,15 @@ const UserMenu = ({
             <Dropdown.Menu
                 onAction={(key: Key) => handleLogout(key)}
                 color="success"
+                css={{
+                    minWidth: '300px',
+                    borderRadius: '$lg',
+                    padding: '$sm',
+                }}
                 disabledKeys={['help_and_feedback', 'settings']}
                 aria-label="User Actions"
             >
-                <Dropdown.Item
-                    textValue={'email'}
-                    key="profile"
-                    css={{ height: '$12' }}
-                >
+                <Dropdown.Item textValue={'email'} key="profile">
                     <Text b color="inherit" css={{ d: 'flex' }}>
                         {user.email}
                     </Text>
@@ -75,9 +77,9 @@ const UserMenu = ({
                     css={{ height: '$12' }}
                     key="help_and_feedback"
                 >
-                    Bientôt : Aide
+                    Aide
                 </Dropdown.Item>
-                <Dropdown.Section title="Danger zone">
+                <Dropdown.Section title="Danger zone 🔥">
                     <Dropdown.Item
                         css={{ height: '$12' }}
                         key="sign_out"

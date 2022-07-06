@@ -16,7 +16,7 @@ const DataNotFound = ({ setCreateRecipe }: Props) => {
             </Grid>
             <Grid xs={12} justify="center">
                 <Text translate="yes" h2 b>
-                    Oops! Aucune Recettes Trouvée 🧐
+                    Oops! Aucune Recettes Trouvée
                 </Text>
             </Grid>
         </Grid.Container>

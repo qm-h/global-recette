@@ -3,7 +3,7 @@ import { Button, Grid, Loading, Modal, Text } from '@nextui-org/react'
 import { FaDoorOpen } from 'react-icons/fa'
 import { RiMailSendLine } from 'react-icons/ri'
 import { sendConfirmationRegisterEmail } from '../../../../router/authRouter'
-import { toasterSuccessCommon } from '../../../../lib/theme/toaster'
+import { toasterSuccessCommon } from '../../../../utils/theme/toaster'
 import { useState } from 'react'
 
 interface Props {

@@ -71,3 +71,7 @@ code {
     background-color: #f31461;
     cursor: pointer;
 }
+
+.liStyle {
+    list-style-type: decimal;
+}

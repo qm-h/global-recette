@@ -4,6 +4,7 @@ import Confirmation from './pages/components/auth/confirmationRegister/Confirmat
 import { Container } from '@nextui-org/react'
 import ListRecipes from './pages/ListRecipes'
 import LoginPage from './pages/AuthPage'
+import NotFoundPage from './pages/NotFoundPage'
 import ResetPassword from './pages/components/auth/resetPassword/ResetPassword'
 import UserFavoritesPage from './pages/UserFavoritesPage'
 import UserRecipePage from './pages/UserRecipePage'
@@ -20,12 +21,13 @@ const CustomsRoutes = () => (
         responsive
     >
         <Routes>
-            <Route path="/" element={<ListRecipes />} />
+            <Route caseSensitive path="/" element={<ListRecipes />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/mes-recettes" element={<UserRecipePage />} />
             <Route path="/mes-favoris" element={<UserFavoritesPage />} />
             <Route path="/confirmation/:token" element={<Confirmation />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
+            <Route path="*" element={<NotFoundPage />} />
         </Routes>
     </Container>
 )

@@ -1,4 +1,4 @@
-import { darkTheme, lightTheme } from './lib/theme/theme'
+import { darkTheme, lightTheme } from './utils/theme/theme'
 
 import App from './App'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'

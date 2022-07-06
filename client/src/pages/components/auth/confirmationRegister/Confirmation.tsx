@@ -1,26 +1,17 @@
-import {
-    Button,
-    Container,
-    Grid,
-    Image,
-    Loading,
-    Text,
-    useTheme,
-} from '@nextui-org/react'
-import { FaEmpire, FaRebel } from 'react-icons/fa'
+import { Container, Loading, useTheme } from '@nextui-org/react'
 import { confirmRegister, hasUUID } from '../../../../router/authRouter'
 import {
     toasterErrorCommon,
     toasterSuccessCommon,
-} from '../../../../lib/theme/toaster'
+} from '../../../../utils/theme/toaster'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import Confetti from 'react-confetti'
 import ConfirmationContent from './ConfirmationContent'
-import eatingGif from '../../../../lib/images/giphy.gif'
-import partyGif from '../../../../lib/images/party-gif.gif'
-import timerBefore from '../../../../lib/utils/timer'
+import eatingGif from '../../../../utils/images/giphy.gif'
+import partyGif from '../../../../utils/images/party-gif.gif'
+import timerBefore from '../../../../utils/timer'
 import { useWindowSize } from 'react-use'
 
 const Confirmation = () => {

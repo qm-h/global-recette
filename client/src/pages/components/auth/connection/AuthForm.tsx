@@ -7,79 +7,113 @@ import {
     Text,
     useTheme,
 } from '@nextui-org/react'
-import { forgotPassword, userAuth } from '../../../router/authRouter'
+import { forgotPassword, userAuth } from '../../../../router/authRouter'
 import {
     toasterErrorAuth,
     toasterErrorCommon,
     toasterSuccessAuth,
     toasterSuccessCommon,
     toasterUserNotFound,
-} from '../../../lib/theme/toaster'
+} from '../../../../utils/theme/toaster'
+import { useEffect, useState } from 'react'
 
-import ConfirmationModal from './confirmationRegister/ConfirmationModal'
-import ConnectionForm from './connection/ConnectionForm'
-import ForgotPwdModal from './resetPassword/ForgotPwdModal'
-import { SuccessAuthUser } from '../../../../../server/src/shared/types'
-import { createCookies } from '../../../lib/utils/create'
+import ConfirmationModal from '../confirmationRegister/ConfirmationModal'
+import ConnectionForm from './ConnectionForm'
+import ForgotPwdModal from '../resetPassword/ForgotPwdModal'
+import { SuccessAuthUser } from '../../../../../../server/src/shared/types'
+import checkField from '../../../../utils/auth/checkField'
+import { createCookies } from '../../../../utils/create'
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
 
 interface Props {
     noAccount: (val: boolean) => void
     setIsAuthenticated: (val: boolean) => void
+    handleValidation: (fields: string, value: string) => string | boolean
     setUser: (user: SuccessAuthUser) => void
     setUserUUID: (token: string) => void
+    setIsInvalidForm: (val: boolean) => void
+    setIsInvalidEmail: (val: boolean) => void
+    setIsInvalidEmailMessage: (val: string) => void
+    setIsInvalidPassword: (val: boolean) => void
+    setIsInvalidPasswordMessage: (val: string) => void
+    isInvalidForm: boolean
+    isInvalidEmail: boolean
+    isInvalidEmailMessage: string
+    isInvalidPassword: boolean
+    isInvalidPasswordMessage: string
 }
 
 const AuthForm = ({
     noAccount,
     setIsAuthenticated,
+    handleValidation,
     setUser,
     setUserUUID,
+    setIsInvalidForm,
+    setIsInvalidEmail,
+    setIsInvalidEmailMessage,
+    setIsInvalidPassword,
+    setIsInvalidPasswordMessage,
+    isInvalidForm,
+    isInvalidEmail,
+    isInvalidEmailMessage,
+    isInvalidPassword,
+    isInvalidPasswordMessage,
 }: Props) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [openForgotModal, setOpenForgotModal] = useState(false)
     const [openConfirm, setOpenConfirm] = useState(false)
     const [email, setEmail] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
     const [rememberMe, setRememberMe] = useState<boolean>(false)
     const navigate = useNavigate()
     const { isDark } = useTheme()
 
     const handleConnection = async (email, password) => {
-        if (email && password) {
-            setIsLoading(true)
-            await userAuth({ email, password })
-                .then((res) => {
-                    setIsLoading(false)
-                    switch (res.status) {
-                        case 200:
-                            if (rememberMe) {
-                                createCookies('user', res.user, 7)
-                                createCookies('userUUID', res.accessUUID, 7)
-                            } else {
-                                createCookies('user', res.user, 1)
-                                createCookies('userUUID', res.accessUUID, 1)
-                            }
-                            setUserUUID(res.accessUUID)
-                            setUser(res.user)
-                            setIsAuthenticated(true)
-                            toasterSuccessAuth(isDark)
-                            navigate('/')
-                            break
-                        case 401:
-                            setOpenConfirm(true)
-                            break
-                        case 404:
-                            toasterUserNotFound(isDark)
-                            break
-                        default:
-                            break
-                    }
-                })
-                .catch(() => {
-                    setIsLoading(false)
-                    toasterErrorAuth(isDark)
-                })
+        const emptyFiedls =
+            checkField.emptyField('email', email) &&
+            checkField.emptyField('password', password)
+        if (typeof emptyFiedls === 'boolean') {
+            const emailIsValid = checkField.email(email)
+            const passwordIsValid = checkField.password(password)
+            if (
+                typeof emailIsValid === 'boolean' &&
+                typeof passwordIsValid === 'boolean'
+            ) {
+                setIsLoading(true)
+                await userAuth({ email, password })
+                    .then((res) => {
+                        setIsLoading(false)
+                        switch (res.status) {
+                            case 200:
+                                if (rememberMe) {
+                                    createCookies('user', res.user, 7)
+                                    createCookies('userUUID', res.accessUUID, 7)
+                                } else {
+                                    createCookies('user', res.user, 1)
+                                    createCookies('userUUID', res.accessUUID, 1)
+                                }
+                                setUserUUID(res.accessUUID)
+                                setUser(res.user)
+                                setIsAuthenticated(true)
+                                toasterSuccessAuth(isDark)
+                                navigate('/')
+                                break
+                            case 401:
+                                setOpenConfirm(true)
+                                break
+                            case 404:
+                                toasterUserNotFound(isDark)
+                                break
+                            default:
+                                break
+                        }
+                    })
+                    .catch(() => {
+                        setIsLoading(false)
+                        toasterErrorAuth(isDark)
+                    })
+            }
         }
     }
 
@@ -107,6 +141,17 @@ const AuthForm = ({
         }
     }
 
+    useEffect(() => {
+        if (
+            email &&
+            password &&
+            isInvalidEmail === false &&
+            isInvalidPassword === false
+        ) {
+            setIsInvalidForm(false)
+        }
+    }, [email, password, isInvalidEmail, isInvalidPassword, setIsInvalidForm])
+
     return (
         <Card css={{ w: '50%' }}>
             <Card.Header>
@@ -123,7 +168,15 @@ const AuthForm = ({
                     isLoading={isLoading}
                     isDark={isDark}
                     setEmail={setEmail}
+                    setPassword={setPassword}
                     email={email}
+                    password={password}
+                    handleValidation={handleValidation}
+                    isInvalidForm={isInvalidForm}
+                    isInvalidEmail={isInvalidEmail}
+                    isInvalidEmailMessage={isInvalidEmailMessage}
+                    isInvalidPassword={isInvalidPassword}
+                    isInvalidPasswordMessage={isInvalidPasswordMessage}
                 />
                 <ForgotPwdModal
                     isLoading={isLoading}

@@ -23,8 +23,8 @@ import {
 import IngredientDropDown from './ingredients/IngredientDropDown'
 import IngredientQuantity from './ingredients/IngredientQuantity'
 import { getIngredientByName } from '../../../router/ingredientsRouter'
-import { toasterErrorCommon } from '../../../lib/theme/toaster'
-import { useAppContext } from '../../../lib/context/context'
+import { toasterErrorCommon } from '../../../utils/theme/toaster'
+import { useAppContext } from '../../../utils/context/AppContext'
 import { useState } from 'react'
 
 interface Props {
@@ -60,6 +60,7 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
                 note: note,
                 created_by: user.id,
                 created_at: Date.now(),
+                creator_username: user.username,
             }
 
             const ingredients: Ingredients[] = []

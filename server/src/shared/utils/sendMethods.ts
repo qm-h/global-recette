@@ -1,5 +1,5 @@
 import { MailerOptions } from '../types'
-import nodemailerMiddleware from '../../services/nodemailer/nodemailerService'
+import nodemailerMiddleware from '../../services/nodemailerService'
 
 const sendEmail = async (mailerOptions: MailerOptions) => {
     await nodemailerMiddleware.sendMail(mailerOptions)

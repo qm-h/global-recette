@@ -17,7 +17,7 @@ import {
 import { FaTrashAlt } from 'react-icons/fa'
 import { Recipe } from '../../../../../server/src/shared/types'
 import RecipeIngredients from './ingredients/RecipeIngredients'
-import { toasterSuccessCommon } from '../../../lib/theme/toaster'
+import { toasterSuccessCommon } from '../../../utils/theme/toaster'
 
 interface Props {
     recipes: Recipe[]

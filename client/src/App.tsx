@@ -1,6 +1,6 @@
 import './App.css'
 
-import { AppContext } from './lib/context/context'
+import { AppContext } from './utils/context/AppContext'
 import Cookie from 'js-cookie'
 import CustomsRoutes from './Routes'
 import HeaderCommon from './pages/components/common/HeaderCommon'

@@ -4,6 +4,7 @@ export type Recipe = {
     origin: string
     note: string
     created_by: number
+    creator_username: string
     favorite_id?: number
     favorite_number?: number
     created_at: EpochTimeStamp
@@ -15,6 +16,11 @@ export type Recipe = {
 export type Ingredients = {
     id?: number
     name: string
+}
+
+export type HasSavedRecipe = {
+    favorite: boolean
+    recipeID: number
 }
 
 export type RecipeIngredient = {

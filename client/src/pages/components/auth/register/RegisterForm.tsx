@@ -1,7 +1,7 @@
 import {
     Button,
     Card,
-    Input,
+    Grid,
     Loading,
     Row,
     Text,
@@ -10,18 +10,68 @@ import {
 import {
     toasterErrorCommon,
     toasterSuccessCommon,
-} from '../../../../lib/theme/toaster'
+} from '../../../../utils/theme/toaster'
 
+import RegisterFormBody from './RegisterFormBody'
 import { User } from '../../../../../../server/src/shared/types'
-import { randomAvatar } from '../../../../lib/utils/randomAvatar'
+import checkField from '../../../../utils/auth/checkField'
+import { randomAvatar } from '../../../../utils/randomAvatar'
 import { registerUser } from '../../../../router/authRouter'
 import toast from 'react-hot-toast'
 import { useState } from 'react'
 
-interface Props {
+interface RegisterFormProps {
     noAccount: (val: boolean) => void
+    handleValidation: (fields: string, value: string) => string | boolean
+    setIsInvalidUsername: (val: boolean) => void
+    setIsInvalidUsernameMessage: (val: string) => void
+    setIsInvalidFirstname: (val: boolean) => void
+    setIsInvalidFirstnameMessage: (val: string) => void
+    setIsInvalidLastname: (val: boolean) => void
+    setIsInvalidLastnameMessage: (val: string) => void
+    setIsInvalidEmail: (val: boolean) => void
+    setIsInvalidEmailMessage: (val: string) => void
+    setIsInvalidPassword: (val: boolean) => void
+    setIsInvalidPasswordMessage: (val: string) => void
+    setIsInvalidForm: (val: boolean) => void
+    isInvalidUsername: boolean
+    isInvalidUsernameMessage: string
+    isInvalidFirstname: boolean
+    isInvalidFirstnameMessage: string
+    isInvalidLastname: boolean
+    isInvalidLastnameMessage: string
+    isInvalidEmail: boolean
+    isInvalidEmailMessage: string
+    isInvalidPassword: boolean
+    isInvalidPasswordMessage: string
+    isInvalidForm: boolean
 }
-const RegisterForm = ({ noAccount }: Props) => {
+const RegisterForm = ({
+    noAccount,
+    handleValidation,
+    setIsInvalidUsername,
+    setIsInvalidUsernameMessage,
+    setIsInvalidFirstname,
+    setIsInvalidFirstnameMessage,
+    setIsInvalidLastname,
+    setIsInvalidLastnameMessage,
+    setIsInvalidEmail,
+    setIsInvalidEmailMessage,
+    setIsInvalidPassword,
+    setIsInvalidPasswordMessage,
+    setIsInvalidForm,
+    isInvalidUsername,
+    isInvalidUsernameMessage,
+    isInvalidFirstname,
+    isInvalidFirstnameMessage,
+    isInvalidLastname,
+    isInvalidLastnameMessage,
+    isInvalidEmail,
+    isInvalidEmailMessage,
+    isInvalidPassword,
+    isInvalidPasswordMessage,
+    isInvalidForm,
+}: RegisterFormProps) => {
     const [username, setUsername] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [email, setEmail] = useState<string>('')
@@ -30,13 +80,28 @@ const RegisterForm = ({ noAccount }: Props) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const { isDark } = useTheme()
-    const validateEmail = () => {
-        return email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i)
-    }
 
     const handleRegister = async () => {
-        if (validateEmail()) {
-            if (username && password && email && firstname && lastname) {
+        const emptyFiedls =
+            checkField.emptyField('username', username) &&
+            checkField.emptyField('firstname', firstname) &&
+            checkField.emptyField('lastname', lastname)
+        checkField.emptyField('email', email) &&
+            checkField.emptyField('password', password)
+
+        if (emptyFiedls === true) {
+            const usernameIsValid = checkField.notHaveSpecialChar(username)
+            const firstnameIsValid = checkField.notHaveSpecialChar(firstname)
+            const lastnameIsValid = checkField.notHaveSpecialChar(lastname)
+            const emailIsValid = checkField.email(email)
+            const passwordIsValid = checkField.password(password)
+            if (
+                typeof usernameIsValid === 'boolean' &&
+                typeof firstnameIsValid === 'boolean' &&
+                typeof lastnameIsValid === 'boolean' &&
+                typeof emailIsValid === 'boolean' &&
+                typeof passwordIsValid === 'boolean'
+            ) {
                 const avatar = randomAvatar()
                 const user: User = {
                     id: 0,
@@ -87,7 +152,7 @@ const RegisterForm = ({ noAccount }: Props) => {
     }
 
     return (
-        <Card css={{ w: '50%' }}>
+        <Card css={{ w: '40%', mt: '$18' }}>
             <Card.Header>
                 <Row justify="center">
                     <Text css={{}} h2>
@@ -97,129 +162,63 @@ const RegisterForm = ({ noAccount }: Props) => {
             </Card.Header>
             <Card.Divider />
             <Card.Body>
-                <Row
-                    justify="center"
-                    align="center"
-                    css={{ marginTop: '$10', marginBottom: '$10' }}
-                >
-                    <Input
-                        width="50%"
-                        animated
-                        clearable
-                        aria-label="Username"
-                        label="Nom d'utilisateur"
-                        placeholder="Entrer un nom d'utilisateur"
-                        value={username}
-                        bordered={isDark ? true : false}
-                        required={true}
-                        color="primary"
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                </Row>
-                <Row
-                    justify="center"
-                    align="center"
-                    css={{ marginTop: '$10', marginBottom: '$10' }}
-                >
-                    <Input
-                        width="50%"
-                        bordered={isDark ? true : false}
-                        label="Nom"
-                        animated
-                        aria-label="Lastname"
-                        required
-                        clearable
-                        color="primary"
-                        placeholder="Entrer votre nom"
-                        value={lastname}
-                        onChange={(e) => setLastname(e.target.value)}
-                    />
-                </Row>
-                <Row
-                    justify="center"
-                    align="center"
-                    css={{ marginTop: '$10', marginBottom: '$10' }}
-                >
-                    <Input
-                        width="50%"
-                        label="Prénom"
-                        bordered={isDark ? true : false}
-                        color="primary"
-                        animated
-                        required
-                        aria-label="Firstname"
-                        clearable
-                        placeholder="Entrer votre prénom"
-                        value={firstname}
-                        onChange={(e) => setFirstname(e.target.value)}
-                    />
-                </Row>
-                <Row
-                    justify="center"
-                    align="center"
-                    css={{ marginTop: '$10', marginBottom: '$10' }}
-                >
-                    <Input
-                        width="50%"
-                        bordered={isDark ? true : false}
-                        clearable
-                        animated
-                        color="primary"
-                        aria-label="Email"
-                        required
-                        onChange={(e) => setEmail(e.target.value)}
-                        type="email"
-                        label="Email"
-                        value={email}
-                        placeholder="Entrer votre email"
-                    />
-                </Row>
-                <Row
-                    justify="center"
-                    align="center"
-                    css={{ marginTop: '$10', marginBottom: '$10' }}
-                >
-                    <Input.Password
-                        width="50%"
-                        animated
-                        clearable
-                        color="primary"
-                        aria-label="Password"
-                        bordered={isDark ? true : false}
-                        required
-                        label="Mot de passe"
-                        placeholder="Entrer votre mot de passe"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </Row>
-                <Row justify="center" align="center">
-                    {!isLoading ? (
-                        <Button
-                            color="success"
-                            auto
-                            flat
-                            onPress={() => handleRegister()}
-                        >
-                            Créer 🚀
-                        </Button>
-                    ) : (
-                        <Button disabled auto flat>
-                            <Loading color="currentColor" size="sm" />
-                        </Button>
-                    )}
-                </Row>
-                <Row justify="center" align="center">
-                    <Button
-                        light
-                        auto
-                        css={{ color: '#bebebe' }}
-                        onClick={() => noAccount(false)}
-                    >
-                        Je possède déjà un compte
-                    </Button>
-                </Row>
+                <RegisterFormBody
+                    isDark={isDark}
+                    username={username}
+                    firstname={firstname}
+                    lastname={lastname}
+                    email={email}
+                    password={password}
+                    handleValidation={handleValidation}
+                    isInvalidUsername={isInvalidUsername}
+                    isInvalidUsernameMessage={isInvalidUsernameMessage}
+                    isInvalidFirstname={isInvalidFirstname}
+                    isInvalidFirstnameMessage={isInvalidFirstnameMessage}
+                    isInvalidLastname={isInvalidLastname}
+                    isInvalidLastnameMessage={isInvalidLastnameMessage}
+                    isInvalidEmail={isInvalidEmail}
+                    isInvalidEmailMessage={isInvalidEmailMessage}
+                    isInvalidPassword={isInvalidPassword}
+                    isInvalidPasswordMessage={isInvalidPasswordMessage}
+                    setUsername={setUsername}
+                    setFirstname={setFirstname}
+                    setLastname={setLastname}
+                    setEmail={setEmail}
+                    setPassword={setPassword}
+                />
             </Card.Body>
+            <Card.Footer isBlurred>
+                <Grid.Container>
+                    <Grid md={12} justify="center" alignItems="center">
+                        {!isLoading ? (
+                            <Button
+                                color="success"
+                                auto
+                                flat
+                                onPress={() => handleRegister()}
+                            >
+                                Créer 🚀
+                            </Button>
+                        ) : (
+                            <Button disabled auto flat>
+                                <Loading color="currentColor" size="sm" />
+                            </Button>
+                        )}
+                    </Grid>
+                    <Grid md={12} justify="center" alignItems="center">
+                        <Button
+                            light
+                            auto
+                            color="success"
+                            className="hoverText"
+                            css={{ color: isDark ? '#313538' : '#bebebe' }}
+                            onClick={() => noAccount(false)}
+                        >
+                            Je possède déjà un compte
+                        </Button>
+                    </Grid>
+                </Grid.Container>
+            </Card.Footer>
         </Card>
     )
 }

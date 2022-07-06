@@ -10,6 +10,14 @@ interface Props {
     isDark: boolean
     setEmail: (email: string) => void
     email: string
+    setPassword: (password: string) => void
+    password: string
+    handleValidation: (fields: string, value: string) => string | boolean
+    isInvalidForm: boolean
+    isInvalidEmail: boolean
+    isInvalidPassword: boolean
+    isInvalidEmailMessage: string
+    isInvalidPasswordMessage: string
 }
 
 const ConnectionForm = ({
@@ -18,9 +26,15 @@ const ConnectionForm = ({
     isDark,
     email,
     setEmail,
+    password,
+    setPassword,
+    handleValidation,
+    isInvalidForm,
+    isInvalidEmail,
+    isInvalidPassword,
+    isInvalidEmailMessage,
+    isInvalidPasswordMessage,
 }: Props) => {
-    const [password, setPassword] = useState<string>('')
-
     return (
         <>
             <Row
@@ -33,7 +47,11 @@ const ConnectionForm = ({
                     type="email"
                     animated
                     clearable
-                    color="primary"
+                    onBlur={() => handleValidation('email', email)}
+                    color={isInvalidEmail ? 'error' : 'primary'}
+                    helperColor={isInvalidEmail ? 'error' : 'default'}
+                    helperText={isInvalidEmail ? isInvalidEmailMessage : ' '}
+                    status={isInvalidEmail ? 'error' : 'default'}
                     aria-label="Email"
                     placeholder="Entrer votre email"
                     contentLeft={<HiOutlineMail />}
@@ -52,7 +70,13 @@ const ConnectionForm = ({
                     animated
                     aria-label="Password"
                     required
-                    color="primary"
+                    onBlur={() => handleValidation('password', password)}
+                    color={isInvalidPassword ? 'error' : 'primary'}
+                    helperColor={isInvalidPassword ? 'error' : 'default'}
+                    helperText={
+                        isInvalidPassword ? isInvalidPasswordMessage : ' '
+                    }
+                    status={isInvalidPassword ? 'error' : 'default'}
                     type="password"
                     clearable
                     bordered={isDark ? true : false}
@@ -71,6 +95,7 @@ const ConnectionForm = ({
                     <Button
                         auto
                         color="success"
+                        disabled={isInvalidForm}
                         onPress={() => handleConnection(email, password)}
                     >
                         Connexion ✨

@@ -1,22 +1,23 @@
 import { Button, Modal, Text } from '@nextui-org/react'
+import { useEffect, useState } from 'react'
 
 import { MdCloseFullscreen } from 'react-icons/md'
 import RecipeDetails from './RecipeDetails'
+import { RecipeUser } from '../../../../../server/src/shared/types'
 import { getUserByID } from '../../../router/userRouter'
-import { useEffect } from 'react'
 
 const ModalRecipeDetail = ({ isOpen, onClose, recipe }) => {
-    console.log(recipe)
+    const [recipeUser, setRecipeUser] = useState<RecipeUser>({} as RecipeUser)
     useEffect(() => {
-        Promise.all([getUserByID(recipe.created_by)]).then(([res]) => {
-            console.log(res)
+        Promise.all([getUserByID(recipe.created_by)]).then(([user]) => {
+            setRecipeUser(user[0])
         })
-    }, [])
+    }, [recipe.created_by])
     return (
         <Modal aria-labelledby="modal-title" open={isOpen} onClose={onClose}>
             <Modal.Header>
                 <Text id="modal-title" size={18}>
-                    {recipe.user.username} présente la recette{' '}
+                    {recipeUser.username} présente la recette{' '}
                     <Text b size={18}>
                         {recipe.name}
                     </Text>

@@ -1,6 +1,6 @@
-import { MailerOptions } from '../../shared/types'
+import { MailerOptions } from '../shared/types'
 import dotenv from 'dotenv'
-import { logger } from '../../server'
+import { logger } from '../server'
 import nodemailer from 'nodemailer'
 
 dotenv.config()

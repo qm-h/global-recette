@@ -47,6 +47,8 @@ export const getAllFavoritesRecipeHandler = async (
                 .join(',')})`
         )
 
+    logger.debug(JSON.stringify(user))
+
     const favoritesResponse = {
         favorites: allFavoritesRecipe.data,
         users: user.data,
@@ -59,5 +61,22 @@ export const getAllFavoritesRecipeHandler = async (
 
     if (allFavoritesRecipe.status === 200) {
         return res.status(200).send(favoritesResponse)
+    }
+}
+
+export const getUserByIDHandler = async (req: Request, res: Response) => {
+    const { userID } = req.params
+
+    const user = await supabase
+        .from<RecipeUser>('user')
+        .select('id, username, avatar')
+        .eq('id', parseInt(userID))
+
+    if (user.status === 400) {
+        return res.sendStatus(404)
+    }
+
+    if (user.status === 200) {
+        return res.status(200).send(user.data)
     }
 }

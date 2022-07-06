@@ -8,10 +8,10 @@ import {
     useTheme,
 } from '@nextui-org/react'
 
-import { LoginIcon } from '../../../lib/theme/Icons/LoginIcon'
+import { FaDoorOpen } from 'react-icons/fa'
 import MenuList from './commonComponents/MenuList'
-import MoonIcon from '../../../lib/theme/Icons/MoonIcon'
-import SunIcon from '../../../lib/theme/Icons/SunIcon'
+import MoonIcon from '../../../utils/theme/Icons/MoonIcon'
+import SunIcon from '../../../utils/theme/Icons/SunIcon'
 import UserMenu from './commonComponents/UserMenu'
 import { SuccessAuthUser as UserType } from '../../../../../server/src/shared/types'
 import { useNavigate } from 'react-router-dom'
@@ -105,7 +105,9 @@ const HeaderCommon = ({
                                     squared
                                     pointer
                                     color="success"
-                                    icon={<LoginIcon />}
+                                    icon={
+                                        <FaDoorOpen color="#FFF" size="1em" />
+                                    }
                                 />
                             </Tooltip>
                         </Link>

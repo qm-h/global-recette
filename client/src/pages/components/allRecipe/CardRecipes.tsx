@@ -1,4 +1,13 @@
-import { Avatar, Button, Card, Grid, Popover, Text } from '@nextui-org/react'
+import {
+    Avatar,
+    Button,
+    Card,
+    Grid,
+    Popover,
+    Text,
+    Tooltip,
+} from '@nextui-org/react'
+import { HasSavedRecipe, Recipe } from '../../../../../server/src/shared/types'
 import {
     TiSocialFacebookCircular,
     TiSocialInstagramCircular,
@@ -6,11 +15,11 @@ import {
 } from 'react-icons/ti'
 import { useEffect, useState } from 'react'
 
+import { FaShare } from 'react-icons/fa'
 import FavoritesButton from '../common/commonComponents/FavoritesButton'
-import { FiShare } from 'react-icons/fi'
 import { MdOutlineOpenInFull } from 'react-icons/md'
 import ModalRecipeDetail from './ModalRecipeDetail'
-import { Recipe } from '../../../../../server/src/shared/types'
+import UserInfoTooltip from '../common/commonComponents/UserInfoTooltip'
 import { getSavedRecipes } from '../../../router/userRouter'
 
 interface CardRecipesProps {
@@ -21,7 +30,9 @@ interface CardRecipesProps {
 
 const CardRecipes = ({ authUserID, recipes, isDark }: CardRecipesProps) => {
     const [isOpen, setIsOpen] = useState(false)
-    const [hasSaved, setHasSaved] = useState(false)
+    const [hasSaved, setHasSaved] = useState<HasSavedRecipe[]>([
+        {} as HasSavedRecipe,
+    ])
 
     const handleOpen = () => {
         setIsOpen(true)
@@ -32,39 +43,55 @@ const CardRecipes = ({ authUserID, recipes, isDark }: CardRecipesProps) => {
     }
 
     useEffect(() => {
-        Promise.all([getSavedRecipes(authUserID)])
-            .then(([res]) => {
-                res.forEach((recipe) => {
-                    if (recipe.recipe_id === recipes[0].id) {
-                        setHasSaved(true)
-                    }
-                })
+        if (authUserID) {
+            getSavedRecipes(authUserID).then((res) => {
+                if (res) {
+                    const savedRecipes = res.map((re) => re.recipe_id)
+                    const newHasSaved = []
+                    recipes.forEach((re) => {
+                        const hasSaved: HasSavedRecipe = {
+                            favorite: savedRecipes.includes(re.id),
+                            recipeID: re.id,
+                        }
+                        newHasSaved.push(hasSaved)
+                    })
+                    console.log(newHasSaved)
+                    setHasSaved(newHasSaved)
+                }
             })
-            .catch((err) => {
-                console.log(err)
-            })
+        }
     }, [authUserID, recipes])
 
     return (
         <>
             {recipes.map((r, i) => (
-                <Grid key={i} xs={4}>
+                <Grid key={i} xs={4} md={6}>
                     <Card
                         variant="bordered"
                         css={{
                             borderRadius: '6px',
                             w: '70%',
+                            m: 'auto',
+                            h: '100%',
                         }}
                     >
                         <Card.Header>
-                            <Grid.Container gap={1} alignItems="center">
-                                <Grid xs={6} md={5}>
+                            <Grid.Container
+                                gap={1}
+                                justify="center"
+                                alignItems="center"
+                            >
+                                <Grid xs={6} md={7} alignItems="center">
                                     <Text h4 b>
                                         {r.name}
                                     </Text>
                                     {authUserID !== undefined &&
                                         authUserID !== r.created_by && (
-                                            <Grid xs={1} md={3}>
+                                            <Grid
+                                                xs={1}
+                                                md={2}
+                                                alignItems="center"
+                                            >
                                                 <FavoritesButton
                                                     hasSaved={hasSaved}
                                                     setHasSaved={setHasSaved}
@@ -74,22 +101,37 @@ const CardRecipes = ({ authUserID, recipes, isDark }: CardRecipesProps) => {
                                                 />
                                             </Grid>
                                         )}
+                                    <Grid xs={2} md={1} alignItems="center">
+                                        <Button
+                                            auto
+                                            light
+                                            onPress={handleOpen}
+                                            icon={<MdOutlineOpenInFull />}
+                                        />
+                                    </Grid>
                                 </Grid>
-                                <Grid xs={2} md={2}>
-                                    <Button
-                                        auto
-                                        light
-                                        onPress={handleOpen}
-                                        icon={<MdOutlineOpenInFull />}
-                                    />
-                                </Grid>
+
                                 <Grid xs={6} md={4} justify="flex-end">
-                                    <Avatar
-                                        size="lg"
-                                        src={r.user.avatar}
-                                        color="primary"
-                                        bordered
-                                    />
+                                    <Tooltip
+                                        placement="top"
+                                        animated={false}
+                                        content={
+                                            <UserInfoTooltip
+                                                user={r.user}
+                                                onClick={() =>
+                                                    console.log('click')
+                                                }
+                                            />
+                                        }
+                                    >
+                                        <Avatar
+                                            pointer
+                                            size="lg"
+                                            src={r.user.avatar}
+                                            color="primary"
+                                            bordered
+                                        />
+                                    </Tooltip>
                                 </Grid>
                             </Grid.Container>
                         </Card.Header>
@@ -111,7 +153,10 @@ const CardRecipes = ({ authUserID, recipes, isDark }: CardRecipesProps) => {
                                     </Text>
                                 </Grid>
                                 <Grid xs={6} md={5} justify="flex-end">
-                                    <Popover isBordered={isDark ? true : false}>
+                                    <Popover
+                                        isBordered={isDark ? true : false}
+                                        placement="right"
+                                    >
                                         <Popover.Trigger>
                                             <Button
                                                 auto
@@ -121,7 +166,7 @@ const CardRecipes = ({ authUserID, recipes, isDark }: CardRecipesProps) => {
                                                         '$accents2',
                                                     color: '$accents9',
                                                 }}
-                                                icon={<FiShare />}
+                                                icon={<FaShare />}
                                             />
                                         </Popover.Trigger>
                                         <Popover.Content css={{ p: '$3' }}>

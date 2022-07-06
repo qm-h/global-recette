@@ -7,12 +7,10 @@ import {
 
 import axios from 'axios'
 
-export function getUserByID(userID: number): Promise<RecipeUser> {
+export function getUserByID(userID: number): Promise<RecipeUser[]> {
     return axios
         .get(`/api/user/${userID}`)
-        .then((res) => {
-            return res.data
-        })
+        .then((res) => res.data)
         .catch((err) => {
             return err
         })
