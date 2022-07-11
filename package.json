@@ -4,7 +4,6 @@
     "description": "",
     "scripts": {
         "build": "npm run clean && npm run build:prod && npm run copy:prod",
-        "build:vercel": "npm run clean && npm run build:prod && npm run copy:prod && npm run start:vercel",
         "copy:prod": "cp -r ./server/build ./build",
         "clean": "npm run clean:server && npm run clean:client && npm run clean:build",
         "clean:server": "npm run clean --prefix server",
@@ -18,7 +17,6 @@
         "test": "jest",
         "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\" dotenv/config . dotenv_config_path=./.env",
         "start": "npm run build && npm run server && npm run clean:client & npm run clean:server",
-        "start:vercel": "npm run server",
         "server": "npm start --prefix server",
         "lint-staged": "lint-staged",
         "pq": "pretty-quick",
