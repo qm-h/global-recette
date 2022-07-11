@@ -21,6 +21,8 @@ const App = () => {
             : null
     )
 
+    const [avatarIsChanged, setAvatarIsChanged] = useState<boolean>(false)
+
     return (
         <>
             <HeaderCommon
@@ -29,6 +31,7 @@ const App = () => {
                 setUserUUID={setUserUUID}
                 user={user}
                 setUser={setUser}
+                avatarIsChanged={avatarIsChanged}
             />
             <Toaster position="top-center" reverseOrder={true} />
             <AppContext.Provider
@@ -39,6 +42,8 @@ const App = () => {
                     setUser,
                     userUUID,
                     setUserUUID,
+                    avatarIsChanged,
+                    setAvatarIsChanged,
                 }}
             >
                 <CustomsRoutes />

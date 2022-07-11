@@ -112,3 +112,18 @@ export const unfollowingHandler = async (req: Request, res: Response) => {
             : res.send({ status: 500, message: 'Error removing follower' })
     }
 }
+
+export const updateAvatarHandler = async (req: Request, res: Response) => {
+    const { userID, avatar } = req.body
+    const updated = await supabase
+        .from<User>('user')
+        .update({
+            avatar: avatar,
+            generated_avatar: avatar,
+        })
+        .eq('id', userID)
+
+    updated.status === 200
+        ? res.status(200).send({ status: 200, message: 'Avatar updated' })
+        : res.send({ status: 500, message: 'Error updating avatar' })
+}

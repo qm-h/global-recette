@@ -7,11 +7,13 @@ import {
     Tooltip,
     useTheme,
 } from '@nextui-org/react'
+import { useEffect, useState } from 'react'
 
 import { FaDoorOpen } from 'react-icons/fa'
 import MenuList from './commonComponents/MenuList'
 import UserMenu from './commonComponents/UserMenu'
 import { SuccessAuthUser as UserType } from '../../../../../server/src/shared/types'
+import { getUserByID } from '../../../router/userRouter'
 import { useNavigate } from 'react-router-dom'
 
 interface Props {
@@ -20,6 +22,7 @@ interface Props {
     user: UserType
     setUser: (user: UserType) => void
     setUserUUID: (uuid: string) => void
+    avatarIsChanged: boolean
 }
 
 const HeaderCommon = ({
@@ -28,9 +31,21 @@ const HeaderCommon = ({
     user,
     setUser,
     setUserUUID,
+    avatarIsChanged,
 }: Props) => {
     const { isDark } = useTheme()
     const navigate = useNavigate()
+    const [userProfile, setUserProfile] = useState<UserType>()
+    useEffect(() => {
+        Promise.all([getUserByID(user.id)])
+            .then(([user]) => {
+                setUserProfile(user[0])
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }, [user.id, avatarIsChanged])
+
     return (
         <div
             className={`header_common ${
@@ -57,7 +72,7 @@ const HeaderCommon = ({
                             setUser={setUser}
                             setIsAuthenticated={setIsAuthenticated}
                             setUserUUID={setUserUUID}
-                            user={user}
+                            user={userProfile}
                         />
                     ) : (
                         <Link animated href="/login" color="success">

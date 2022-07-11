@@ -20,7 +20,7 @@
         "client:dev": "npm start --prefix client",
         "server:dev": "npm run dev --prefix server",
         "test": "jest",
-        "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\" dotenv/config . dotenv_config_path=./.env",
+        "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
         "start": "node ./build/server/server.js",
         "start:prod": "npm run build && npm start && npm run clean:client & npm run clean:server",
         "lint-staged": "lint-staged",

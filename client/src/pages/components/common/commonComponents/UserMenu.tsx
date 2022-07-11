@@ -56,9 +56,13 @@ const UserMenu = ({
                     size="lg"
                     color="primary"
                     squared
-                    name={`${user.firstname} ${user.lastname}`}
-                    description={`@${user.username}`}
-                    src={user.generated_avatar}
+                    name={user && `${user.firstname} ${user.lastname}`}
+                    description={user && `@${user.username}`}
+                    src={
+                        user && user.avatar && user.generated_avatar
+                            ? user.avatar
+                            : user?.generated_avatar
+                    }
                 />
             </Dropdown.Trigger>
             <Dropdown.Menu
@@ -69,13 +73,13 @@ const UserMenu = ({
                     borderRadius: '$lg',
                     padding: '$sm',
                 }}
-                disabledKeys={['help', 'profile']}
+                disabledKeys={['help']}
                 aria-label="User Actions"
             >
                 <Dropdown.Section title="Compte">
                     <Dropdown.Item textValue={'email'} key="profile">
                         <Text b color="inherit" css={{ d: 'flex' }}>
-                            {user.email}
+                            {user && user.email}
                         </Text>
                     </Dropdown.Item>
                 </Dropdown.Section>

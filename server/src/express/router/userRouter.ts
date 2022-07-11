@@ -3,6 +3,7 @@ import {
     followingHandler,
     removeSavedRecipeHandler,
     unfollowingHandler,
+    updateAvatarHandler,
 } from './../api/commands/user/userCommands'
 import {
     getAllFavoritesRecipeHandler,
@@ -44,6 +45,7 @@ class UserRouter {
         )
         this.router.post('/savetofavorite', this.saveRecipeToFavorite)
         this.router.post('/removesavedrecipe', this.removeSavedRecipe)
+        this.router.put('/updateavatar', this.updateAvatar)
     }
 
     getUserByID(req: Request, res: Response) {
@@ -74,6 +76,9 @@ class UserRouter {
     }
     private unfollowingUser(req: Request, res: Response) {
         return unfollowingHandler(req, res)
+    }
+    private updateAvatar(req: Request, res: Response) {
+        return updateAvatarHandler(req, res)
     }
 }
 

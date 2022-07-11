@@ -30,7 +30,6 @@ const MenuList = ({ user, isAuthenticated }: Props) => {
                 break
         }
     }, [url])
-    console.log(isAuthenticated, user)
 
     return (
         <Grid.Container gap={4} justify={user ? 'space-between' : 'center'}>

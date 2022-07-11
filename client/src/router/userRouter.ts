@@ -108,3 +108,16 @@ export function getFollowingUser(
         .then((res) => res.data)
         .catch((err) => console.log(err))
 }
+
+export function updateAvatar(
+    userID: number,
+    avatar: string
+): Promise<ExpressResponseMessageType> {
+    return axios
+        .put(`/api/user/updateavatar`, {
+            userID: userID,
+            avatar: avatar,
+        })
+        .then((res) => res.data)
+        .catch((err) => console.log(err))
+}
