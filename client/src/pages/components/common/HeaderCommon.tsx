@@ -36,15 +36,18 @@ const HeaderCommon = ({
     const { isDark } = useTheme()
     const navigate = useNavigate()
     const [userProfile, setUserProfile] = useState<UserType>()
+
     useEffect(() => {
-        Promise.all([getUserByID(user.id)])
-            .then(([user]) => {
-                setUserProfile(user[0])
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-    }, [user.id, avatarIsChanged])
+        if (user) {
+            Promise.all([getUserByID(user.id)])
+                .then(([user]) => {
+                    setUserProfile(user[0])
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        }
+    }, [user, avatarIsChanged])
 
     return (
         <div
