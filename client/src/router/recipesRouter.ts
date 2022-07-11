@@ -2,6 +2,7 @@ import {
     ExpressResponseUrlType,
     Recipe,
     RecipeIngredient,
+    SuccessAuthUser,
 } from '../../../server/src/shared/types'
 
 import { ExpressResponseMessageType } from './../../../server/src/shared/types'
@@ -21,26 +22,17 @@ export function getRecipesByID(id: number): Promise<Recipe> {
         .catch((err) => console.log(err))
 }
 
+export function getRecipeUser(id: number): Promise<SuccessAuthUser> {
+    return axios
+        .get(`/api/recipe/user/${id}`)
+        .then((res) => res.data)
+        .catch((err) => console.log(err))
+}
+
 export function getRecipeByName(recipeName: string): Promise<Recipe> {
     return axios
         .post(`/api/recipe/name`, { recipeName: recipeName })
         .then((res) => res.data[0])
-        .catch((err) => console.log(err))
-}
-
-export function getRecipeByUserID(
-    id: number,
-    accessUserUUID
-): Promise<Recipe[]> {
-    return axios
-        .post(`/api/recipe/user/${id}`, {
-            userUUID: accessUserUUID,
-            userID: id,
-        })
-        .then((res) => {
-            console.log(res.data)
-            return res.data
-        })
         .catch((err) => console.log(err))
 }
 
@@ -120,7 +112,6 @@ export function updateRecipe(
 }
 
 export function deleteRecipe(id: number): Promise<ExpressResponseMessageType> {
-    console.log(id)
     return axios
         .delete(`/api/recipe/delete/${id}`)
         .then((res) => res.data)
@@ -130,7 +121,6 @@ export function deleteRecipe(id: number): Promise<ExpressResponseMessageType> {
 export function deleteRecipeIngredient(
     id: number
 ): Promise<ExpressResponseMessageType> {
-    console.log(id)
     return axios
         .delete(`/api/recipe/delete/recipeingredient/${id}`)
         .then((res) => res.data)

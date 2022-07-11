@@ -37,7 +37,6 @@ export const createRecipeHandler = async (req: Request, res: Response) => {
 
 export const uploadImageHandler = async (req, res: Response) => {
     const { image } = req.files
-    console.log('IMAGE:', image)
     const savedImageResult = await supabase.storage
         .from('images')
         .upload(`${image.name}`, image.data)

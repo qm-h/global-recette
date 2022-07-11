@@ -19,14 +19,19 @@ const ImageRecipe = ({ image }) => {
             {isLoading ? (
                 <Grid.Container gap={2}>
                     <Grid md={12} justify="center">
-                        <Loading color="primary" size="xl" />
+                        <Loading
+                            color="primary"
+                            type="points-opacity"
+                            size="xl"
+                        />
                     </Grid>
                 </Grid.Container>
             ) : (
                 <Image
-                    showSkeleton={isLoading}
+                    showSkeleton
                     width={500}
                     height={280}
+                    maxDelay={1000}
                     autoResize
                     src={urlImage}
                     alt="Image de Recette"

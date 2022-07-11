@@ -1,15 +1,20 @@
 import {
     AuthRequest,
     MailerOptions,
+    Recipe,
     TokenUserAccess,
     User,
     UserConfirmation,
     UserResetPassword,
+    UserToken,
 } from '../shared/types'
 import { NextFunction, Request, Response } from 'express'
 
+import CryptoJS from 'crypto-js'
 import bcrypt from 'bcrypt'
+import crypto from 'crypto'
 import dotenv from 'dotenv'
+import jwt from 'jsonwebtoken'
 import { logger } from '../server'
 import path from 'path'
 import { sendEmail } from '../shared/utils/sendMethods'
@@ -18,9 +23,50 @@ import { v4 as uuidv4 } from 'uuid'
 
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') })
 
-const authService = {
-    generateAccessTokenMiddleware: () => {
+const AuthService = {
+    base64url: (str: string) => {
+        let base64Url = CryptoJS.enc.Base64.stringify(
+            CryptoJS.enc.Utf8.parse(str)
+        )
+        base64Url = base64Url.replace(/=+$/, '')
+        base64Url = base64Url.replace(/\+/g, '-')
+        base64Url = base64Url.replace(/\//g, '_')
+        return base64Url
+    },
+    generateAccessUUIDToken: () => {
         return uuidv4()
+    },
+    generateAccessJWTToken: (user: UserToken) => {
+        const header = {
+            alg: 'HS256',
+            typ: 'JWT',
+        }
+
+        const stringifiedHeader = CryptoJS.enc.Utf8.parse(
+            JSON.stringify(header)
+        )
+        const encodedHeader = AuthService.base64url(stringifiedHeader)
+
+        const data = {
+            email: user.email,
+            username: user.username,
+            firstname: user.firstname,
+            lastname: user.lastname,
+        }
+
+        const stringifiedData = CryptoJS.enc.Utf8.parse(JSON.stringify(data))
+        const encodedData = AuthService.base64url(stringifiedData)
+
+        const token = encodedHeader + '.' + encodedData
+        const secreKey = crypto.randomBytes(32).toString('hex')
+        const secret = crypto.createHmac('sha256', secreKey).digest('hex')
+
+        const signatureHmac = CryptoJS.HmacSHA256(token, secret)
+        const signature = AuthService.base64url(signatureHmac)
+
+        const signedToken = token + '.' + signature
+
+        return signedToken
     },
     registerUser: async (req: Request, res: Response) => {
         const {
@@ -29,7 +75,7 @@ const authService = {
             lastname,
             email,
             password,
-            avatar,
+            generated_avatar,
         }: AuthRequest = req.body
         bcrypt.hash(password, 10, async (err, hash) => {
             if (err) {
@@ -48,15 +94,15 @@ const authService = {
                         lastname,
                         email: email.toLowerCase(),
                         password: hash,
-                        avatar,
+                        generated_avatar,
                     }
-                    const token = authService.generateAccessTokenMiddleware()
+                    const token = AuthService.generateAccessUUIDToken()
                     const result = await supabase
                         .from<User>('user')
                         .insert(user)
                     if (result.status === 201) {
                         const sendEmailConfirmation =
-                            await authService.saveConfirmationRegisterEmail(
+                            await AuthService.saveConfirmationRegisterEmail(
                                 email,
                                 token
                             )
@@ -91,37 +137,58 @@ const authService = {
             .from<User>('user')
             .select()
             .eq('email', email)
+
         if (user.data.length === 0) {
             logger.error(`User not found`)
-            return res.sendStatus(401)
+            return res.send({ status: 404, message: 'User not found' })
+        }
+        if (user['data'][0].access_jwt_token === null) {
+            logger.error(`User not confirmed`)
+            return res.send({ status: 401, message: 'User not confirmed' })
         }
         const userData = user.data[0]
         if (bcrypt.compareSync(password, userData.password)) {
-            const token = authService.generateAccessTokenMiddleware()
-            const isAuth = await authService.authWithSavedAccessUserUUID(
+            const uuidToken = AuthService.generateAccessUUIDToken()
+            const payload = {
+                user: { id: userData.id, username: userData.username },
+            }
+            const jwtToken = jwt.sign(payload, process.env.JWT_SECRET)
+            const isAuth = await AuthService.authWithSavedAccessUserUUID(
                 userData.id,
-                token
+                uuidToken
             )
             if (isAuth) {
+                res.cookie('jwt_token', jwtToken, {
+                    httpOnly: true,
+                    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 7 days
+                    sameSite: 'strict',
+                })
                 return res.status(200).send({
-                    accessUUID: token,
+                    status: 200,
+                    message: 'User authenticated',
+                    accessUUID: uuidToken,
                     user: {
                         id: userData.id,
                         username: userData.username,
                         firstname: userData.firstname,
                         lastname: userData.lastname,
                         email: userData.email,
-                        avatar: userData.avatar,
+                        generated_avatar: userData.generated_avatar,
+                        followers: userData.followers,
+                        following: userData.following,
+                        biography: userData.biography,
                     },
-                    status: 200,
                 })
             } else {
                 logger.error(`Error authenticating user`)
-                return res.sendStatus(401)
+                return res.send({
+                    status: 500,
+                    message: 'Error authenticating user',
+                })
             }
         } else {
             logger.error(`Password incorrect`)
-            return res.sendStatus(401)
+            return res.send({ status: 400, message: 'Password incorrect' })
         }
     },
     saveToken: async (userID: number, userUUID: string) => {
@@ -162,12 +229,13 @@ const authService = {
         }
         return true
     },
-    verifyAccessTokenMiddleware: async (
+    verifyAccessUUIDToken: async (
         req: Request,
         res: Response,
         next: NextFunction
     ) => {
         const { userUUID, userID } = req.body
+
         if (!userID) {
             logger.error('userID is undefined')
             return res.status(401).send({ message: 'Error. Need a userUUID' })
@@ -189,17 +257,34 @@ const authService = {
                 .select()
                 .eq('user_id', userID)
             if (result.data.length === 0) {
-                return authService.saveToken(userID, userUUID)
+                return AuthService.saveToken(userID, userUUID)
             }
             const token = result.data[0].token_user_access
             if (token) {
-                authService.deleteToken(userID)
-                return authService.saveToken(userID, userUUID)
+                AuthService.deleteToken(userID)
+                return AuthService.saveToken(userID, userUUID)
             }
         } else {
             logger.error('userID is undefined')
             return false
         }
+    },
+    verifyAccessJWTToken: async (
+        req: Request,
+        res: Response,
+        next?: NextFunction
+    ) => {
+        const { userID } = req.params
+        const result = await supabase
+            .from('user')
+            .select('access_jwt_token')
+            .eq('id', userID)
+        const token = result.data[0].access_jwt_token
+        if (token === null) {
+            logger.error('access_jwt_token is undefined')
+            return res.send({ status: 403, message: 'Not Authorize' })
+        }
+        next()
     },
     hasAuthenticatedWithNoUserUUID: async (req: Request, res: Response) => {
         const { userID } = req.body
@@ -286,8 +371,6 @@ const authService = {
             .select()
             .eq('email', email)
 
-        logger.info(`RESULT: ${JSON.stringify(result)}`)
-
         if (result.data.length === 0) {
             logger.error(`Error. Invalid email ${email}`)
             return res.status(401).send({ message: 'Error. Invalid email' })
@@ -342,23 +425,40 @@ const authService = {
         }
         const haveToken = await supabase
             .from('user_confirmation')
-            .select()
+            .select('email')
             .eq('token', token)
-        if (haveToken.data.length === 0) {
+        if (haveToken['data'].length === 0) {
             logger.error(`Error. Invalid token ${token}`)
             return res.status(401).send({ message: 'Error. Invalid token' })
         }
+        const userToBeConfirmed = await supabase
+            .from('user')
+            .select('email, username, firstname, lastname')
+            .eq('email', haveToken.data[0].email)
+
+        if (userToBeConfirmed['data'].length === 0) {
+            logger.error(`Error. User not found ${token}`)
+            return res.status(401).send({ message: 'Error. User not found' })
+        }
+        const access_jwt_token = AuthService.generateAccessJWTToken({
+            email: userToBeConfirmed['data'][0].email,
+            username: userToBeConfirmed['data'][0].username,
+            firstname: userToBeConfirmed['data'][0].firstname,
+            lastname: userToBeConfirmed['data'][0].lastname,
+        })
+
         const user = await supabase
             .from<User>('user')
             .update({
                 confirmed: true,
+                access_jwt_token: access_jwt_token,
             })
-            .eq('email', haveToken.data[0].email)
+            .eq('email', haveToken['data'][0].email)
         if (user.data[0].firstname === undefined) {
             logger.error(`${user.error}`)
             return res.status(401).send({ message: 'Error. User not found' })
         }
-        authService.deleteConfirmationRegisterEmail(token)
+        AuthService.deleteConfirmationRegisterEmail(token)
         return res.status(200).send({ status: 200, message: 'User confirmed' })
     },
     deleteConfirmationRegisterEmail: async (token) => {
@@ -411,7 +511,7 @@ const authService = {
                     .status(401)
                     .send({ message: 'Error. Error saving token' })
             }
-            const url = `http://localhost:3000/reset-password/${uuid}`
+            const url = `${process.env.FRONT_URL}/reset-password/${uuid}`
             const mailOptions = {
                 from: '"Global Recette 🍔"',
                 to: process.env.EMAIL,
@@ -450,9 +550,15 @@ const authService = {
             .from<UserResetPassword>('user_reset_password')
             .select()
             .eq('token', token)
+
         if (user.data.length === 0) {
-            return res.sendStatus(404)
+            return res.status(401).send({ message: 'Error. Invalid token' })
         }
+        req.params = {
+            userID: `${user['data'][0].user_id}`,
+        }
+        await AuthService.verifyAccessJWTToken(req, res)
+
         bcrypt.hash(password, 10, async (err, hash) => {
             if (err) {
                 logger.error(`${err}`)
@@ -474,6 +580,70 @@ const authService = {
             }
         })
     },
+    deleteAccount: async (req: Request, res: Response) => {
+        const { userID, email } = req.body
+        const { jwt_token } = req.cookies
+
+        jwt.verify(jwt_token, process.env.JWT_SECRET, async (err) => {
+            if (err) {
+                logger.error(`JwtVerifyError: ${err}`)
+                return res.send({
+                    status: 401,
+                    message: 'Error. Invalid token',
+                })
+            } else {
+                const recipeID = await supabase
+                    .from<Recipe>('recipes')
+                    .select('id')
+                    .eq('created_by', userID)
+
+                if (recipeID.data.length > 0) {
+                    for (let i = 0; i < recipeID.data.length; i++) {
+                        await supabase
+                            .from('recipe_ingredient')
+                            .delete()
+                            .eq('recipe_id', recipeID['data'][0].id)
+                        await supabase
+                            .from<Recipe>('recipes')
+                            .delete()
+                            .eq('id', recipeID.data[i].id)
+                    }
+                }
+                await supabase
+                    .from<UserResetPassword>('user_reset_password')
+                    .delete()
+                    .eq('user_id', userID)
+                await supabase
+                    .from<UserConfirmation>('user_confirmation')
+                    .delete()
+                    .eq('email', email)
+                await supabase
+                    .from<TokenUserAccess>('user_token_access')
+                    .delete()
+                    .eq('user_id', userID)
+                await supabase
+                    .from('token_access')
+                    .delete()
+                    .eq('user_id', userID)
+                const user = await supabase
+                    .from<User>('user')
+                    .delete()
+                    .eq('id', userID)
+                res.clearCookie('jwt_token')
+                if (user.status === 200) {
+                    return res.status(200).send({
+                        status: 200,
+                        message: 'User deleted',
+                    })
+                }
+                logger.error(`DELETING ERROR: ${JSON.stringify(user.error)}`)
+                return res.send({
+                    status: 401,
+                    message: 'Error. User not found',
+                })
+            }
+        })
+    },
 }
 
-export default authService
+export default AuthService

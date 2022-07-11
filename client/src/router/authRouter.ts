@@ -26,7 +26,7 @@ export function registerUser(
             lastname: data.lastname,
             email: data.email,
             password: data.password,
-            avatar: data.avatar,
+            generated_avatar: data.generated_avatar,
         })
         .then((res) => res.data)
         .catch((err) => console.log(err))
@@ -59,7 +59,6 @@ export function userLogout(
 export function forgotPassword(
     email: string
 ): Promise<ExpressResponseMessageType> {
-    console.log(email)
     return axios
         .post('/api/auth/forgot-password', {
             email: email,
@@ -106,6 +105,21 @@ export function hasUUID(uuid: string): Promise<ExpressResponseMessageType> {
     return axios
         .post('/api/auth/has-uuid', {
             uuid: uuid,
+        })
+        .then((res) => res.data)
+        .catch((err) => console.log(err))
+}
+
+export function deleteAccount(
+    userID: number,
+    userUUID: string,
+    email: string
+): Promise<ExpressResponseMessageType> {
+    return axios
+        .post(`/api/auth/delete-account/${userID}`, {
+            userID: userID,
+            userUUID: userUUID,
+            email: email,
         })
         .then((res) => res.data)
         .catch((err) => console.log(err))

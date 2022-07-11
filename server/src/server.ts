@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(cors())
 app.use(fileUpload())
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join('public')))
 
 app.use('/api/recipe', createRecipeRouter)
 app.use('/api/auth', createAuthRouter)
@@ -41,7 +41,10 @@ supabase.auth
 
 if (process.env.NODE_ENV === 'production') {
     logger.info(`Production mode.`)
-    app.use(express.static(path.join(__dirname, '../client')))
+    app.use(express.static(path.join(__dirname, '..', 'client')))
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, '..', 'client', 'index.html'))
+    })
     app.listen(port)
 } else {
     logger.debug(`Development mode.`)

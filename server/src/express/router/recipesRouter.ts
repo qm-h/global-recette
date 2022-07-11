@@ -1,4 +1,4 @@
-import { Request, Response, Router } from 'express'
+import { NextFunction, Request, Response, Router } from 'express'
 import {
     createRecipeHandler,
     deleteRecipeHandler,
@@ -12,9 +12,10 @@ import {
     getRecipeByNameHandler,
     getRecipeByUserIDHandler,
     getRecipeImageHandler,
+    getRecipeUserHandler,
 } from '../api/queries/recipe/recipeQueries'
 
-import authService from '../../services/authService'
+import AuthService from '../../services/authService'
 import { insertRecipeIngredientHandler } from '../api/commands/recipe/recipeIngredientCommands'
 
 class RecipeRouter {
@@ -24,8 +25,10 @@ class RecipeRouter {
         this.router = Router()
         this.router.get('/', this.getAllRecipesWithUser)
         this.router.post(
-            '/user/:id',
-            authService.verifyAccessTokenMiddleware,
+            '/user/:userID',
+            (req: Request, res: Response, next: NextFunction) =>
+                AuthService.verifyAccessJWTToken(req, res, next),
+            AuthService.verifyAccessUUIDToken,
             this.getAllRecipesByUserID
         )
         this.router.get('/:id', (_req: Request, res: Response) =>
@@ -34,6 +37,7 @@ class RecipeRouter {
         this.router.post('/name', (_req: Request, res: Response) =>
             this.getRecipeByName(_req, res)
         )
+        this.router.get('/user/:id', [this.getRecipeUser])
         this.router.post('/createrecipe', (_req: Request, res: Response) =>
             this.createRecipeRouter(_req, res)
         )
@@ -70,6 +74,10 @@ class RecipeRouter {
 
     private getRecipeById(req: Request, res: Response) {
         return getRecipeByIDHandler(req, res)
+    }
+
+    private getRecipeUser(req: Request, res: Response) {
+        return getRecipeUserHandler(req, res)
     }
 
     private getRecipeByName(req: Request, res: Response) {

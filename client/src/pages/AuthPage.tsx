@@ -1,9 +1,10 @@
+import { useEffect, useState } from 'react'
+
 import AuthForm from './components/auth/connection/AuthForm'
 import { Grid } from '@nextui-org/react'
 import RegisterForm from './components/auth/register/RegisterForm'
 import checkField from '../utils/auth/checkField'
 import { useAppContext } from '../utils/context/AppContext'
-import { useState } from 'react'
 
 const AuthPage = () => {
     const [noAccount, setNoAccount] = useState<boolean>(false)
@@ -78,6 +79,16 @@ const AuthPage = () => {
                 return false
         }
     }
+
+    useEffect(() => {
+        if (noAccount || !noAccount) {
+            setIsInvalidUsername(false)
+            setIsInvalidFirstname(false)
+            setIsInvalidLastname(false)
+            setIsInvalidEmail(false)
+            setIsInvalidPassword(false)
+        }
+    }, [noAccount])
 
     return (
         <Grid.Container justify="center" alignItems="center">

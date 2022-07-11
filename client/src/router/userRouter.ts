@@ -1,19 +1,34 @@
 import {
+    ExpressResponseDataType,
     ExpressResponseMessageType,
     FavoritesRecipe,
     FavoritesRecipeWithUser,
-    RecipeUser,
+    SuccessAuthUser,
+    UserRecipesResponse,
 } from '../../../server/src/shared/types'
 
 import axios from 'axios'
 
-export function getUserByID(userID: number): Promise<RecipeUser[]> {
+export function getUserByID(userID: number): Promise<SuccessAuthUser> {
     return axios
         .get(`/api/user/${userID}`)
         .then((res) => res.data)
         .catch((err) => {
             return err
         })
+}
+
+export function getRecipeByUserID(
+    id: number,
+    accessUserUUID
+): Promise<UserRecipesResponse> {
+    return axios
+        .post(`/api/recipe/user/${id}`, {
+            userUUID: accessUserUUID,
+            userID: id,
+        })
+        .then((res) => res.data)
+        .catch((err) => console.log(err))
 }
 
 export function saveRecipeToFavorite(
@@ -54,6 +69,42 @@ export function getAllFavoritesRecipe(
 ): Promise<FavoritesRecipeWithUser> {
     return axios
         .get(`/api/user/getallfavoritesrecipe/${userID}`)
+        .then((res) => res.data)
+        .catch((err) => console.log(err))
+}
+
+export function followingUser(
+    userID: number,
+    followingUserID: number
+): Promise<ExpressResponseMessageType> {
+    console.log(userID, followingUserID)
+    return axios
+        .post(`/api/user/follow`, {
+            userID: userID,
+            followingUserID: followingUserID,
+        })
+        .then((res) => res.data)
+        .catch((err) => console.log(err))
+}
+
+export function unfollowingUser(
+    userID: number,
+    followingUserID: number
+): Promise<ExpressResponseMessageType> {
+    return axios
+        .post(`/api/user/unfollowing`, {
+            userID: userID,
+            followingUserID: followingUserID,
+        })
+        .then((res) => res.data)
+        .catch((err) => console.log(err))
+}
+
+export function getFollowingUser(
+    username: string
+): Promise<ExpressResponseDataType> {
+    return axios
+        .get(`/api/user/following/${username}`)
         .then((res) => res.data)
         .catch((err) => console.log(err))
 }

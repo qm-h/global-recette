@@ -103,14 +103,25 @@ const AuthForm = ({
                                 setOpenConfirm(true)
                                 break
                             case 404:
-                                toasterUserNotFound(isDark)
+                                toasterErrorCommon(
+                                    isDark,
+                                    'Aucun utilisateur trouvé,\n avez-vous créé un compte ?'
+                                )
+                                break
+                            case 400:
+                                toasterErrorAuth(isDark)
                                 break
                             default:
+                                toasterErrorCommon(
+                                    isDark,
+                                    'Une erreur est survenue, contactez nous si le problème persiste'
+                                )
                                 break
                         }
                     })
-                    .catch(() => {
+                    .catch((err) => {
                         setIsLoading(false)
+                        console.log(err)
                         toasterErrorAuth(isDark)
                     })
             }
@@ -153,7 +164,7 @@ const AuthForm = ({
     }, [email, password, isInvalidEmail, isInvalidPassword, setIsInvalidForm])
 
     return (
-        <Card css={{ w: '50%' }}>
+        <Card css={{ w: '70%' }}>
             <Card.Header>
                 <Row justify="center">
                     <Text css={{}} h2>

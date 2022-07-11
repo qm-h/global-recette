@@ -35,6 +35,12 @@ const checkField = {
         }
         return false
     },
+    deleteEmail: (authEmail: string, email: string): string | boolean => {
+        if (!email.includes(authEmail)) {
+            return `Ce n'est pas votre adresse email !`
+        }
+        return false
+    },
     password: (value: string): string | boolean => {
         if (!passwordRegex.test(value)) {
             return `Il doit contenir au moins 8 caractères une majuscule et un chiffre`

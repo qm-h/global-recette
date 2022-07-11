@@ -21,8 +21,7 @@ const RecipeDetails = ({ recipe }: Props) => {
             </Grid>
             <Grid md={12}>
                 <Text size={18}>
-                    Les notes prise de la part de {recipe.creator_username} de
-                    concernant la recettes sont :
+                    {recipe.creator_username} a pris quelques notes :
                 </Text>
             </Grid>
             <Grid md={12}>

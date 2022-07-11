@@ -3,9 +3,7 @@ import {
     Button,
     Card,
     Grid,
-    Image,
     Popover,
-    Row,
     Text,
     Tooltip,
 } from '@nextui-org/react'
@@ -14,27 +12,75 @@ import {
     TiSocialFacebookCircular,
     TiSocialTwitterCircular,
 } from 'react-icons/ti'
+import {
+    followingUser,
+    getSavedRecipes,
+    unfollowingUser,
+} from '../../../router/userRouter'
 import { useEffect, useState } from 'react'
 
 import { FaShare } from 'react-icons/fa'
 import FavoritesButton from '../common/commonComponents/FavoritesButton'
 import { MdOutlineOpenInFull } from 'react-icons/md'
-import ModalRecipeDetail from './ModalRecipeDetail'
+import ModalRecipeDetail from '../common/commonComponents/ModalRecipeDetail'
 import UserInfoTooltip from '../common/commonComponents/UserInfoTooltip'
-import { getSavedRecipes } from '../../../router/userRouter'
 
 interface CardRecipesProps {
     authUserID?: number
     recipes: Recipe[]
     isDark: boolean
+    setIsFollowing: (value: boolean) => void
+    isFollowing: boolean
+    isUnfollowing: boolean
+    setIsUnfollowing: (value: boolean) => void
 }
 
-const CardRecipes = ({ authUserID, recipes, isDark }: CardRecipesProps) => {
+const CardRecipes = ({
+    authUserID,
+    recipes,
+    isDark,
+    setIsFollowing,
+    isFollowing,
+    setIsUnfollowing,
+    isUnfollowing,
+}: CardRecipesProps) => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const [recipeID, setRecipeID] = useState<number>()
     const [hasSaved, setHasSaved] = useState<HasSavedRecipe[]>([
         {} as HasSavedRecipe,
     ])
+    const [isLoading, setIsLoading] = useState(false)
+
+    const handleFollowingUser = async (userID, followerID) => {
+        setIsLoading(true)
+        setIsFollowing(true)
+        await followingUser(userID, followerID)
+            .then((res) => {
+                if (res.status === 200) {
+                    setIsFollowing(true)
+                }
+
+                setIsLoading(false)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+
+    const handleUnfollowingUser = async (userID, followerID) => {
+        setIsLoading(true)
+        setIsUnfollowing(true)
+        await unfollowingUser(userID, followerID)
+            .then((res) => {
+                if (res.status === 200) {
+                    setIsUnfollowing(true)
+                }
+                setIsLoading(false)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
 
     const handleOpen = (recipeID: number) => {
         console.log('cardRecipe', recipeID)
@@ -117,12 +163,11 @@ const CardRecipes = ({ authUserID, recipes, isDark }: CardRecipesProps) => {
                                                 />
                                             </Grid>
                                         )}
-                                    <Grid xs={2} md={1} alignItems="center">
-                                        <Button
-                                            auto
-                                            light
-                                            onPress={() => handleOpen(r.id)}
-                                            icon={<MdOutlineOpenInFull />}
+                                    <Grid xs={2} md={2} alignItems="center">
+                                        <MdOutlineOpenInFull
+                                            size={20}
+                                            className="icon-open-in-full"
+                                            onClick={() => handleOpen(r.id)}
                                         />
                                     </Grid>
                                 </Grid>
@@ -134,17 +179,23 @@ const CardRecipes = ({ authUserID, recipes, isDark }: CardRecipesProps) => {
                                         trigger={'click'}
                                         content={
                                             <UserInfoTooltip
-                                                userRecipe={r.user}
-                                                onClick={() =>
-                                                    console.log('click')
+                                                isLoading={isLoading}
+                                                isFollowing={isFollowing}
+                                                isUnfollowing={isUnfollowing}
+                                                handleFollowingUser={
+                                                    handleFollowingUser
                                                 }
+                                                handleUnfollowingUser={
+                                                    handleUnfollowingUser
+                                                }
+                                                userRecipe={r.user}
                                             />
                                         }
                                     >
                                         <Avatar
                                             pointer
                                             size="lg"
-                                            src={r.user.avatar}
+                                            src={r.user.generated_avatar}
                                             color="primary"
                                             bordered
                                         />

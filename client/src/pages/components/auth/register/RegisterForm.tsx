@@ -11,14 +11,14 @@ import {
     toasterErrorCommon,
     toasterSuccessCommon,
 } from '../../../../utils/theme/toaster'
+import { useEffect, useState } from 'react'
 
 import RegisterFormBody from './RegisterFormBody'
-import { User } from '../../../../../../server/src/shared/types'
+import { UserRegister } from '../../../../../../server/src/shared/types'
 import checkField from '../../../../utils/auth/checkField'
 import { randomAvatar } from '../../../../utils/randomAvatar'
 import { registerUser } from '../../../../router/authRouter'
 import toast from 'react-hot-toast'
-import { useState } from 'react'
 
 interface RegisterFormProps {
     noAccount: (val: boolean) => void
@@ -102,15 +102,14 @@ const RegisterForm = ({
                 typeof emailIsValid === 'boolean' &&
                 typeof passwordIsValid === 'boolean'
             ) {
-                const avatar = randomAvatar()
-                const user: User = {
-                    id: 0,
+                const generated_avatar = randomAvatar()
+                const user: UserRegister = {
                     username,
                     password,
                     email,
                     firstname,
                     lastname,
-                    avatar,
+                    generated_avatar,
                 }
                 setIsLoading(true)
                 await registerUser(user)
@@ -151,6 +150,32 @@ const RegisterForm = ({
         }
     }
 
+    useEffect(() => {
+        if (
+            username &&
+            lastname &&
+            firstname &&
+            email &&
+            password &&
+            isInvalidEmail === false &&
+            isInvalidPassword === false &&
+            isInvalidUsername === false &&
+            isInvalidFirstname === false &&
+            isInvalidLastname === false
+        ) {
+            setIsInvalidForm(false)
+        }
+    }, [
+        email,
+        isInvalidEmail,
+        isInvalidFirstname,
+        isInvalidLastname,
+        isInvalidPassword,
+        isInvalidUsername,
+        password,
+        setIsInvalidForm,
+    ])
+
     return (
         <Card css={{ w: '40%', mt: '$18' }}>
             <Card.Header>
@@ -187,23 +212,22 @@ const RegisterForm = ({
                     setPassword={setPassword}
                 />
             </Card.Body>
-            <Card.Footer isBlurred>
+            <Card.Footer>
                 <Grid.Container>
                     <Grid md={12} justify="center" alignItems="center">
-                        {!isLoading ? (
-                            <Button
-                                color="success"
-                                auto
-                                flat
-                                onPress={() => handleRegister()}
-                            >
-                                Créer 🚀
-                            </Button>
-                        ) : (
-                            <Button disabled auto flat>
+                        <Button
+                            color="success"
+                            auto={isLoading}
+                            flat
+                            disabled={isInvalidForm || isLoading}
+                            onPress={() => handleRegister()}
+                        >
+                            {isLoading ? (
                                 <Loading color="currentColor" size="sm" />
-                            </Button>
-                        )}
+                            ) : (
+                                'Créer'
+                            )}
+                        </Button>
                     </Grid>
                     <Grid md={12} justify="center" alignItems="center">
                         <Button

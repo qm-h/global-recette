@@ -10,12 +10,9 @@ import {
 
 import { FaDoorOpen } from 'react-icons/fa'
 import MenuList from './commonComponents/MenuList'
-import MoonIcon from '../../../utils/theme/Icons/MoonIcon'
-import SunIcon from '../../../utils/theme/Icons/SunIcon'
 import UserMenu from './commonComponents/UserMenu'
 import { SuccessAuthUser as UserType } from '../../../../../server/src/shared/types'
 import { useNavigate } from 'react-router-dom'
-import { useTheme as useNextTheme } from 'next-themes'
 
 interface Props {
     isAuthenticated: boolean
@@ -32,7 +29,6 @@ const HeaderCommon = ({
     setUser,
     setUserUUID,
 }: Props) => {
-    const { setTheme } = useNextTheme()
     const { isDark } = useTheme()
     const navigate = useNavigate()
     return (
@@ -41,49 +37,21 @@ const HeaderCommon = ({
                 isDark ? 'dark_header' : 'light_header'
             }`}
         >
-            <Grid.Container justify="space-between">
-                <Grid xs={3} alignItems="center">
+            <Grid.Container>
+                <Grid xs={3} justify="flex-start" alignItems="center">
                     <Text
                         onClick={() => navigate('/')}
-                        h1
+                        h2
                         b
                         css={{ cursor: 'pointer' }}
                     >
                         Global Recette 🍔
                     </Text>
                 </Grid>
-                <Grid xs={5} alignItems="center">
-                    <MenuList user={user} />
+                <Grid xs={7} alignItems="center">
+                    <MenuList isAuthenticated={isAuthenticated} user={user} />
                 </Grid>
-                <Grid xs={1} alignItems="center">
-                    <Switch
-                        checked={isDark}
-                        color="success"
-                        onChange={(e) =>
-                            setTheme(e.target.checked ? 'dark' : 'light')
-                        }
-                        size="xl"
-                        iconOff={
-                            <SunIcon
-                                filled
-                                size={undefined}
-                                height={undefined}
-                                width={undefined}
-                                label={undefined}
-                            />
-                        }
-                        iconOn={
-                            <MoonIcon
-                                filled
-                                size={undefined}
-                                height={undefined}
-                                width={undefined}
-                                label={undefined}
-                            />
-                        }
-                    />
-                </Grid>
-                <Grid xs={1} alignItems="center">
+                <Grid xs={2} justify="flex-end" alignItems="center">
                     {isAuthenticated ? (
                         <UserMenu
                             setUser={setUser}
@@ -96,7 +64,7 @@ const HeaderCommon = ({
                             <Tooltip
                                 content={'Connexion'}
                                 hideArrow
-                                placement="bottom"
+                                placement="left"
                                 shadow
                                 rounded
                                 color="success"

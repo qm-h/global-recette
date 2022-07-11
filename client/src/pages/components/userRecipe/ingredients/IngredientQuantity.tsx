@@ -34,14 +34,14 @@ const IngredientQuantity = ({
             >
                 {ingredient}
             </Text>
-            <Button
-                icon={<FaTrashAlt size={'1em'} />}
-                auto
-                flat
-                rounded
-                onPress={() => handleDeleteIngredient(ingredient)}
-                color="error"
-                css={{ ml: '$5' }}
+            <FaTrashAlt
+                style={{
+                    color: '#F31260',
+                    marginTop: '.7rem',
+                    marginLeft: '1rem',
+                }}
+                size={'1em'}
+                onClick={() => handleDeleteIngredient(ingredient)}
             />
         </>
     )

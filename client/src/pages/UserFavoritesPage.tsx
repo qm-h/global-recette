@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 
 import UserFavoritesList from './components/userFavorites/FavoritesList'
 import { getAllFavoritesRecipe } from '../router/userRouter'
+import { toasterErrorCommon } from '../utils/theme/toaster'
 import { useAppContext } from '../utils/context/AppContext'
 import { useNavigate } from 'react-router-dom'
 
@@ -19,9 +20,17 @@ const UserFavoritesPage = () => {
         if (userID) {
             setIsLoading(true)
             Promise.all([getAllFavoritesRecipe(userID)]).then(([response]) => {
-                setFavorites(response.favorites)
-                setRecipeAuthor(response.users)
-                setIsLoading(false)
+                if (response['status'] === 403) {
+                    toasterErrorCommon(
+                        isDark,
+                        'Votre accès à cette page à été refusé, \n si le problème persiste, \n veuillez contacter nous contacter par mail'
+                    )
+                    navigate('/')
+                } else {
+                    setFavorites(response.favorites)
+                    setRecipeAuthor(response.users)
+                    setIsLoading(false)
+                }
             })
         } else {
             navigate('/')

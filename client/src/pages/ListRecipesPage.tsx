@@ -11,7 +11,7 @@ import {
 import { useEffect, useState } from 'react'
 
 import CardRecipes from './components/allRecipe/CardRecipes'
-import DataNotFound from './components/wrongPage/DataNotFound'
+import DataNotFound from './components/noDataFound/DataNotFound'
 import { Recipe } from '../../../server/src/shared/types'
 import { getAllRecipesWithUser } from '../router/recipesRouter'
 import { useAppContext } from '../utils/context/AppContext'
@@ -20,6 +20,8 @@ const ListRecipes = () => {
     const [recipesData, setRecipesData] = useState<Recipe[]>([])
     const [recipeList, setRecipeList] = useState<Recipe[]>([])
     const [isLoading, setIsLoading] = useState(true)
+    const [isFollowing, setIsFollowing] = useState(false)
+    const [isUnfollowing, setIsUnfollowing] = useState(false)
     const { isDark } = useTheme()
     const { user } = useAppContext()
     const userID: number | undefined = user?.id
@@ -37,6 +39,10 @@ const ListRecipes = () => {
         } else {
             return (
                 <CardRecipes
+                    isFollowing={isFollowing}
+                    setIsFollowing={setIsFollowing}
+                    isUnfollowing={isUnfollowing}
+                    setIsUnfollowing={setIsUnfollowing}
                     authUserID={userID}
                     recipes={recipes}
                     isDark={isDark}
@@ -49,6 +55,8 @@ const ListRecipes = () => {
         Promise.all([getAllRecipesWithUser()]).then(([recipes]) => {
             setRecipesData(recipes)
             setIsLoading(false)
+            setIsFollowing(false)
+            setIsUnfollowing(false)
         })
     }, [])
 

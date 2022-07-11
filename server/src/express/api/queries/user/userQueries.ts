@@ -1,8 +1,9 @@
 import {
     FavoritesRecipe,
-    FavoritesRecipeWithUser,
     FavoritesRecipesResponse,
+    Followers,
     RecipeUser,
+    SuccessAuthUser,
 } from './../../../../shared/types'
 import { Request, Response } from 'express'
 
@@ -38,7 +39,7 @@ export const getAllFavoritesRecipeHandler = async (
 
     const user = await supabase
         .from<RecipeUser>('user')
-        .select('id, username, avatar')
+        .select('id, username, avatar, generated_avatar')
         .filter(
             'id',
             'in',
@@ -46,8 +47,6 @@ export const getAllFavoritesRecipeHandler = async (
                 .map((recipe) => recipe.recipes.created_by)
                 .join(',')})`
         )
-
-    logger.debug(JSON.stringify(user))
 
     const favoritesResponse = {
         favorites: allFavoritesRecipe.data,
@@ -66,10 +65,9 @@ export const getAllFavoritesRecipeHandler = async (
 
 export const getUserByIDHandler = async (req: Request, res: Response) => {
     const { userID } = req.params
-
     const user = await supabase
-        .from<RecipeUser>('user')
-        .select('id, username, avatar')
+        .from<SuccessAuthUser>('user')
+        .select()
         .eq('id', parseInt(userID))
 
     if (user.status === 400) {
@@ -79,4 +77,17 @@ export const getUserByIDHandler = async (req: Request, res: Response) => {
     if (user.status === 200) {
         return res.status(200).send(user.data)
     }
+}
+
+export const getFollowingUserHandler = async (req: Request, res: Response) => {
+    const { username } = req.params
+
+    const following = await supabase
+        .from<Followers>('followers')
+        .select('user_to_follow')
+        .eq('follower_username', username)
+
+    following.status === 200
+        ? res.status(200).send({ status: 200, data: following.data })
+        : res.send({ status: 500, message: 'Error getting following' })
 }

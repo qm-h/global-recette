@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express'
 
-import authService from '../../services/authService'
+import AuthService from '../../services/authService'
 
 class AuthRouter {
     public readonly router: Router
@@ -11,11 +11,9 @@ class AuthRouter {
         this.router.post('/signup', (req: Request, res: Response) => [
             this.registerUser(req, res),
         ])
-        this.router.post(
-            '/signin',
-            authService.isConfirmed,
-            (req: Request, res: Response) => [this.authenticateUser(req, res)]
-        )
+        this.router.post('/signin', (req: Request, res: Response) => [
+            this.authenticateUser(req, res),
+        ])
         this.router.post('/signout', (req: Request, res: Response) => [
             this.logout(req, res),
         ]),
@@ -38,27 +36,32 @@ class AuthRouter {
         this.router.post('/has-uuid', (req: Request, res: Response) => [
             this.hasSavedUUID(req, res),
         ])
+        this.router.post(
+            '/delete-account/:userID',
+            AuthService.verifyAccessUUIDToken,
+            (req: Request, res: Response) => [this.deleteAccount(req, res)]
+        )
     }
 
     private registerUser(req: Request, res: Response) {
-        return authService.registerUser(req, res)
+        return AuthService.registerUser(req, res)
     }
 
     private authenticateUser(req: Request, res: Response) {
-        return authService.authUser(req, res)
+        return AuthService.authUser(req, res)
     }
 
     private forgotPassword(req: Request, res: Response) {
-        return authService.forgotPassword(req, res)
+        return AuthService.forgotPassword(req, res)
     }
 
     private resetPassword(req: Request, res: Response) {
-        return authService.resetPassword(req, res)
+        return AuthService.resetPassword(req, res)
     }
 
     private logout(req: Request, res: Response) {
         const { userID } = req.body
-        const isLogout = authService.deleteToken(userID)
+        const isLogout = AuthService.deleteToken(userID)
         if (isLogout) {
             return res.sendStatus(200)
         }
@@ -66,15 +69,19 @@ class AuthRouter {
     }
 
     private sendEmailConfirmation(req: Request, res: Response) {
-        return authService.confirmationRegisterEmail(req, res)
+        return AuthService.confirmationRegisterEmail(req, res)
     }
 
     private confirmEmail(req: Request, res: Response) {
-        return authService.confirmationRegister(req, res)
+        return AuthService.confirmationRegister(req, res)
     }
 
     private hasSavedUUID(req: Request, res: Response) {
-        return authService.hasSavedUUID(req, res)
+        return AuthService.hasSavedUUID(req, res)
+    }
+
+    private deleteAccount(req: Request, res: Response) {
+        return AuthService.deleteAccount(req, res)
     }
 }
 

@@ -1,12 +1,11 @@
-import { Card, Grid, Image, Text } from '@nextui-org/react'
-import { getSavedRecipes, getUserByID } from '../../../router/userRouter'
+import { Card, Grid, Text } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 
-import DataNotFound from '../wrongPage/DataNotFound'
+import DataNotFound from '../noDataFound/DataNotFound'
 import FavoritesButton from '../common/commonComponents/FavoritesButton'
 import { HasSavedRecipe } from '../../../../../server/src/shared/types'
-import ModalRecipeDetail from '../allRecipe/ModalRecipeDetail'
-import NoDataFound from '../../../utils/images/NoDataFound.gif'
+import ModalRecipeDetail from '../common/commonComponents/ModalRecipeDetail'
+import { getSavedRecipes } from '../../../router/userRouter'
 
 interface FavoritesListProps {
     favorites: any[]

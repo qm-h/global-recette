@@ -20,7 +20,6 @@ import {
     insertRecipeIngredients,
     uploadRecipeImage,
 } from '../../../router/recipesRouter'
-import { useEffect, useState } from 'react'
 
 import { BiCloudUpload } from 'react-icons/bi'
 import IngredientDropDown from './ingredients/IngredientDropDown'
@@ -28,6 +27,7 @@ import IngredientQuantity from './ingredients/IngredientQuantity'
 import { getIngredientByName } from '../../../router/ingredientsRouter'
 import { toasterErrorCommon } from '../../../utils/theme/toaster'
 import { useAppContext } from '../../../utils/context/AppContext'
+import { useState } from 'react'
 
 interface Props {
     setCreate: (value: boolean) => void
@@ -44,7 +44,6 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
     const [waitingIngredientsQuantity, setWaitingIngredientsQuantity] =
         useState<string[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [isDrag, setIsDrag] = useState<boolean>(false)
 
     const { isDark } = useTheme()
     const { user } = useAppContext()
@@ -157,10 +156,6 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
         }
     }
 
-    useEffect(() => {
-        console.log(image)
-    }, [image])
-
     return (
         <Card css={{ h: '85%', mt: '$28', w: '45%' }}>
             <Card.Header>
@@ -193,6 +188,7 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
                             width="60%"
                             bordered={isDark ? true : false}
                             color={'primary'}
+                            aria-label="origine de la recette"
                             labelPlaceholder="Origine de la recette"
                             onChange={(e) => setOrigin(e.target.value)}
                         />
@@ -206,6 +202,7 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
                         <Input
                             width="60%"
                             color={'primary'}
+                            aria-label="nom de la recette"
                             bordered={isDark ? true : false}
                             labelPlaceholder="Nom de la recette"
                             onChange={(e) => setName(e.target.value)}
@@ -234,8 +231,9 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
                         </Button>
                     </Grid>
                     {waitingIngredients &&
-                        waitingIngredients.map((ingredient) => (
+                        waitingIngredients.map((ingredient, i) => (
                             <Grid
+                                key={i}
                                 xs={12}
                                 md={12}
                                 justify="center"
@@ -264,6 +262,7 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
                             name="file"
                             id="file"
                             hidden
+                            aria-label="file"
                             className="inputfile"
                             onChange={(e) => setImage(e.target.files[0])}
                         />
@@ -276,9 +275,7 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
                             css={{ ml: '$4' }}
                         >
                             <label className="labelInput" htmlFor="file">
-                                {isDrag
-                                    ? "Lacher l'image"
-                                    : image && image.name
+                                {image && image.name
                                     ? `${image.name}`
                                     : 'Choisir une image'}
                             </label>
@@ -290,6 +287,7 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
                             bordered={isDark ? true : false}
                             width={'80%'}
                             minRows={5}
+                            aria-label="description de la recette"
                             helperText="Vous avez des notes ? Elles seront affichées sur votre recette"
                             placeholder="Ecrivez vos notes ici"
                             onChange={(e) => setNote(e.target.value)}

@@ -22,14 +22,27 @@ const UserMenu = ({
 }: Props) => {
     const { isDark } = useTheme()
     const navigate = useNavigate()
-    const handleLogout = async (key: Key) => {
+
+    const handleMenu = async (key: Key) => {
+        switch (key) {
+            case 'sign_out':
+                await userLogout(user.id).then(() => {
+                    logout(setUser, setIsAuthenticated, setUserUUID)
+                    setIsAuthenticated(false)
+                    toasterSuccessLogout(isDark)
+                    navigate('/')
+                })
+                break
+            case 'profile':
+                navigate(`/profile`)
+                break
+            case 'settings':
+                navigate(`/settings`)
+                break
+            default:
+                break
+        }
         if (key === 'sign_out') {
-            await userLogout(user.id).then(() => {
-                logout(setUser, setIsAuthenticated, setUserUUID)
-                setIsAuthenticated(false)
-                toasterSuccessLogout(isDark)
-                navigate('/')
-            })
         }
     }
 
@@ -45,41 +58,43 @@ const UserMenu = ({
                     squared
                     name={`${user.firstname} ${user.lastname}`}
                     description={`@${user.username}`}
-                    src={user.avatar}
+                    src={user.generated_avatar}
                 />
             </Dropdown.Trigger>
             <Dropdown.Menu
-                onAction={(key: Key) => handleLogout(key)}
+                onAction={(key: Key) => handleMenu(key)}
                 color="success"
                 css={{
                     minWidth: '300px',
                     borderRadius: '$lg',
                     padding: '$sm',
                 }}
-                disabledKeys={['help_and_feedback', 'settings']}
+                disabledKeys={['help', 'profile']}
                 aria-label="User Actions"
             >
-                <Dropdown.Item textValue={'email'} key="profile">
-                    <Text b color="inherit" css={{ d: 'flex' }}>
-                        {user.email}
-                    </Text>
-                </Dropdown.Item>
+                <Dropdown.Section title="Compte">
+                    <Dropdown.Item textValue={'email'} key="profile">
+                        <Text b color="inherit" css={{ d: 'flex' }}>
+                            {user.email}
+                        </Text>
+                    </Dropdown.Item>
+                </Dropdown.Section>
                 <Dropdown.Item
                     key="settings"
                     css={{ height: '$12' }}
-                    withDivider
                     textValue={'Settings'}
+                    withDivider
                 >
                     Préférences
                 </Dropdown.Item>
                 <Dropdown.Item
-                    textValue={'Help & Feedback'}
+                    textValue={'Help'}
                     css={{ height: '$12' }}
-                    key="help_and_feedback"
+                    key="help"
                 >
                     Aide
                 </Dropdown.Item>
-                <Dropdown.Section title="Danger zone 🔥">
+                <Dropdown.Section>
                     <Dropdown.Item
                         css={{ height: '$12' }}
                         key="sign_out"

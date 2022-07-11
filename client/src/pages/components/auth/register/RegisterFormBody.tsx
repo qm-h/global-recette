@@ -66,7 +66,7 @@ const RegisterFormBody = ({
                 css={{ marginTop: '$10', marginBottom: '$10' }}
             >
                 <Input
-                    width="50%"
+                    width="70%"
                     bordered={isDark ? true : false}
                     animated
                     aria-label="Lastname"
@@ -74,10 +74,11 @@ const RegisterFormBody = ({
                     clearable
                     onBlur={() => handleValidation('lastname', lastname)}
                     color={isInvalidLastname ? 'error' : 'primary'}
-                    helperColor={isInvalidLastname ? 'error' : 'default'}
+                    helperColor={isInvalidLastname ? 'error' : 'primary'}
                     helperText={
                         isInvalidLastname ? isInvalidLastnameMessage : ' '
                     }
+                    title=""
                     status={isInvalidLastname ? 'error' : 'default'}
                     labelPlaceholder="Entrer votre nom"
                     value={lastname}
@@ -90,14 +91,14 @@ const RegisterFormBody = ({
                 css={{ marginTop: '$10', marginBottom: '$10' }}
             >
                 <Input
-                    width="50%"
+                    width="70%"
                     bordered={isDark ? true : false}
                     animated
                     required
                     aria-label="Firstname"
                     onBlur={() => handleValidation('firstname', firstname)}
                     color={isInvalidFirstname ? 'error' : 'primary'}
-                    helperColor={isInvalidFirstname ? 'error' : 'default'}
+                    helperColor={isInvalidFirstname ? 'error' : 'primary'}
                     helperText={
                         isInvalidFirstname ? isInvalidFirstnameMessage : ' '
                     }
@@ -105,6 +106,7 @@ const RegisterFormBody = ({
                     clearable
                     labelPlaceholder="Entrer votre prénom"
                     value={firstname}
+                    title=""
                     onChange={(e) => setFirstname(e.target.value)}
                 />
             </Row>
@@ -114,7 +116,7 @@ const RegisterFormBody = ({
                 css={{ marginTop: '$10', marginBottom: '$10' }}
             >
                 <Input
-                    width="50%"
+                    width="70%"
                     animated
                     clearable
                     aria-label="Username"
@@ -125,12 +127,13 @@ const RegisterFormBody = ({
                     required={true}
                     onBlur={() => handleValidation('username', username)}
                     color={isInvalidUsername ? 'error' : 'primary'}
-                    helperColor={isInvalidUsername ? 'error' : 'default'}
+                    helperColor={isInvalidUsername ? 'error' : 'primary'}
                     helperText={
                         isInvalidUsername ? isInvalidUsernameMessage : ' '
                     }
                     status={isInvalidUsername ? 'error' : 'default'}
                     onChange={(e) => setUsername(e.target.value)}
+                    title=""
                 />
             </Row>
             <Row
@@ -139,7 +142,7 @@ const RegisterFormBody = ({
                 css={{ marginTop: '$10', marginBottom: '$10' }}
             >
                 <Input
-                    width="50%"
+                    width="70%"
                     bordered={isDark ? true : false}
                     clearable
                     animated
@@ -155,6 +158,7 @@ const RegisterFormBody = ({
                     status={isInvalidEmail ? 'error' : 'default'}
                     labelPlaceholder="Entrer votre email"
                     value={email}
+                    title=""
                 />
             </Row>
             <Row
@@ -163,8 +167,9 @@ const RegisterFormBody = ({
                 css={{ marginTop: '$10', marginBottom: '$10' }}
             >
                 <Input.Password
-                    width="50%"
+                    width="70%"
                     animated
+                    title=""
                     clearable
                     onBlur={() => handleValidation('password', password)}
                     color={isInvalidPassword ? 'error' : 'primary'}

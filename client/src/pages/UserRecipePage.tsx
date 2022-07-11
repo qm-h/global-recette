@@ -11,11 +11,12 @@ import {
 import { Ingredients, Recipe } from '../../../server/src/shared/types'
 import { useEffect, useState } from 'react'
 
-import DataNotFound from './components/wrongPage/DataNotFound'
+import DataNotFound from './components/noDataFound/DataNotFound'
 import UserCreateRecipeComponent from './components/userRecipe/UserCreateRecipeComponent'
 import UserRecipeList from './components/userRecipe/UserRecipeList'
 import { getAllIngredients } from '../router/ingredientsRouter'
-import { getRecipeByUserID } from '../router/recipesRouter'
+import { getRecipeByUserID } from '../router/userRouter'
+import { toasterErrorCommon } from '../utils/theme/toaster'
 import { useAppContext } from '../utils/context/AppContext'
 import { useNavigate } from 'react-router-dom'
 
@@ -28,12 +29,10 @@ const UserRecipePage = () => {
     const navigate = useNavigate()
     const { isDark } = useTheme()
     const fetchRecipe = async () => {
-        Promise.all([getRecipeByUserID(user.id, userUUID)]).then(
-            ([recipes]) => {
-                setUserRecipes(recipes)
-                setIsLoading(false)
-            }
-        )
+        Promise.all([getRecipeByUserID(user.id, userUUID)]).then(([res]) => {
+            setUserRecipes(res['recipes'])
+            setIsLoading(false)
+        })
     }
 
     useEffect(() => {
@@ -43,10 +42,18 @@ const UserRecipePage = () => {
                 getRecipeByUserID(user.id, userUUID),
                 getAllIngredients(),
             ])
-                .then(([recipe, ingredients]) => {
-                    setUserRecipes(recipe)
-                    setIngredients(ingredients)
-                    setIsLoading(false)
+                .then(([res, ingredients]) => {
+                    if (res['status'] === 403) {
+                        toasterErrorCommon(
+                            isDark,
+                            'Votre accès à cette page à été refusé, \n si le problème persiste, \n veuillez contacter nous contacter par mail'
+                        )
+                        navigate('/')
+                    } else {
+                        setUserRecipes(res['recipes'])
+                        setIngredients(ingredients)
+                        setIsLoading(false)
+                    }
                 })
                 .catch((err) => {
                     console.log(err)
@@ -90,16 +97,20 @@ const UserRecipePage = () => {
                                 </Text>
                             </Grid>
                             <Grid xs={6} md={5} justify="flex-end">
-                                {!isLoading && userRecipes.length !== 0 && (
-                                    <Button
-                                        auto
-                                        color={'success'}
-                                        flat
-                                        onPress={() => setCreateRecipe(true)}
-                                    >
-                                        Créer une recette
-                                    </Button>
-                                )}
+                                {!isLoading &&
+                                    userRecipes &&
+                                    userRecipes.length !== 0 && (
+                                        <Button
+                                            auto
+                                            color={'success'}
+                                            flat
+                                            onPress={() =>
+                                                setCreateRecipe(true)
+                                            }
+                                        >
+                                            Créer une recette
+                                        </Button>
+                                    )}
                             </Grid>
                         </Grid.Container>
                     </Card.Header>
@@ -113,14 +124,18 @@ const UserRecipePage = () => {
                         >
                             {isLoading ? (
                                 <Row justify="center">
-                                    <Loading size="xl" color="primary" />
+                                    <Loading
+                                        size="xl"
+                                        type="points"
+                                        color="primary"
+                                    />
                                 </Row>
                             ) : (
                                 renderRecipesWithNoData(userRecipes)
                             )}
                         </Grid.Container>
                     </Card.Body>
-                    {!isLoading && userRecipes.length === 0 && (
+                    {!isLoading && userRecipes && userRecipes.length === 0 && (
                         <Card.Footer>
                             <Row gap={2} justify="center">
                                 <Button

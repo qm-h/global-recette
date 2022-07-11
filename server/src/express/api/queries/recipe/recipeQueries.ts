@@ -1,6 +1,6 @@
+import { Recipe, SuccessAuthUser } from './../../../../shared/types'
 import { Request, Response } from 'express'
 
-import { Recipe } from './../../../../shared/types'
 import { logger } from './../../../../server'
 import supabase from './../../../../supabase/supabase'
 
@@ -17,13 +17,18 @@ export const getAllRecipesWithUserHandler = async (
 }
 
 export const getRecipeByUserIDHandler = async (req: Request, res: Response) => {
+    const { userID } = req.params
     const recipesResult = await supabase
         .from<Recipe>('recipes')
         .select(`*, user(*)`)
-        .eq('created_by', req.params.id)
+        .eq('created_by', userID)
     recipesResult.status === 200
-        ? res.send(recipesResult.data)
-        : res.send(recipesResult.error)
+        ? res.send({
+              status: 200,
+              message: 'Recipes result',
+              recipes: recipesResult.data,
+          })
+        : res.send({ status: 500, message: recipesResult.error, recipes: [] })
 }
 
 export const getRecipeByIDHandler = async (req: Request, res: Response) => {
@@ -43,17 +48,36 @@ export const getRecipeByNameHandler = async (req: Request, res: Response) => {
     result.status === 200 ? res.send(result.data) : res.sendStatus(500)
 }
 
+export const getRecipeUserHandler = async (req: Request, res: Response) => {
+    const { id } = req.params
+    const result = await supabase
+        .from<Recipe>('recipes')
+        .select(`*,user(*)`)
+        .eq('created_by', id)
+    const user: SuccessAuthUser = {
+        id: result.data[0].user.id,
+        username: result.data[0].user.username,
+        firstname: result.data[0].user.firstname,
+        lastname: result.data[0].user.lastname,
+        followers: result.data[0].user.followers,
+        following: result.data[0].user.following,
+        avatar: result.data[0].user.avatar,
+        generated_avatar: result.data[0].user.generated_avatar,
+        email: result.data[0].user.email,
+        access_jwt_token: '',
+    }
+    result.status === 200 ? res.send(user) : res.sendStatus(500)
+}
+
 export const getRecipeImageHandler = async (req: Request, res: Response) => {
     const { name } = req.params
-    logger.debug(`Getting image for recipe ${name}`)
     const image = await (
         await supabase.storage.from('images').createSignedUrl(name, 60)
     ).signedURL
 
     if (!image) {
-        logger.debug(`No image found for recipe ${name}`)
+        logger.error(`No image found for recipe ${name}`)
         return res.sendStatus(404)
     }
-    logger.debug(`Image found for recipe ${name}`)
     return res.status(200).send({ status: 200, url: image })
 }

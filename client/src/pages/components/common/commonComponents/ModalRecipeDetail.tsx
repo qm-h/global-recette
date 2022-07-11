@@ -2,9 +2,9 @@ import { Button, Loading, Modal, Text } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 
 import { MdCloseFullscreen } from 'react-icons/md'
-import { Recipe } from '../../../../../server/src/shared/types'
-import RecipeDetails from './RecipeDetails'
-import { getRecipesByID } from '../../../router/recipesRouter'
+import { Recipe } from '../../../../../../server/src/shared/types'
+import RecipeDetails from '../../allRecipe/RecipeDetails'
+import { getRecipesByID } from '../../../../router/recipesRouter'
 
 interface ModalRecipeDetailProps {
     isOpen: boolean
@@ -32,6 +32,8 @@ const ModalRecipeDetail = ({
             width="50%"
             open={isOpen}
             onClose={onClose}
+            animated={false}
+            blur
         >
             {recipe ? (
                 <>
@@ -58,7 +60,7 @@ const ModalRecipeDetail = ({
                 </>
             ) : (
                 <Modal.Body>
-                    <Loading color="currentColor" size="xl" />
+                    <Loading type="points-opacity" size="xl" />
                 </Modal.Body>
             )}
         </Modal>

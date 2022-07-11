@@ -9,6 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import Confetti from 'react-confetti'
 import ConfirmationContent from './ConfirmationContent'
+import darkSideGif from '../../../../utils/images/gif/dark-side.gif'
 import eatingGif from '../../../../utils/images/gif/giphy.gif'
 import partyGif from '../../../../utils/images/gif/party-gif.gif'
 import timerBefore from '../../../../utils/timer'
@@ -18,6 +19,7 @@ const Confirmation = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [isConfirmed, setIsConfirmed] = useState(false)
     const [waitHasUUID, setWaitHasUUID] = useState(true)
+    const [isCancel, setIsCancel] = useState(false)
     const { width, height } = useWindowSize()
     const { token } = useParams() // token from url
     const { isDark } = useTheme()
@@ -55,11 +57,8 @@ const Confirmation = () => {
     }, [navigate, token])
 
     const handleCancel = () => {
-        toasterErrorCommon(
-            isDark,
-            "Vous avez annulé la confirmation ! \n Vous pouvez réessayer ultérieurement !\n Rien n'est perdu !"
-        )
-        timerBefore(() => navigate('/login'), 3000)
+        setIsCancel(true)
+        timerBefore(() => navigate('/login'), 4000)
     }
     return (
         <Container
@@ -80,8 +79,10 @@ const Confirmation = () => {
                     isConfirmed={isConfirmed}
                     partyGif={partyGif}
                     eatingGif={eatingGif}
+                    darkSideGif={darkSideGif}
                     handleCancel={handleCancel}
                     isLoading={isLoading}
+                    isCancel={isCancel}
                     handleConfirmation={handleConfirmation}
                 />
             )}

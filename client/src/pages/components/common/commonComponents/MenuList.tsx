@@ -6,11 +6,12 @@ import { SuccessAuthUser } from '../../../../../../server/src/shared/types'
 
 interface Props {
     user: SuccessAuthUser
+    isAuthenticated: boolean
 }
 
-const MenuList = ({ user }: Props) => {
+const MenuList = ({ user, isAuthenticated }: Props) => {
     const { isDark } = useTheme()
-    const [active, setActive] = useState<string>('home')
+    const [active, setActive] = useState<string>('')
     const url = useLocation().pathname
 
     useEffect(() => {
@@ -25,13 +26,14 @@ const MenuList = ({ user }: Props) => {
                 setActive('favoris')
                 break
             default:
-                setActive('home')
+                setActive('')
                 break
         }
     }, [url])
+    console.log(isAuthenticated, user)
 
     return (
-        <Grid.Container gap={0} justify={user ? 'space-between' : 'center'}>
+        <Grid.Container gap={4} justify={user ? 'space-between' : 'center'}>
             <Grid xs={4}>
                 <NavLink
                     className={`link ${isDark ? 'dark_link' : 'light_link'} ${
@@ -43,7 +45,7 @@ const MenuList = ({ user }: Props) => {
                     Recettes du moment
                 </NavLink>
             </Grid>
-            {user ? (
+            {isAuthenticated && user ? (
                 <>
                     <Grid xs={4}>
                         <NavLink
