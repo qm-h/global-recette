@@ -42,7 +42,7 @@ supabase.auth
         logger.error(`ERROR: ${err}`)
     })
 
-if (process.env.NODE_ENV === 'prod') {
+if (process.env.NODE_ENV === 'production') {
     logger.info(`Production mode.`)
     app.use(express.static(path.join(__dirname, '../client')))
     app.listen(portProd, () => {
