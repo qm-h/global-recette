@@ -44,7 +44,7 @@ supabase.auth
 
 if (process.env.NODE_ENV === 'prod') {
     logger.info(`Production mode.`)
-    app.use(express.static(path.join(__dirname, 'client')))
+    app.use(express.static(path.join(__dirname, '../client')))
     app.listen(portProd, () => {
         logger.info(`Server listening on port ${portProd}`)
         logger.info(`Visit ${urlProd} 🚀`)
