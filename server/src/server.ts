@@ -14,9 +14,6 @@ import supabase from './supabase/supabase'
 dotenv.config({ path: path.resolve(__dirname, '../../.env') })
 export const logger = new Logger()
 const port = process.env.PORT || 3001
-const portProd = 8080
-const url = `http://localhost:${port}/`
-const urlProd = `http://localhost:${portProd}/`
 const app = express()
 
 app.use(express.json())
@@ -45,15 +42,11 @@ supabase.auth
 if (process.env.NODE_ENV === 'production') {
     logger.info(`Production mode.`)
     app.use(express.static(path.join(__dirname, '../client')))
-    app.listen(portProd, () => {
-        logger.info(`Server listening on port ${portProd}`)
-        logger.info(`Visit ${urlProd} 🚀`)
-    })
+    app.listen(port)
 } else {
     logger.debug(`Development mode.`)
     app.listen(port, () => {
         logger.debug(`Server listening on port ${port}`)
-        logger.debug(`Visit ${url} 🚀`)
         logger.warning(`Press CTRL + C to stop server 🛑`)
     })
 }
