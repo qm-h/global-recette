@@ -17,8 +17,8 @@
         "server:dev": "npm run dev --prefix server",
         "test": "jest",
         "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\" dotenv/config . dotenv_config_path=./.env",
-        "start": "npm run build && npm run server && npm run clean:client & npm run clean:server",
-        "server": "npm start --prefix server",
+        "start": "npm start --prefix server",
+        "start:prod": "npm run build && npm start && npm run clean:client & npm run clean:server",
         "lint-staged": "lint-staged",
         "pq": "pretty-quick",
         "install:all": "npm install && npm run install:dependencies --prefix server && npm run install:dependencies --prefix client"
