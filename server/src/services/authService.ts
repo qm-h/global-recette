@@ -431,20 +431,20 @@ const AuthService = {
             logger.error(`Error. Invalid token ${token}`)
             return res.status(401).send({ message: 'Error. Invalid token' })
         }
-        const userToBeConfirmed = await supabase
+        const confirmedUser = await supabase
             .from('user')
             .select('email, username, firstname, lastname')
             .eq('email', haveToken.data[0].email)
 
-        if (userToBeConfirmed['data'].length === 0) {
+        if (confirmedUser['data'].length === 0) {
             logger.error(`Error. User not found ${token}`)
             return res.status(401).send({ message: 'Error. User not found' })
         }
         const access_jwt_token = AuthService.generateAccessJWTToken({
-            email: userToBeConfirmed['data'][0].email,
-            username: userToBeConfirmed['data'][0].username,
-            firstname: userToBeConfirmed['data'][0].firstname,
-            lastname: userToBeConfirmed['data'][0].lastname,
+            email: confirmedUser['data'][0].email,
+            username: confirmedUser['data'][0].username,
+            firstname: confirmedUser['data'][0].firstname,
+            lastname: confirmedUser['data'][0].lastname,
         })
 
         const user = await supabase

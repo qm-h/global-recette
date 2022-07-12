@@ -230,6 +230,21 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
                             Ajouter
                         </Button>
                     </Grid>
+                    <Grid md={5}>
+                        <Text css={{ p: '$0', m: '$0' }} small>
+                            Vous ne trouvez pas votre ingrédient ?
+                        </Text>
+                    </Grid>
+                    <Grid md={1}>
+                        <Button
+                            light
+                            css={{ fontWeight: '$light', fontSize: '$2' }}
+                            size="sm"
+                            color="success"
+                        >
+                            Ajouter le
+                        </Button>
+                    </Grid>
                     {waitingIngredients &&
                         waitingIngredients.map((ingredient, i) => (
                             <Grid

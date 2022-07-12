@@ -73,10 +73,9 @@ export const getUserByIDHandler = async (req: Request, res: Response) => {
     if (user.status === 400) {
         return res.sendStatus(404)
     }
-
-    if (user.status === 200) {
-        return res.status(200).send(user.data)
-    }
+    user.status === 200
+        ? res.status(200).send(user.data)
+        : res.send({ status: 500, message: 'Error getting user' })
 }
 
 export const getFollowingUserHandler = async (req: Request, res: Response) => {
