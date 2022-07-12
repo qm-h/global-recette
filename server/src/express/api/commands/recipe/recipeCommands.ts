@@ -42,13 +42,10 @@ export const uploadImageHandler = async (req, res: Response) => {
         .upload(`${image.name}`, image.data)
 
     if (!savedImageResult.data) {
-        logger.debug('Error while saving image')
-        logger.debug(JSON.stringify(savedImageResult.error))
         return res
             .status(500)
             .send({ status: 500, message: 'Erreur lors de la création' })
     }
-    logger.debug('Image saved')
     return res.status(200).send({ status: 200, message: 'Création réussie' })
 }
 

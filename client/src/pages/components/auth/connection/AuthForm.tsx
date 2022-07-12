@@ -134,14 +134,25 @@ const AuthForm = ({
             await forgotPassword(email)
                 .then((res) => {
                     setIsLoading(false)
-                    setOpenForgotModal(false)
-                    if (res.status === 200) {
-                        toasterSuccessCommon(
-                            isDark,
-                            'Un email vous a été envoyé afin de réinitialiser votre mot de passe'
-                        )
-                    } else {
-                        toasterErrorCommon(isDark, 'Une erreur est survenue')
+                    switch (res.status) {
+                        case 200:
+                            setOpenForgotModal(false)
+                            return toasterSuccessCommon(
+                                isDark,
+                                'Un email vous a été envoyé afin de réinitialiser votre mot de passe'
+                            )
+
+                        case 404:
+                            return toasterUserNotFound(isDark)
+                        case 400:
+                            return toasterErrorAuth(isDark)
+                        case 401:
+                            return toasterErrorAuth(isDark)
+                        default:
+                            return toasterErrorCommon(
+                                isDark,
+                                'Une erreur est survenue'
+                            )
                     }
                 })
                 .catch(() => {

@@ -54,7 +54,6 @@ export const getAllFavoritesRecipeHandler = async (
     }
 
     if (allFavoritesRecipe.status === 400) {
-        logger.debug(JSON.stringify(allFavoritesRecipe))
         return res.sendStatus(404)
     }
 

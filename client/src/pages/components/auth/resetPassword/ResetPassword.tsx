@@ -11,10 +11,10 @@ import {
     toasterErrorCommon,
     toasterSuccessCommon,
 } from '../../../../utils/theme/toaster'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { CgPassword } from 'react-icons/cg'
 import { resetPassword } from '../../../../router/authRouter'
-import { useParams } from 'react-router-dom'
 import { useState } from 'react'
 
 const ResetPassword = () => {
@@ -23,6 +23,7 @@ const ResetPassword = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const { token } = useParams()
     const { isDark } = useTheme()
+    const navigate = useNavigate()
 
     const handleResetPassword = async () => {
         if (password === confirmPassword) {
@@ -32,6 +33,7 @@ const ResetPassword = () => {
                     setIsLoading(false)
                     if (res.status === 200) {
                         toasterSuccessCommon(isDark, res.message)
+                        navigate('/login')
                     } else {
                         toasterErrorCommon(isDark, res.message)
                     }
@@ -95,33 +97,25 @@ const ResetPassword = () => {
                     />
                 </Grid>
                 <Grid md={12} justify="center">
-                    {isLoading ? (
-                        <Button
-                            rounded
-                            shadow
-                            disabled
-                            auto
-                            color="primary"
-                            size="xl"
-                        >
-                            En cours <Loading />
-                        </Button>
-                    ) : (
-                        <Button
-                            color="primary"
-                            flat
-                            disabled={
-                                password !== confirmPassword ||
-                                password === '' ||
-                                confirmPassword === ''
-                                    ? true
-                                    : false
-                            }
-                            onPress={() => handleResetPassword()}
-                        >
-                            Confirmer
-                        </Button>
-                    )}
+                    <Button
+                        color="success"
+                        flat
+                        disabled={
+                            isLoading ||
+                            password !== confirmPassword ||
+                            password === '' ||
+                            confirmPassword === ''
+                                ? true
+                                : false
+                        }
+                        onPress={() => handleResetPassword()}
+                    >
+                        {isLoading ? (
+                            <Loading color="currentColor" size="sm" />
+                        ) : (
+                            'Réinitialiser'
+                        )}
+                    </Button>
                 </Grid>
             </Grid.Container>
         </Container>

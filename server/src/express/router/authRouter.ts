@@ -1,4 +1,4 @@
-import { Request, Response, Router } from 'express'
+import { NextFunction, Request, Response, Router } from 'express'
 
 import AuthService from '../../services/authService'
 
@@ -27,9 +27,12 @@ class AuthRouter {
                     this.sendEmailConfirmation(req, res),
                 ]
             )
-        this.router.post('/reset-password', (req: Request, res: Response) => [
-            this.resetPassword(req, res),
-        ])
+        this.router.post(
+            '/reset-password',
+            (req: Request, res: Response, next: NextFunction) => [
+                this.resetPassword(req, res, next),
+            ]
+        )
         this.router.post('/confirm-email', (req: Request, res: Response) => [
             this.confirmEmail(req, res),
         ])
@@ -55,8 +58,8 @@ class AuthRouter {
         return AuthService.forgotPassword(req, res)
     }
 
-    private resetPassword(req: Request, res: Response) {
-        return AuthService.resetPassword(req, res)
+    private resetPassword(req: Request, res: Response, next: NextFunction) {
+        return AuthService.resetPassword(req, res, next)
     }
 
     private logout(req: Request, res: Response) {

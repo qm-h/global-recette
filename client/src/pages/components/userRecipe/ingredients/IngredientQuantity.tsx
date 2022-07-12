@@ -39,6 +39,7 @@ const IngredientQuantity = ({
                     color: '#F31260',
                     marginTop: '.7rem',
                     marginLeft: '1rem',
+                    cursor: 'pointer',
                 }}
                 size={'1em'}
                 onClick={() => handleDeleteIngredient(ingredient)}

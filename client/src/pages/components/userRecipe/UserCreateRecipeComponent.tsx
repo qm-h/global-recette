@@ -20,30 +20,40 @@ import {
     insertRecipeIngredients,
     uploadRecipeImage,
 } from '../../../router/recipesRouter'
+import {
+    getAllIngredients,
+    getIngredientByName,
+} from '../../../router/ingredientsRouter'
+import { useEffect, useState } from 'react'
 
 import { BiCloudUpload } from 'react-icons/bi'
+import CreateIngredientModal from './ingredients/CreateIngredientModal'
 import IngredientDropDown from './ingredients/IngredientDropDown'
 import IngredientQuantity from './ingredients/IngredientQuantity'
-import { getIngredientByName } from '../../../router/ingredientsRouter'
 import { toasterErrorCommon } from '../../../utils/theme/toaster'
 import { useAppContext } from '../../../utils/context/AppContext'
-import { useState } from 'react'
 
 interface Props {
     setCreate: (value: boolean) => void
-    ingredients: Ingredients[]
 }
 
-const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
+const UserCreateRecipeComponent = ({ setCreate }: Props) => {
     const [name, setName] = useState<string>('')
     const [origin, setOrigin] = useState<string>('')
     const [note, setNote] = useState<string>('')
     const [image, setImage] = useState<File>()
+    const [createIngredient, setCreateIngredient] = useState<boolean>(false)
     const [selectedIngredients, setSelectedIngredients] = useState<string>()
-    const [waitingIngredients, setWaitingIngredients] = useState<string[]>([])
+    const [waitingIngredients, setWaitingIngredients] = useState<string[]>(
+        [] as string[]
+    )
     const [waitingIngredientsQuantity, setWaitingIngredientsQuantity] =
         useState<string[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [ingredients, setIngredients] = useState<Ingredients[]>(
+        [] as Ingredients[]
+    )
+    const [ingredientCreated, setIngredientCreated] = useState<boolean>(false)
 
     const { isDark } = useTheme()
     const { user } = useAppContext()
@@ -156,6 +166,16 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
         }
     }
 
+    useEffect(() => {
+        Promise.all([getAllIngredients()])
+            .then(([ingredient]) => {
+                setIngredients(ingredient)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }, [ingredientCreated])
+
     return (
         <Card css={{ h: '85%', mt: '$28', w: '45%' }}>
             <Card.Header>
@@ -237,10 +257,14 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
                     </Grid>
                     <Grid md={1}>
                         <Button
-                            light
-                            css={{ fontWeight: '$light', fontSize: '$2' }}
+                            rounded
+                            css={{ fontWeight: '$light', fontSize: '12px' }}
                             size="sm"
                             color="success"
+                            auto
+                            onPress={() =>
+                                setCreateIngredient(!createIngredient)
+                            }
                         >
                             Ajouter le
                         </Button>
@@ -330,6 +354,13 @@ const UserCreateRecipeComponent = ({ setCreate, ingredients }: Props) => {
                     )}
                 </Row>
             </Card.Footer>
+            <CreateIngredientModal
+                isDark={isDark}
+                ingredientCreated={ingredientCreated}
+                isOpen={createIngredient}
+                setIsOpen={setCreateIngredient}
+                setIngredientCreated={setIngredientCreated}
+            />
         </Card>
     )
 }

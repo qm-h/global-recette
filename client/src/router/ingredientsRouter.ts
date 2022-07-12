@@ -1,3 +1,4 @@
+import { ExpressResponseMessageType } from './../../../server/src/shared/types'
 import { Ingredients } from '../../../server/src/shared/types'
 import axios from 'axios'
 
@@ -29,6 +30,15 @@ export function getIngredientByName(
 ): Promise<Ingredients[]> {
     return axios
         .post(`/api/ingredients/ingredientbyname`, { ingredients: ingredients })
+        .then((res) => res.data)
+        .catch((err) => console.log(err))
+}
+
+export function createIngredient(
+    ingredient: string
+): Promise<ExpressResponseMessageType> {
+    return axios
+        .post(`/api/ingredients/create`, { ingredient: ingredient })
         .then((res) => res.data)
         .catch((err) => console.log(err))
 }

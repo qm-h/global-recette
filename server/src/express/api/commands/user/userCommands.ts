@@ -104,7 +104,6 @@ export const unfollowingHandler = async (req: Request, res: Response) => {
                 following: follower['data'][0].following - 1,
             })
             .eq('id', followingUserID)
-        logger.debug(`${removed.status}`)
         removedFromFollowers.status === 200 &&
         removed.status === 200 &&
         removed2.status === 200

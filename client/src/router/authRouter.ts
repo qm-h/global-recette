@@ -70,12 +70,16 @@ export function forgotPassword(
 export function resetPassword(
     data: ResetPasswordRequest
 ): Promise<ExpressResponseMessageType> {
+    console.log(data)
     return axios
         .post('/api/auth/reset-password', {
             password: data.password,
             token: data.token,
         })
-        .then((res) => res.data)
+        .then((res) => {
+            console.log(res.data)
+            return res.data
+        })
         .catch((err) => console.log(err))
 }
 

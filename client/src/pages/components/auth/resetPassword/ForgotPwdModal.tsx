@@ -27,6 +27,7 @@ const ForgotPwdModal = ({
             open={visible}
             blur
             onClose={closeHandler}
+            width={'30%'}
         >
             <Modal.Header>
                 <Text id="modal-title" size={18}>

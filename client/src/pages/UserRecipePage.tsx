@@ -23,7 +23,6 @@ import { useNavigate } from 'react-router-dom'
 const UserRecipePage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [userRecipes, setUserRecipes] = useState<Recipe[]>([])
-    const [ingredients, setIngredients] = useState<Ingredients[]>([])
     const [createRecipe, setCreateRecipe] = useState<boolean>(false)
     const { user, userUUID } = useAppContext()
     const navigate = useNavigate()
@@ -38,11 +37,8 @@ const UserRecipePage = () => {
     useEffect(() => {
         if (user) {
             setIsLoading(true)
-            Promise.all([
-                getRecipeByUserID(user.id, userUUID),
-                getAllIngredients(),
-            ])
-                .then(([res, ingredients]) => {
+            Promise.all([getRecipeByUserID(user.id, userUUID)])
+                .then(([res]) => {
                     if (res['status'] === 403) {
                         toasterErrorCommon(
                             isDark,
@@ -51,7 +47,6 @@ const UserRecipePage = () => {
                         navigate('/')
                     } else {
                         setUserRecipes(res['recipes'])
-                        setIngredients(ingredients)
                         setIsLoading(false)
                     }
                 })
@@ -76,10 +71,7 @@ const UserRecipePage = () => {
     return (
         <>
             {createRecipe ? (
-                <UserCreateRecipeComponent
-                    setCreate={setCreateRecipe}
-                    ingredients={ingredients}
-                />
+                <UserCreateRecipeComponent setCreate={setCreateRecipe} />
             ) : (
                 <Card
                     css={{

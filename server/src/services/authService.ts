@@ -272,7 +272,7 @@ const AuthService = {
     verifyAccessJWTToken: async (
         req: Request,
         res: Response,
-        next?: NextFunction
+        next: NextFunction
     ) => {
         const { userID } = req.params
         const result = await supabase
@@ -285,6 +285,7 @@ const AuthService = {
             return res.send({ status: 403, message: 'Not Authorize' })
         }
         next()
+        return true
     },
     hasAuthenticatedWithNoUserUUID: async (req: Request, res: Response) => {
         const { userID } = req.body
@@ -475,7 +476,9 @@ const AuthService = {
         const user = await supabase.from('user').select('id').eq('email', email)
         if (user.data.length === 0) {
             logger.error(`Error. User not found ${email}`)
-            return res.status(401).send({ message: 'Error. User not found' })
+            return res
+                .status(404)
+                .send({ status: 404, message: 'Error. User not found' })
         } else {
             const existingToken = await supabase
                 .from('user_reset_password')
@@ -514,7 +517,7 @@ const AuthService = {
             const url = `${process.env.FRONT_URL}/reset-password/${uuid}`
             const mailOptions = {
                 from: '"Global Recette 🍔"',
-                to: process.env.EMAIL,
+                to: email,
                 subject: 'Réinitialisation de votre mot de passe',
                 text:
                     'Bonjour, \n\n' +
@@ -538,13 +541,14 @@ const AuthService = {
             } catch (error) {
                 logger.error(`Error sending email to ${email}`)
                 logger.error(`${error}`)
-                return res
-                    .status(401)
-                    .send({ message: 'Error. Error sending email' })
+                return res.status(401).send({
+                    status: 401,
+                    message: 'Error. Error sending email',
+                })
             }
         }
     },
-    resetPassword: async (req: Request, res: Response) => {
+    resetPassword: async (req: Request, res: Response, next: NextFunction) => {
         const { password, token } = req.body
         const user = await supabase
             .from<UserResetPassword>('user_reset_password')
@@ -552,31 +556,35 @@ const AuthService = {
             .eq('token', token)
 
         if (user.data.length === 0) {
+            logger.error(`Error. Invalid token ${token}`)
             return res.status(401).send({ message: 'Error. Invalid token' })
         }
-        req.params = {
-            userID: `${user['data'][0].user_id}`,
-        }
-        await AuthService.verifyAccessJWTToken(req, res)
 
         bcrypt.hash(password, 10, async (err, hash) => {
             if (err) {
                 logger.error(`${err}`)
-                return res.sendStatus(500)
+                return res
+                    .status(500)
+                    .send({ message: 'Error. Error hashing password' })
             } else {
                 const result = await supabase
                     .from<User>('user')
                     .update({ password: hash })
                     .eq('id', user.data[0].user_id)
-                if (result.status === 200) {
-                    return res.status(200).send({
-                        status: 200,
-                        message: 'Mot de passe mis à jour',
-                    })
-                } else {
+                await supabase
+                    .from<UserResetPassword>('user_reset_password')
+                    .delete()
+                    .eq('user_id', user.data[0].user_id)
+
+                if (result.status === 400) {
                     logger.error(`${result.error}`)
-                    return res.sendStatus(500)
+                    return res
+                        .status(401)
+                        .send({ message: 'Error. Error updating password' })
                 }
+                return res
+                    .status(200)
+                    .send({ status: 200, message: 'Password updated' })
             }
         })
     },
