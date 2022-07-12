@@ -1,6 +1,5 @@
 import { Avatar, Button, Grid, Loading, Modal, Text } from '@nextui-org/react'
 
-import { SuccessAuthUser } from '../../../../../server/src/shared/types'
 import { useState } from 'react'
 
 interface AvatarModalProps {
@@ -8,7 +7,7 @@ interface AvatarModalProps {
     onClose: () => void
     avatar: string[]
     handleChangeAvatar: (avatar: string) => void
-    user: SuccessAuthUser
+    isLoading: boolean
 }
 
 const AvatarModal = ({
@@ -16,7 +15,7 @@ const AvatarModal = ({
     onClose,
     avatar,
     handleChangeAvatar,
-    user,
+    isLoading,
 }: AvatarModalProps) => {
     const [selectedAvatar, setSelectedAvatar] = useState(avatar[0])
 
@@ -27,33 +26,25 @@ const AvatarModal = ({
             </Modal.Header>
             <Modal.Body>
                 <Grid.Container gap={1} wrap="wrap">
-                    {user && user.avatar ? (
-                        avatar.map((avatar, index) => (
-                            <Grid
+                    {avatar.map((avatar, index) => (
+                        <Grid key={index} justify="center" alignItems="center">
+                            <Avatar
                                 key={index}
-                                justify="center"
-                                alignItems="center"
-                            >
-                                <Avatar
-                                    key={index}
-                                    src={avatar}
-                                    size="xl"
-                                    bordered
-                                    squared
-                                    color={
-                                        selectedAvatar === avatar
-                                            ? 'primary'
-                                            : 'default'
-                                    }
-                                    rounded
-                                    pointer
-                                    onClick={() => setSelectedAvatar(avatar)}
-                                />
-                            </Grid>
-                        ))
-                    ) : (
-                        <Loading type="points" size="md" />
-                    )}
+                                src={avatar}
+                                size="xl"
+                                bordered
+                                squared
+                                color={
+                                    selectedAvatar === avatar
+                                        ? 'primary'
+                                        : 'default'
+                                }
+                                rounded
+                                pointer
+                                onClick={() => setSelectedAvatar(avatar)}
+                            />
+                        </Grid>
+                    ))}
                 </Grid.Container>
             </Modal.Body>
             <Modal.Footer>
@@ -64,9 +55,14 @@ const AvatarModal = ({
                     auto
                     color="success"
                     flat
+                    disabled={isLoading}
                     onClick={() => handleChangeAvatar(selectedAvatar)}
                 >
-                    Valider
+                    {isLoading ? (
+                        <Loading size="sm" color="currentColor" />
+                    ) : (
+                        'Valider'
+                    )}
                 </Button>
             </Modal.Footer>
         </Modal>

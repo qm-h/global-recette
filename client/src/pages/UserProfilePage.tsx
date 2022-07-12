@@ -8,10 +8,7 @@ import {
     User,
     useTheme,
 } from '@nextui-org/react'
-import {
-    SuccessAuthUser,
-    User as UserType,
-} from '../../../server/src/shared/types'
+import { SuccessAuthUser } from '../../../server/src/shared/types'
 import { getUserByID, updateAvatar } from '../router/userRouter'
 import {
     toasterErrorCommon,
@@ -28,6 +25,7 @@ const UserProfilePage = () => {
     const [addBio, setAddBio] = useState(false)
     const [userProfile, setUserProfile] = useState<SuccessAuthUser>()
     const [changeAvatar, setChangeAvatar] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     const { user, setAvatarIsChanged, avatarIsChanged } = useAppContext()
     const { isDark } = useTheme()
 
@@ -37,10 +35,12 @@ const UserProfilePage = () => {
     }
 
     const handleChangeAvatar = async (avatar: string) => {
+        setIsLoading(true)
         await updateAvatar(userProfile.id, avatar)
             .then((res) => {
                 setChangeAvatar(!changeAvatar)
                 setAvatarIsChanged(!avatarIsChanged)
+                setIsLoading(false)
                 toasterSuccessCommon(isDark, 'Avatar modifié')
             })
             .catch((err) => {
@@ -70,11 +70,11 @@ const UserProfilePage = () => {
             }}
         >
             <AvatarModal
-                user={userProfile}
                 isOpen={changeAvatar}
                 onClose={onClose}
                 avatar={avatar}
                 handleChangeAvatar={handleChangeAvatar}
+                isLoading={isLoading}
             />
             <div
                 className="CoverImage"

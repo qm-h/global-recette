@@ -279,7 +279,7 @@ const AuthService = {
             .from('user')
             .select('access_jwt_token')
             .eq('id', userID)
-        const token = result.data[0].access_jwt_token
+        const token = result.data[0]?.access_jwt_token
         if (token === null) {
             logger.error('access_jwt_token is undefined')
             return res.send({ status: 403, message: 'Not Authorize' })
