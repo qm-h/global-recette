@@ -93,13 +93,13 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
             await uploadRecipeImage(formData)
             const createdRecipe = await getRecipeByName(recipe.name)
             await getIngredientByName(ingredients).then((res) => {
-                res.map((ingredient, i) => {
+                res.map((ingredient, i) =>
                     recipeIngredient.push({
                         recipe_id: createdRecipe.id,
                         ingredient_id: ingredient.id,
                         quantity: waitingIngredientsQuantity[i].split('-')[1],
                     })
-                })
+                )
             })
             recipeIngredient.map(async (ingredient) => {
                 await insertRecipeIngredients(ingredient).then(() => {

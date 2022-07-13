@@ -1,4 +1,4 @@
-import { Button, Input, Text } from '@nextui-org/react'
+import { Input, Text } from '@nextui-org/react'
 
 import { FaTrashAlt } from 'react-icons/fa'
 

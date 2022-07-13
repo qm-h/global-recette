@@ -8,13 +8,12 @@ import {
     Text,
     useTheme,
 } from '@nextui-org/react'
-import { Ingredients, Recipe } from '../../../server/src/shared/types'
+import { Recipe } from '../../../server/src/shared/types'
 import { useEffect, useState } from 'react'
 
 import DataNotFound from './components/noDataFound/DataNotFound'
 import UserCreateRecipeComponent from './components/userRecipe/UserCreateRecipeComponent'
 import UserRecipeList from './components/userRecipe/UserRecipeList'
-import { getAllIngredients } from '../router/ingredientsRouter'
 import { getRecipeByUserID } from '../router/userRouter'
 import { toasterErrorCommon } from '../utils/theme/toaster'
 import { useAppContext } from '../utils/context/AppContext'
