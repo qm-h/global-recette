@@ -37,11 +37,14 @@ export const createRecipeHandler = async (req: Request, res: Response) => {
 
 export const uploadImageHandler = async (req, res: Response) => {
     const { image } = req.files
+    logger.debug(`uploading image: ${JSON.stringify(image.data)}`)
+    logger.debug(`uploading image: ${JSON.stringify(image.name)}`)
     const savedImageResult = await supabase.storage
         .from('images')
-        .upload(`${image.name}`, image.data)
-
+        .upload(image.name, image.data)
+    logger.debug(`saved image: ${JSON.stringify(savedImageResult)}`)
     if (!savedImageResult.data) {
+        logger.error(`Error: ${JSON.stringify(savedImageResult.error)}`)
         return res
             .status(500)
             .send({ status: 500, message: 'Erreur lors de la création' })

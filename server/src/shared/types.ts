@@ -5,9 +5,9 @@ export type Recipe = {
     note: string
     created_by: number
     creator_username: string
-    image_path: string
+    image_path?: string
     favorite_id?: number
-    favorite_number?: number
+    favorites_number?: number
     created_at: EpochTimeStamp
     updated_at?: string
     published?: boolean

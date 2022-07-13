@@ -31,6 +31,19 @@ export function getRecipeByUserID(
         .catch((err) => console.log(err))
 }
 
+export function getAllPublishedRecipeByUserID(
+    userID: number,
+    accessUserUUID: string
+): Promise<UserRecipesResponse> {
+    return axios
+        .post(`/api/recipe/user/published/${userID}`, {
+            userID: userID,
+            userUUID: accessUserUUID,
+        })
+        .then((res) => res.data)
+        .catch((err) => console.log(err))
+}
+
 export function saveRecipeToFavorite(
     recipeID,
     userID

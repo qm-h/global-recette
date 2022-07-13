@@ -1,15 +1,18 @@
 import {
-    Button,
     Card,
     Grid,
+    Loading,
     Text,
-    Textarea,
     Tooltip,
     User,
     useTheme,
 } from '@nextui-org/react'
-import { SuccessAuthUser } from '../../../server/src/shared/types'
-import { getUserByID, updateAvatar } from '../router/userRouter'
+import { Recipe, SuccessAuthUser } from '../../../server/src/shared/types'
+import {
+    getUserByID,
+    updateAvatar,
+    getRecipeByUserID,
+} from '../router/userRouter'
 import {
     toasterErrorCommon,
     toasterSuccessCommon,
@@ -20,28 +23,31 @@ import AvatarModal from './components/profile/AvatarModal'
 import { TiImage } from 'react-icons/ti'
 import { avatar } from '../utils/randomAvatar'
 import { useAppContext } from '../utils/context/AppContext'
+import UserRecipesList from './components/profile/UserRecipesList'
 
 const UserProfilePage = () => {
-    const [addBio, setAddBio] = useState(false)
     const [userProfile, setUserProfile] = useState<SuccessAuthUser>()
     const [changeAvatar, setChangeAvatar] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
-    const { user, setAvatarIsChanged, avatarIsChanged } = useAppContext()
+    const [isLoadingUser, setIsLoadingUser] = useState(true)
+    const [recipesData, setRecipesData] = useState([] as Recipe[])
+    const { user, setAvatarIsChanged, avatarIsChanged, userUUID } =
+        useAppContext()
     const { isDark } = useTheme()
-
-    const handleAddBiography = () => {
-        console.log('add biography')
-        setAddBio(!addBio)
-    }
 
     const handleChangeAvatar = async (avatar: string) => {
         setIsLoading(true)
         await updateAvatar(userProfile.id, avatar)
             .then((res) => {
-                setChangeAvatar(!changeAvatar)
-                setAvatarIsChanged(!avatarIsChanged)
-                setIsLoading(false)
-                toasterSuccessCommon(isDark, 'Avatar modifié')
+                if (res.status === 200) {
+                    setChangeAvatar(!changeAvatar)
+                    setAvatarIsChanged(!avatarIsChanged)
+                    setIsLoading(false)
+                    toasterSuccessCommon(isDark, 'Avatar modifié')
+                } else {
+                    setIsLoading(false)
+                    toasterSuccessCommon(isDark, 'Une erreur est survenue')
+                }
             })
             .catch((err) => {
                 console.log(err)
@@ -57,10 +63,15 @@ const UserProfilePage = () => {
     }
 
     useEffect(() => {
-        Promise.all([getUserByID(user.id)]).then(([user]) => {
+        Promise.all([
+            getUserByID(user.id),
+            getRecipeByUserID(user.id, userUUID),
+        ]).then(([user, recipe]) => {
             setUserProfile(user[0])
+            setRecipesData(recipe.recipes)
+            setIsLoadingUser(false)
         })
-    }, [user.id, changeAvatar])
+    }, [user.id, changeAvatar, userUUID])
 
     return (
         <Card
@@ -86,89 +97,67 @@ const UserProfilePage = () => {
                     <TiImage color="#fff" size="2em" />
                 </Tooltip>
             </div>
-            <Grid.Container gap={4}>
-                <Grid md={12}>
-                    <Tooltip
-                        hideArrow
-                        content="Modifier l'avatar"
-                        placement="right"
-                    >
-                        <User
-                            zoomed
-                            bordered
-                            onClick={() => setChangeAvatar(!changeAvatar)}
-                            color="primary"
-                            size="xl"
-                            pointer
-                            name={userProfile?.username}
-                            src={
-                                userProfile?.avatar
-                                    ? userProfile?.avatar
-                                    : userProfile?.generated_avatar
-                            }
-                        />
-                    </Tooltip>
-                </Grid>
-                <Grid md={2} justify="flex-end">
-                    <Text>
-                        <b>{userProfile?.followers}</b> Folowers
-                    </Text>
-                </Grid>
-                <Grid md={2} justify="flex-start">
-                    <Text>
-                        <b>{userProfile?.following}</b> Following
-                    </Text>
-                </Grid>
-                {addBio ? (
+            <Grid.Container
+                gap={4}
+                css={{
+                    h: isLoadingUser && '100%',
+                }}
+                justify="center"
+                alignItems="center"
+                alignContent="center"
+            >
+                {isLoadingUser ? (
+                    <Loading size="xl" type="points-opacity" color="primary" />
+                ) : (
                     <>
-                        <Grid md={12} justify="center">
-                            <Textarea
-                                placeholder="Ajouter une biographie"
-                                rows={4}
-                                cols={50}
-                                color="primary"
-                                bordered
-                            />
+                        <Grid md={12}>
+                            <Tooltip
+                                hideArrow
+                                content="Modifier l'avatar"
+                                placement="right"
+                            >
+                                <User
+                                    zoomed
+                                    bordered
+                                    onClick={() =>
+                                        setChangeAvatar(!changeAvatar)
+                                    }
+                                    color="primary"
+                                    size="xl"
+                                    pointer
+                                    name={userProfile?.username}
+                                    src={
+                                        userProfile?.avatar
+                                            ? userProfile?.avatar
+                                            : userProfile?.generated_avatar
+                                    }
+                                />
+                            </Tooltip>
+                        </Grid>
+                        <Grid md={6} justify="flex-end">
+                            <Text>
+                                <Text color="success" b>
+                                    {userProfile?.followers}
+                                </Text>{' '}
+                                Abonnés
+                            </Text>
+                        </Grid>
+                        <Grid md={6} justify="flex-start">
+                            <Text>
+                                <Text color="success" b>
+                                    {userProfile?.following}
+                                </Text>{' '}
+                                Abonnements
+                            </Text>
                         </Grid>
                         <Grid md={12} justify="center">
-                            <Button
-                                css={{
-                                    marginRight: '1rem',
-                                }}
-                                onClick={handleAddBiography}
-                                color="error"
-                                size="sm"
-                            >
-                                Annuler
-                            </Button>
-                            <Button
-                                css={{
-                                    marginLeft: '1rem',
-                                }}
-                                color="primary"
-                                onClick={handleAddBiography}
-                                size="sm"
-                            >
-                                Ajouter
-                            </Button>
+                            {recipesData && recipesData.length ? (
+                                <UserRecipesList recipes={recipesData} />
+                            ) : (
+                                'Aucun Recette'
+                            )}
                         </Grid>
                     </>
-                ) : (
-                    <Grid md={12} justify="center">
-                        {userProfile?.biography === null ? (
-                            <Button
-                                onPress={handleAddBiography}
-                                auto
-                                color="primary"
-                                size="sm"
-                                rounded
-                            >
-                                Ajouter une Biographie
-                            </Button>
-                        ) : (
-                            <Text>{userProfile?.biography}</Text>
-                        )}
-                    </Grid>
                 )}
             </Grid.Container>
         </Card>

@@ -69,20 +69,17 @@ const UserMenu = ({
                 onAction={(key: Key) => handleMenu(key)}
                 color="success"
                 css={{
-                    minWidth: '300px',
                     borderRadius: '$lg',
                     padding: '$sm',
                 }}
                 disabledKeys={['help']}
                 aria-label="User Actions"
             >
-                <Dropdown.Section title="Compte">
-                    <Dropdown.Item textValue={'email'} key="profile">
-                        <Text b color="inherit" css={{ d: 'flex' }}>
-                            {user && user.email}
-                        </Text>
-                    </Dropdown.Item>
-                </Dropdown.Section>
+                <Dropdown.Item textValue={'profile'} key="profile">
+                    <Text b color="inherit" css={{ d: 'flex' }}>
+                        Profile
+                    </Text>
+                </Dropdown.Item>
                 <Dropdown.Item
                     key="settings"
                     css={{ height: '$12' }}

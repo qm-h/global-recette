@@ -7,6 +7,7 @@ import {
     uploadImageHandler,
 } from '../api/commands/recipe/recipeCommands'
 import {
+    getAllPublishedRecipeByUserIDHandler,
     getAllRecipesWithUserHandler,
     getRecipeByIDHandler,
     getRecipeByNameHandler,
@@ -30,6 +31,10 @@ class RecipeRouter {
                 AuthService.verifyAccessJWTToken(req, res, next),
             AuthService.verifyAccessUUIDToken,
             this.getAllRecipesByUserID
+        )
+        this.router.post(
+            '/user/published/:userID',
+            this.getAllPublishedRecipeByUserID
         )
         this.router.get('/:id', (_req: Request, res: Response) =>
             this.getRecipeById(_req, res)
@@ -70,6 +75,10 @@ class RecipeRouter {
 
     private async getAllRecipesByUserID(req: Request, res: Response) {
         return getRecipeByUserIDHandler(req, res)
+    }
+
+    private async getAllPublishedRecipeByUserID(req: Request, res: Response) {
+        return getAllPublishedRecipeByUserIDHandler(req, res)
     }
 
     private getRecipeById(req: Request, res: Response) {

@@ -31,6 +31,28 @@ export const getRecipeByUserIDHandler = async (req: Request, res: Response) => {
         : res.send({ status: 500, message: recipesResult.error, recipes: [] })
 }
 
+export const getAllPublishedRecipeByUserIDHandler = async (
+    req: Request,
+    res: Response
+) => {
+    const { userID } = req.params
+    const recipesResult = await supabase
+        .from('recipes')
+        .select()
+        .eq('created_by', userID)
+        .eq('published', true)
+        .order('created_at', { ascending: false })
+
+    if (recipesResult.status === 400) {
+        return res.send({ status: 500, message: 'Error getting recipe' })
+    }
+    return res.send({
+        status: 200,
+        message: 'Recipe',
+        recipes: recipesResult.data,
+    })
+}
+
 export const getRecipeByIDHandler = async (req: Request, res: Response) => {
     const result = await supabase
         .from<Recipe>('recipes')
