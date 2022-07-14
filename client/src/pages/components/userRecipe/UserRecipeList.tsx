@@ -15,12 +15,15 @@ import {
     publishRecipe,
     unpublishRecipe,
 } from '../../../router/recipesRouter'
+import {
+    toasterErrorCommon,
+    toasterSuccessCommon,
+} from '../../../utils/theme/toaster'
 
 import DeleteRecipe from './DeleteRecipe'
 import { FaTrashAlt } from 'react-icons/fa'
 import { Recipe } from '../../../../../server/src/shared/types'
 import RecipeIngredients from './ingredients/RecipeIngredients'
-import { toasterSuccessCommon } from '../../../utils/theme/toaster'
 import { useState } from 'react'
 
 interface Props {
@@ -43,17 +46,25 @@ const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
         }
         await deleteRecipe(recipe.id).then(async () => {
             toasterSuccessCommon(isDark, 'Recette supprimée avec succès')
+            setIsLoading(false)
             fetchRecipe()
         })
     }
 
-    const handlePublishRecipe = async (recipeID: number) => {
-        setIsLoadingPublish(true)
-        await publishRecipe(recipeID).then(async () => {
-            toasterSuccessCommon(isDark, 'Recette publié avec succès')
-            await fetchRecipe()
-            setIsLoadingPublish(false)
-        })
+    const handlePublishRecipe = async (recipe: Recipe) => {
+        if (recipe.image_path) {
+            setIsLoadingPublish(true)
+            await publishRecipe(recipe.id).then(async () => {
+                toasterSuccessCommon(isDark, 'Recette publié avec succès')
+                await fetchRecipe()
+                setIsLoadingPublish(false)
+            })
+        } else {
+            toasterErrorCommon(
+                isDark,
+                'Veuillez ajouter une image à votre recette, avant de pouvoir la publier'
+            )
+        }
     }
 
     const handleUnpublishRecipes = async (recipeID: number) => {
@@ -178,7 +189,7 @@ const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
                                         size="sm"
                                         color="success"
                                         onPress={() =>
-                                            handlePublishRecipe(recipe.id)
+                                            handlePublishRecipe(recipe)
                                         }
                                     >
                                         {isLoadingPublish ? (

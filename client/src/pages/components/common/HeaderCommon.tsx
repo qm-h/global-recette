@@ -1,8 +1,8 @@
 import {
     Avatar,
     Grid,
+    Image,
     Link,
-    Switch,
     Text,
     Tooltip,
     useTheme,
@@ -13,6 +13,7 @@ import { FaDoorOpen } from 'react-icons/fa'
 import MenuList from './commonComponents/MenuList'
 import UserMenu from './commonComponents/UserMenu'
 import { SuccessAuthUser as UserType } from '../../../../../server/src/shared/types'
+import burgerLogo from '../../../utils/images/assets/burger-logo.png'
 import { getUserByID } from '../../../router/userRouter'
 import { useNavigate } from 'react-router-dom'
 
@@ -58,13 +59,36 @@ const HeaderCommon = ({
             <Grid.Container>
                 <Grid xs={3} justify="flex-start" alignItems="center">
                     <Text
-                        onClick={() => navigate('/')}
                         h2
                         b
-                        css={{ cursor: 'pointer' }}
+                        css={{
+                            textGradient:
+                                '45deg, $yellow600 20%, $green600 50%',
+                            m: '$0',
+                            p: '$0',
+                        }}
                     >
-                        Global Recette 🍔
+                        Global
                     </Text>
+                    <Text
+                        h2
+                        b
+                        css={{
+                            textGradient:
+                                '45deg, $green600 20%, $yellow600 100%',
+                            m: '$0',
+                            p: '$0',
+                        }}
+                    >
+                        Recette
+                    </Text>
+                    <Image
+                        width="3.5rem"
+                        onClick={() => navigate('/')}
+                        showSkeleton
+                        css={{ cursor: 'pointer', p: '0', m: '0' }}
+                        src={burgerLogo}
+                    />
                 </Grid>
                 <Grid xs={7} alignItems="center">
                     <MenuList isAuthenticated={isAuthenticated} user={user} />

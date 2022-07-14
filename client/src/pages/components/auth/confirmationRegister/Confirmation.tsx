@@ -9,9 +9,9 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import Confetti from 'react-confetti'
 import ConfirmationContent from './ConfirmationContent'
-import darkSideGif from '../../../../utils/images/gif/dark-side.gif'
-import eatingGif from '../../../../utils/images/gif/giphy.gif'
-import partyGif from '../../../../utils/images/gif/party-gif.gif'
+import darkSideGif from '../../../../utils/images/assets/gif/dark-side.gif'
+import eatingGif from '../../../../utils/images/assets/gif/giphy.gif'
+import partyGif from '../../../../utils/images/assets/gif/party-gif.gif'
 import timerBefore from '../../../../utils/timer'
 import { useWindowSize } from 'react-use'
 
