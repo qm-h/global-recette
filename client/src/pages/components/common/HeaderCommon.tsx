@@ -62,18 +62,22 @@ const HeaderCommon = ({
                         h2
                         b
                         css={{
+                            cursor: 'pointer',
                             textGradient:
                                 '45deg, $yellow600 20%, $green600 50%',
                             m: '$0',
                             p: '$0',
                         }}
+                        onClick={() => navigate('/')}
                     >
                         Global
                     </Text>
                     <Text
                         h2
+                        onClick={() => navigate('/')}
                         b
                         css={{
+                            cursor: 'pointer',
                             textGradient:
                                 '45deg, $green600 20%, $yellow600 100%',
                             m: '$0',
@@ -81,14 +85,13 @@ const HeaderCommon = ({
                         }}
                     >
                         Recette
+                        <img
+                            onClick={() => navigate('/')}
+                            src={burgerLogo}
+                            width="17%"
+                            alt=""
+                        />
                     </Text>
-                    <Image
-                        width="3.5rem"
-                        onClick={() => navigate('/')}
-                        showSkeleton
-                        css={{ cursor: 'pointer', p: '0', m: '0' }}
-                        src={burgerLogo}
-                    />
                 </Grid>
                 <Grid xs={7} alignItems="center">
                     <MenuList isAuthenticated={isAuthenticated} user={user} />
