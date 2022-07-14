@@ -18,6 +18,7 @@ import {
 
 import AuthService from '../../services/authService'
 import { insertRecipeIngredientHandler } from '../api/commands/recipe/recipeIngredientCommands'
+import { savedImageUUIDHandler } from './../api/commands/recipe/recipeCommands'
 
 class RecipeRouter {
     public readonly router: Router
@@ -67,6 +68,7 @@ class RecipeRouter {
         this.router.post('/uploadimage', (_req: Request, res: Response) =>
             this.savedImage(_req, res)
         )
+        this.router.post('/saveimageuuid', this.savedImageUUID)
     }
 
     private async getAllRecipesWithUser(req: Request, res: Response) {
@@ -103,6 +105,10 @@ class RecipeRouter {
 
     private savedImage(req: Request, res: Response) {
         return uploadImageHandler(req, res)
+    }
+
+    private savedImageUUID(req: Request, res: Response) {
+        return savedImageUUIDHandler(req, res)
     }
 
     private insertRecipeIngredient(req: Request, res: Response) {

@@ -4,6 +4,7 @@ import {
     Card,
     Grid,
     Popover,
+    Row,
     Text,
     Tooltip,
 } from '@nextui-org/react'
@@ -19,6 +20,7 @@ import {
 } from '../../../router/userRouter'
 import { useEffect, useState } from 'react'
 
+import CardImageRecipe from './CardImageRecipe'
 import { FaShare } from 'react-icons/fa'
 import FavoritesButton from '../common/commonComponents/FavoritesButton'
 import { MdOutlineOpenInFull } from 'react-icons/md'
@@ -83,7 +85,7 @@ const CardRecipes = ({
     }
 
     const handleOpen = (recipeID: number) => {
-        console.log('cardRecipe', recipeID)
+        console.log(recipeID)
         if (recipeID !== undefined) {
             setRecipeID(recipeID)
             setIsOpen(true)
@@ -126,163 +128,74 @@ const CardRecipes = ({
     return (
         <>
             {recipes.map((r, i) => (
-                <Grid key={i} xs={4} md={6}>
+                <Grid key={i} md={2.5}>
                     <Card
-                        id={`${r.id}`}
-                        variant="bordered"
-                        css={{
-                            borderRadius: '6px',
-                            w: '70%',
-                            m: 'auto',
-                            h: '100%',
-                        }}
+                        css={{ ml: '$5', mr: '$5' }}
+                        isHoverable
+                        variant={isDark ? 'bordered' : 'flat'}
+                        isPressable
+                        onClick={() => handleOpen(r.id)}
                     >
-                        <Card.Header>
-                            <Grid.Container
-                                gap={1}
-                                justify="center"
-                                alignItems="center"
-                            >
-                                <Grid xs={6} md={7} alignItems="center">
-                                    <Text h4 b>
-                                        {r.name}
-                                    </Text>
-                                    {authUserID !== undefined &&
-                                        authUserID !== r.created_by && (
-                                            <Grid
-                                                xs={1}
-                                                md={2}
-                                                alignItems="center"
-                                            >
-                                                <FavoritesButton
-                                                    hasSaved={hasSaved}
-                                                    setHasSaved={setHasSaved}
-                                                    authUserID={authUserID}
-                                                    isDark={isDark}
-                                                    recipe={r}
-                                                />
-                                            </Grid>
-                                        )}
-                                    <Grid xs={2} md={2} alignItems="center">
-                                        <MdOutlineOpenInFull
-                                            size={20}
-                                            className="icon-open-in-full"
-                                            onClick={() => handleOpen(r.id)}
+                        <Card.Header
+                            css={{ position: 'absolute', zIndex: 1, top: 2 }}
+                        >
+                            {authUserID !== undefined &&
+                                authUserID !== r.created_by && (
+                                    <Grid xs={1} md={2} alignItems="center">
+                                        <FavoritesButton
+                                            hasSaved={hasSaved}
+                                            setHasSaved={setHasSaved}
+                                            authUserID={authUserID}
+                                            isDark={isDark}
+                                            recipe={r}
                                         />
                                     </Grid>
-                                </Grid>
-
-                                <Grid xs={6} md={4} justify="flex-end">
-                                    <Tooltip
-                                        placement="top"
-                                        animated={false}
-                                        trigger={'click'}
-                                        content={
-                                            <UserInfoTooltip
-                                                isLoading={isLoading}
-                                                isFollowing={isFollowing}
-                                                isUnfollowing={isUnfollowing}
-                                                handleFollowingUser={
-                                                    handleFollowingUser
-                                                }
-                                                handleUnfollowingUser={
-                                                    handleUnfollowingUser
-                                                }
-                                                userRecipe={r.user}
-                                            />
-                                        }
-                                    >
-                                        <Avatar
-                                            pointer
-                                            size="lg"
-                                            src={r.user.generated_avatar}
-                                            color="primary"
-                                            bordered
-                                        />
-                                    </Tooltip>
-                                </Grid>
-                            </Grid.Container>
+                                )}
                         </Card.Header>
-                        <Card.Body>
-                            <ModalRecipeDetail
-                                isOpen={isOpen}
-                                onClose={handleClose}
-                                recipeID={
-                                    recipeID !== undefined ? recipeID : null
-                                }
-                            />
+                        <Card.Body css={{ p: 0 }}>
+                            <CardImageRecipe recipe={r} />
                         </Card.Body>
-                        <Card.Footer>
-                            <Grid.Container
-                                justify="center"
-                                alignItems="center"
+                        <Card.Footer css={{ justifyItems: 'flex-start' }}>
+                            <Row
+                                wrap="wrap"
+                                justify="space-between"
+                                align="center"
                             >
-                                <Grid xs={6} md={7}>
-                                    <Text css={{ color: '$accents5' }}>
-                                        Publié par @{r.user.username}
-                                    </Text>
-                                </Grid>
-                                <Grid xs={6} md={5} justify="flex-end">
-                                    <Popover
-                                        isBordered={isDark ? true : false}
-                                        placement="bottom"
-                                    >
-                                        <Popover.Trigger>
-                                            <Button
-                                                auto
-                                                flat
-                                                css={{
-                                                    backgroundColor:
-                                                        '$accents2',
-                                                    color: '$accents9',
-                                                }}
-                                                icon={<FaShare />}
-                                            />
-                                        </Popover.Trigger>
-                                        <Popover.Content css={{ p: '$3' }}>
-                                            <Grid.Container gap={0}>
-                                                <Grid xs={6} md={6}>
-                                                    <Button
-                                                        auto
-                                                        rounded
-                                                        light
-                                                        color="success"
-                                                        onPress={() =>
-                                                            handleFacebookShare(
-                                                                `${window.location.href}${r.id}`
-                                                            )
-                                                        }
-                                                        icon={
-                                                            <TiSocialFacebookCircular
-                                                                size={'2em'}
-                                                            />
-                                                        }
-                                                    />
-                                                </Grid>
-                                                <Grid xs={6} md={6}>
-                                                    <Button
-                                                        auto
-                                                        rounded
-                                                        light
-                                                        color="success"
-                                                        onPress={() =>
-                                                            handleTwitterShare(
-                                                                `${window.location.href}${r.id}`
-                                                            )
-                                                        }
-                                                        icon={
-                                                            <TiSocialTwitterCircular
-                                                                size={'2em'}
-                                                            />
-                                                        }
-                                                    />
-                                                </Grid>
-                                            </Grid.Container>
-                                        </Popover.Content>
-                                    </Popover>
-                                </Grid>
-                            </Grid.Container>
+                                <Text b>{r.name}</Text>
+                                <Tooltip
+                                    placement="top"
+                                    animated={false}
+                                    trigger={'hover'}
+                                    content={
+                                        <UserInfoTooltip
+                                            isLoading={isLoading}
+                                            isFollowing={isFollowing}
+                                            isUnfollowing={isUnfollowing}
+                                            handleFollowingUser={
+                                                handleFollowingUser
+                                            }
+                                            handleUnfollowingUser={
+                                                handleUnfollowingUser
+                                            }
+                                            userRecipe={r.user}
+                                        />
+                                    }
+                                >
+                                    <Avatar
+                                        pointer
+                                        size="lg"
+                                        src={r.user.generated_avatar}
+                                        color="primary"
+                                        bordered
+                                    />
+                                </Tooltip>
+                            </Row>
                         </Card.Footer>
+                        <ModalRecipeDetail
+                            isOpen={isOpen}
+                            onClose={handleClose}
+                            recipeID={recipeID !== undefined ? recipeID : null}
+                        />
                     </Card>
                 </Grid>
             ))}

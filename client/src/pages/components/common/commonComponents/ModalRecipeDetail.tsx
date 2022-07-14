@@ -21,11 +21,10 @@ const ModalRecipeDetail = ({
     useEffect(() => {
         if (recipeID !== undefined && recipeID !== 0 && recipeID !== null) {
             Promise.all([getRecipesByID(recipeID)]).then(([recipe]) => {
-                setRecipe(recipe)
+                setRecipe(recipe[0])
             })
         }
-    }, [recipe, recipeID])
-
+    }, [recipeID])
     return (
         <Modal
             aria-labelledby="modal-title"
@@ -33,16 +32,14 @@ const ModalRecipeDetail = ({
             open={isOpen}
             onClose={onClose}
             animated={false}
+            preventClose
             blur
         >
             {recipe ? (
                 <>
                     <Modal.Header>
-                        <Text id="modal-title" size={18}>
-                            {recipe.creator_username} présente la recette{' '}
-                            <Text b size={18}>
-                                {recipe.name}
-                            </Text>
+                        <Text id="modal-title" h2>
+                            {recipe.name}
                         </Text>
                     </Modal.Header>
                     <Modal.Body>

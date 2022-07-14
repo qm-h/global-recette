@@ -1,4 +1,8 @@
-import { Recipe, SuccessAuthUser } from './../../../../shared/types'
+import {
+    ImageUUIDBridge,
+    Recipe,
+    SuccessAuthUser,
+} from './../../../../shared/types'
 import { Request, Response } from 'express'
 
 import { logger } from './../../../../server'
@@ -54,11 +58,18 @@ export const getAllPublishedRecipeByUserIDHandler = async (
 }
 
 export const getRecipeByIDHandler = async (req: Request, res: Response) => {
-    const result = await supabase
-        .from<Recipe>('recipes')
-        .select()
-        .eq('id', req.params.id)
-    result.status === 200 ? res.send(result.data) : res.send(result.error)
+    const { id } = req.params
+    logger.debug(`Getting recipe with id: ${id}`)
+    const result = await supabase.from<Recipe>('recipes').select().eq('id', id)
+    logger.debug(`Result: ${JSON.stringify(result)}`)
+    if (result.status === 400) {
+        logger.error(`Error getting recipe: ${JSON.stringify(result.error)}`)
+        return res
+            .status(500)
+            .send({ status: 500, message: 'Error getting recipe' })
+    }
+    logger.debug(`Recipe found: ${JSON.stringify(result.data)}`)
+    return res.send(result.data)
 }
 
 export const getRecipeByNameHandler = async (req: Request, res: Response) => {
@@ -93,8 +104,20 @@ export const getRecipeUserHandler = async (req: Request, res: Response) => {
 
 export const getRecipeImageHandler = async (req: Request, res: Response) => {
     const { name } = req.params
+
+    const uuidImages = await supabase
+        .from<ImageUUIDBridge>('image_uuid_bridge')
+        .select()
+        .eq('image_path', name)
+    logger.debug(`uuidImages: ${JSON.stringify(uuidImages)}`)
+    if (uuidImages.status === 400) {
+        return res.sendStatus(500)
+    }
+
     const image = await (
-        await supabase.storage.from('images').createSignedUrl(name, 60)
+        await supabase.storage
+            .from('images')
+            .createSignedUrl(uuidImages.data[0].image_uuid, 60)
     ).signedURL
 
     if (!image) {

@@ -18,7 +18,7 @@ export function getAllRecipesWithUser(): Promise<Recipe[]> {
 export function getRecipesByID(id: number): Promise<Recipe> {
     return axios
         .get(`/api/recipe/${id}`)
-        .then((res) => res.data[0])
+        .then((res) => res.data)
         .catch((err) => console.log(err))
 }
 
@@ -66,6 +66,19 @@ export function uploadRecipeImage(
     return axios
         .post('/api/recipe/uploadimage', formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
+        })
+        .then((res) => res.data)
+        .catch((err) => console.log(err))
+}
+
+export function saveImageUUID(
+    imageUUID: string,
+    imagePath: string
+): Promise<ExpressResponseMessageType> {
+    return axios
+        .post('/api/recipe/saveimageuuid', {
+            imageUUID: imageUUID,
+            imagePath: imagePath,
         })
         .then((res) => res.data)
         .catch((err) => console.log(err))

@@ -89,7 +89,7 @@ const ListRecipes = () => {
                 <Card.Body
                     css={{
                         w: '100%',
-                        h: 'auto',
+                        h: '100%',
                         display: 'flex',
                         justifyContent: isLoading && 'center',
                         alignItems: 'center',

@@ -19,6 +19,13 @@ export type Ingredients = {
     name: string
 }
 
+export type ImageUUIDBridge = {
+    id?: number
+    image_path: string
+    image_uuid: string
+    created_at?: EpochTimeStamp
+}
+
 export type HasSavedRecipe = {
     favorite: boolean
     recipeID: number

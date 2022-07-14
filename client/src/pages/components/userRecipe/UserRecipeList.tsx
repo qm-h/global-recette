@@ -4,6 +4,7 @@ import {
     Collapse,
     Grid,
     Loading,
+    Modal,
     Popover,
     Row,
     Text,
@@ -15,6 +16,7 @@ import {
     unpublishRecipe,
 } from '../../../router/recipesRouter'
 
+import DeleteRecipe from './DeleteRecipe'
 import { FaTrashAlt } from 'react-icons/fa'
 import { Recipe } from '../../../../../server/src/shared/types'
 import RecipeIngredients from './ingredients/RecipeIngredients'
@@ -29,27 +31,39 @@ interface Props {
 const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
     const { isDark } = useTheme()
     const [isLoading, setIsLoading] = useState(false)
+    const [isLoadingPublish, setIsLoadingPublish] = useState(false)
+    const [openDeleteModal, setOpenDeleteModal] = useState(false)
 
-    const handleDeleteRecipe = async (recipeID: number) => {
+    const handleDeleteRecipe = async (recipe: Recipe) => {
+        setOpenDeleteModal(false)
         setIsLoading(true)
-        await deleteRecipe(recipeID).then(() => {
-            toasterSuccessCommon(isDark, 'Recette supprimée')
-            setIsLoading(false)
+
+        if (recipe.published) {
+            await unpublishRecipe(recipe.id)
+        }
+        await deleteRecipe(recipe.id).then(async () => {
+            toasterSuccessCommon(isDark, 'Recette supprimée avec succès')
             fetchRecipe()
         })
     }
 
-    const handlePublishRecipe = async (recipeID: number) =>
-        await publishRecipe(recipeID).then(() => {
+    const handlePublishRecipe = async (recipeID: number) => {
+        setIsLoadingPublish(true)
+        await publishRecipe(recipeID).then(async () => {
             toasterSuccessCommon(isDark, 'Recette publié avec succès')
-            fetchRecipe()
+            await fetchRecipe()
+            setIsLoadingPublish(false)
         })
+    }
 
-    const handleUnpublishRecipes = async (recipeID: number) =>
-        await unpublishRecipe(recipeID).then(() => {
+    const handleUnpublishRecipes = async (recipeID: number) => {
+        setIsLoadingPublish(true)
+        await unpublishRecipe(recipeID).then(async () => {
             toasterSuccessCommon(isDark, 'Recette dépublié avec succès')
-            fetchRecipe()
+            await fetchRecipe()
+            setIsLoadingPublish(false)
         })
+    }
 
     return (
         <>
@@ -78,12 +92,25 @@ const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
                                     ghost
                                     disabled={isLoading}
                                     rounded
-                                    onPress={() =>
-                                        handleDeleteRecipe(recipe.id)
-                                    }
                                     color="error"
+                                    onPress={() => setOpenDeleteModal(true)}
                                     css={{ ml: '$5' }}
                                 />
+                                <Modal
+                                    blur
+                                    closeButton
+                                    open={openDeleteModal}
+                                    onClose={() => setOpenDeleteModal(false)}
+                                >
+                                    <Modal.Body>
+                                        <DeleteRecipe
+                                            recipe={recipe}
+                                            handleDeleteRecipe={
+                                                handleDeleteRecipe
+                                            }
+                                        />
+                                    </Modal.Body>
+                                </Modal>
                             </Grid>
                         </Grid.Container>
                     </Card.Header>
@@ -126,24 +153,42 @@ const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
                                 {recipe.published ? (
                                     <Button
                                         auto
-                                        flat
+                                        light
+                                        size="sm"
                                         color="error"
+                                        disabled={isLoadingPublish}
                                         onPress={() =>
                                             handleUnpublishRecipes(recipe.id)
                                         }
                                     >
-                                        Dépublier la recette
+                                        {isLoadingPublish ? (
+                                            <Loading
+                                                color="currentColor"
+                                                size="sm"
+                                            />
+                                        ) : (
+                                            'Dépublié'
+                                        )}
                                     </Button>
                                 ) : (
                                     <Button
                                         auto
                                         flat
+                                        disabled={isLoadingPublish}
+                                        size="sm"
                                         color="success"
                                         onPress={() =>
                                             handlePublishRecipe(recipe.id)
                                         }
                                     >
-                                        Publié la recette
+                                        {isLoadingPublish ? (
+                                            <Loading
+                                                color="currentColor"
+                                                size="sm"
+                                            />
+                                        ) : (
+                                            'Publié'
+                                        )}
                                     </Button>
                                 )}
                             </Grid>

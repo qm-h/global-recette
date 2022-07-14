@@ -1,6 +1,6 @@
+import { ImageUUIDBridge, Recipe } from '../../../../shared/types'
 import { Request, Response } from 'express'
 
-import { Recipe } from '../../../../shared/types'
 import { logger } from '../../../../server'
 import supabase from '../../../../supabase/supabase'
 
@@ -37,8 +37,6 @@ export const createRecipeHandler = async (req: Request, res: Response) => {
 
 export const uploadImageHandler = async (req, res: Response) => {
     const { image } = req.files
-    logger.debug(`uploading image: ${JSON.stringify(image.data)}`)
-    logger.debug(`uploading image: ${JSON.stringify(image.name)}`)
     const savedImageResult = await supabase.storage
         .from('images')
         .upload(image.name, image.data)
@@ -49,6 +47,27 @@ export const uploadImageHandler = async (req, res: Response) => {
             .status(500)
             .send({ status: 500, message: 'Erreur lors de la création' })
     }
+    return res.status(200).send({ status: 200, message: 'Création réussie' })
+}
+
+export const savedImageUUIDHandler = async (req, res: Response) => {
+    const { imageUUID, imagePath } = req.body
+
+    const savedUUIDResult = await supabase
+        .from<ImageUUIDBridge>('image_uuid_bridge')
+        .insert([
+            {
+                image_uuid: imageUUID,
+                image_path: imagePath,
+            },
+        ])
+    if (savedUUIDResult.status === 400) {
+        console.log('error', savedUUIDResult.error)
+        return res
+            .status(500)
+            .send({ status: 500, message: 'Erreur lors de la création' })
+    }
+
     return res.status(200).send({ status: 200, message: 'Création réussie' })
 }
 
@@ -82,6 +101,18 @@ export const unpublishRecipeHandler = async (req: Request, res: Response) => {
 
 export const deleteRecipeHandler = async (req: Request, res: Response) => {
     const { id } = req.params
+
+    const recipe = await supabase
+        .from<Recipe>('recipes')
+        .select('image_path')
+        .eq('id', id)
+    const imagePath = recipe.data[0].image_path
+
+    const removeImageBridgeResult = await supabase
+        .from<ImageUUIDBridge>('image_uuid_bridge')
+        .delete()
+        .eq('image_path', imagePath)
+
     const result = await supabase
         .from('recipe_ingredient')
         .delete()
@@ -91,16 +122,24 @@ export const deleteRecipeHandler = async (req: Request, res: Response) => {
         .delete()
         .eq('id', id)
 
+    if (removeImageBridgeResult.status === 400) {
+        logger.error(`Error: ${JSON.stringify(removeImageBridgeResult.error)}`)
+        return res
+            .status(500)
+            .send({ status: 500, message: 'Erreur lors de la suppression' })
+    }
     if (result.status === 400) {
         logger.error(JSON.stringify(result.error))
+        return res
+            .status(500)
+            .send({ status: 500, message: 'Erreur lors de la suppression' })
     }
     if (removeRecipeResult.status === 409) {
         logger.error(JSON.stringify(removeRecipeResult.error))
+        return res
+            .status(500)
+            .send({ status: 500, message: 'Erreur lors de la suppression' })
     }
 
-    result.status === 200
-        ? res.status(200).send({ status: 200, message: 'Suppression réussie' })
-        : res
-              .status(500)
-              .send({ status: 500, message: 'Erreur lors de la suppression' })
+    return res.status(200).send({ status: 200, message: 'Suppression réussie' })
 }

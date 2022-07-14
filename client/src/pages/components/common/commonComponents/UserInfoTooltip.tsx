@@ -73,7 +73,8 @@ const UserInfoTooltip = ({
                             <Avatar
                                 bordered
                                 borderWeight="normal"
-                                color="default"
+                                color="success"
+                                pointer
                                 size="lg"
                                 src={userRecipe.generated_avatar}
                             />

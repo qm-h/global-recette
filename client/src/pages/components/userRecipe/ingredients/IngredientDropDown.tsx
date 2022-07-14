@@ -25,7 +25,7 @@ const IngredientDropDown = ({
     }, [selectedValue, setSelectedIngredients])
 
     return (
-        <Dropdown>
+        <Dropdown closeOnSelect isBordered disableShadow>
             <Dropdown.Button
                 animated
                 color="primary"

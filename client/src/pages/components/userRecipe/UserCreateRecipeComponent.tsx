@@ -1,6 +1,7 @@
 import {
     Button,
     Card,
+    Col,
     Grid,
     Input,
     Loading,
@@ -18,6 +19,7 @@ import {
     createRecipe,
     getRecipeByName,
     insertRecipeIngredients,
+    saveImageUUID,
     uploadRecipeImage,
 } from '../../../router/recipesRouter'
 import {
@@ -26,12 +28,13 @@ import {
 } from '../../../router/ingredientsRouter'
 import { useEffect, useState } from 'react'
 
-import { BiCloudUpload } from 'react-icons/bi'
+import { BsFillCameraFill } from 'react-icons/bs'
 import CreateIngredientModal from './ingredients/CreateIngredientModal'
 import IngredientDropDown from './ingredients/IngredientDropDown'
 import IngredientQuantity from './ingredients/IngredientQuantity'
 import { toasterErrorCommon } from '../../../utils/theme/toaster'
 import { useAppContext } from '../../../utils/context/AppContext'
+import { v4 as uuidv4 } from 'uuid'
 
 interface Props {
     setCreate: (value: boolean) => void
@@ -73,7 +76,7 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
                 origin: origin,
                 note: note,
                 created_by: user.id,
-                image_path: image.name,
+                image_path: image ? image.name : '',
                 created_at: Date.now(),
                 creator_username: user.username,
             }
@@ -86,11 +89,23 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
                 })
             }
 
-            const formData = new FormData()
-            formData.append('image', image)
-
             await createRecipe(recipe)
-            await uploadRecipeImage(formData)
+            if (image) {
+                const image_uuid = uuidv4()
+                const blob = image.slice(0, image.size, image.type)
+                const newImage = new File(
+                    [blob],
+                    `${image_uuid}-${Date.now()}`,
+                    {
+                        type: image.type,
+                    }
+                )
+                const formData = new FormData()
+                formData.append('image', newImage)
+                await saveImageUUID(newImage.name, image.name)
+                await uploadRecipeImage(formData)
+            }
+
             const createdRecipe = await getRecipeByName(recipe.name)
             await getIngredientByName(ingredients).then((res) => {
                 res.map((ingredient, i) =>
@@ -189,6 +204,7 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
                         <Button
                             color="error"
                             auto
+                            size="sm"
                             onPress={() => setCreate(false)}
                         >
                             Annuler
@@ -294,7 +310,7 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
                         xs={12}
                         md={12}
                         justify="center"
-                        css={{ w: '100%', m: '$5' }}
+                        css={{ w: '100%', m: '$0' }}
                     >
                         <input
                             type="file"
@@ -307,7 +323,7 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
                         />
                         <Button
                             color="success"
-                            icon={<BiCloudUpload size="2em" />}
+                            icon={<BsFillCameraFill size="2em" />}
                             auto
                             ghost={!image ? true : false}
                             flat={image ? true : false}
@@ -316,9 +332,20 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
                             <label className="labelInput" htmlFor="file">
                                 {image && image.name
                                     ? `${image.name}`
-                                    : 'Choisir une image'}
+                                    : 'Une photo ?'}
                             </label>
                         </Button>
+                    </Grid>
+                    <Grid
+                        xs={12}
+                        md={12}
+                        justify="center"
+                        css={{ w: '100%', m: '$0', p: '$0', mb: '$5' }}
+                    >
+                        <Text color="warning" small>
+                            Veuillez utiliser une image libre de droit d'auteur
+                            si vous en avez une
+                        </Text>
                     </Grid>
                     <Grid xs={12} md={12} justify="center" css={{ w: '100%' }}>
                         <Textarea
