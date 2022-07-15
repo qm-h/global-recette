@@ -32,7 +32,6 @@ interface CardRecipesProps {
     isFollowing: boolean
     isUnfollowing: boolean
     setIsUnfollowing: (value: boolean) => void
-    setIsLoading: (value: boolean) => void
 }
 
 const CardRecipes = ({
@@ -43,7 +42,6 @@ const CardRecipes = ({
     isFollowing,
     setIsUnfollowing,
     isUnfollowing,
-    setIsLoading,
 }: CardRecipesProps) => {
     const [hasSaved, setHasSaved] = useState<HasSavedRecipe[]>([
         {} as HasSavedRecipe,
@@ -113,7 +111,6 @@ const CardRecipes = ({
                 })
                 .catch((err) => {
                     console.log(err)
-                    setIsLoading(false)
                 })
         }
     }, [authUserID, recipes])
@@ -122,7 +119,7 @@ const CardRecipes = ({
         <>
             {recipes.map((r, i) => (
                 <Grid key={i} md={2.5} justify="center" alignItems="center">
-                    {isLoadingRecipe ? (
+                    {authUserID && isLoadingRecipe ? (
                         <>
                             {!isDark ? (
                                 <Skeleton

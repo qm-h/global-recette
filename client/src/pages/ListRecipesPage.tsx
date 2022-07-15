@@ -40,7 +40,6 @@ const ListRecipes = () => {
         } else {
             return (
                 <CardRecipes
-                    setIsLoading={setIsLoading}
                     isFollowing={isFollowing}
                     setIsFollowing={setIsFollowing}
                     isUnfollowing={isUnfollowing}
@@ -101,7 +100,7 @@ const ListRecipes = () => {
                 >
                     <Grid.Container wrap="wrap" justify="center" gap={2}>
                         {isLoading ? (
-                            <Loading size="xl" color="primary" />
+                            <Loading size="xl" color="success" />
                         ) : (
                             renderRecipesWithNoData(recipeList)
                         )}
