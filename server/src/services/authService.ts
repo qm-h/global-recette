@@ -391,7 +391,7 @@ const AuthService = {
         const mailOptions = {
             from: '"Global Recette 🍔"',
             to: email,
-            subject: 'Confirmation Email',
+            subject: 'Confirmation de votre compte',
             text:
                 'Bonjour, \n\n' +
                 'Merci de cliquer sur le lien ci-dessous pour confirmer votre compte : \n\n' +

@@ -6,6 +6,7 @@ import FavoritesButton from '../common/commonComponents/FavoritesButton'
 import { HasSavedRecipe } from '../../../../../server/src/shared/types'
 import ModalRecipeDetail from '../common/commonComponents/ModalRecipeDetail'
 import { getSavedRecipes } from '../../../router/userRouter'
+import { useNavigate } from 'react-router-dom'
 
 interface FavoritesListProps {
     favorites: any[]
@@ -23,17 +24,8 @@ const FavoritesList = ({
     const [hasSaved, setHasSaved] = useState<HasSavedRecipe[]>([
         {} as HasSavedRecipe,
     ])
-    const [isOpen, setIsOpen] = useState(false)
-    const [recipeID, setRecipeID] = useState(0)
 
-    const handleOpen = (recipeID: number) => {
-        setRecipeID(recipeID)
-        setIsOpen(true)
-    }
-
-    const handleClose = () => {
-        setIsOpen(false)
-    }
+    const navigate = useNavigate()
 
     useEffect(() => {
         Promise.all([getSavedRecipes(authUserID)])
@@ -92,11 +84,6 @@ const FavoritesList = ({
                                     </Grid>
                                 </Card.Header>
                                 <Card.Body>
-                                    <ModalRecipeDetail
-                                        isOpen={isOpen}
-                                        onClose={handleClose}
-                                        recipeID={recipeID}
-                                    />
                                     <Grid
                                         md={12}
                                         css={{
@@ -111,8 +98,20 @@ const FavoritesList = ({
                                             @{r.recipes.creator_username}
                                         </Text>
                                         <Text
-                                            onClick={() => handleOpen}
-                                            color="primary"
+                                            onClick={() =>
+                                                navigate({
+                                                    pathname: `/recette/${r.recipes.id}`,
+                                                })
+                                            }
+                                            css={{
+                                                color: '$accents5',
+                                                cursor: 'pointer',
+                                                transition:
+                                                    'all 0.2s ease-in-out',
+                                                '&:hover': {
+                                                    color: '$primary',
+                                                },
+                                            }}
                                         >
                                             Voir la recette
                                         </Text>

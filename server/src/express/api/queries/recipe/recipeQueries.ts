@@ -59,16 +59,13 @@ export const getAllPublishedRecipeByUserIDHandler = async (
 
 export const getRecipeByIDHandler = async (req: Request, res: Response) => {
     const { id } = req.params
-    logger.debug(`Getting recipe with id: ${id}`)
     const result = await supabase.from<Recipe>('recipes').select().eq('id', id)
-    logger.debug(`Result: ${JSON.stringify(result)}`)
     if (result.status === 400) {
         logger.error(`Error getting recipe: ${JSON.stringify(result.error)}`)
         return res
             .status(500)
             .send({ status: 500, message: 'Error getting recipe' })
     }
-    logger.debug(`Recipe found: ${JSON.stringify(result.data)}`)
     return res.send(result.data)
 }
 
@@ -109,12 +106,11 @@ export const getRecipeImageHandler = async (req: Request, res: Response) => {
         .from<ImageUUIDBridge>('image_uuid_bridge')
         .select()
         .eq('image_path', name)
-    logger.debug(`uuidImages: ${JSON.stringify(uuidImages)}`)
     if (uuidImages.status === 400) {
         return res.sendStatus(500)
     }
 
-    const image = await (
+    const image = (
         await supabase.storage
             .from('images')
             .createSignedUrl(uuidImages.data[0].image_uuid, 60)

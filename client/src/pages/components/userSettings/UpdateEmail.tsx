@@ -4,7 +4,11 @@ import { HiOutlineMail } from 'react-icons/hi'
 import { RiLockPasswordLine } from 'react-icons/ri'
 import { useState } from 'react'
 
-const UpdateEmail = () => {
+interface UpdateEmailProps {
+    isDark: boolean
+}
+
+const UpdateEmail = ({ isDark }: UpdateEmailProps) => {
     const [wantToChangeEmail, setWantToChangeEmail] = useState(false)
 
     const closeHandler = () => {
@@ -33,7 +37,7 @@ const UpdateEmail = () => {
                 <Button
                     color="success"
                     auto
-                    flat
+                    flat={isDark}
                     onPress={() => setWantToChangeEmail(!wantToChangeEmail)}
                     icon={<HiOutlineMail size="1rem" />}
                 >

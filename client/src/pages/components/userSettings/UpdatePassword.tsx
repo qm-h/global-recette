@@ -12,7 +12,11 @@ import {
 import { RiLockPasswordLine } from 'react-icons/ri'
 import { useState } from 'react'
 
-const UpdatePassword = () => {
+interface UpdatePasswordProps {
+    isDark: boolean
+}
+
+const UpdatePassword = ({ isDark }: UpdatePasswordProps) => {
     const [wantToChangePassword, setWantToChangePassword] = useState(false)
 
     const closeHandler = () => {
@@ -40,7 +44,7 @@ const UpdatePassword = () => {
             >
                 <Button
                     auto
-                    flat
+                    flat={isDark}
                     color="success"
                     icon={<RiLockPasswordLine size="1rem" />}
                     onClick={() =>

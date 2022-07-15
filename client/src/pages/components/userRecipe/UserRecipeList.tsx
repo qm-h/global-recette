@@ -8,6 +8,7 @@ import {
     Popover,
     Row,
     Text,
+    Tooltip,
     useTheme,
 } from '@nextui-org/react'
 import {
@@ -89,6 +90,7 @@ const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
                             </Grid>
                             <Grid xs={6} md={5} justify="flex-end">
                                 <Button
+                                    auto
                                     icon={
                                         isLoading ? (
                                             <Loading
@@ -96,17 +98,17 @@ const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
                                                 size="md"
                                             />
                                         ) : (
-                                            <FaTrashAlt size={'1em'} />
+                                            <FaTrashAlt size={15} />
                                         )
                                     }
-                                    auto
-                                    ghost
                                     disabled={isLoading}
-                                    rounded
+                                    light={isDark}
+                                    size={'sm'}
                                     color="error"
                                     onPress={() => setOpenDeleteModal(true)}
-                                    css={{ ml: '$5' }}
-                                />
+                                >
+                                    Supprimer
+                                </Button>
                                 <Modal
                                     blur
                                     closeButton
@@ -149,16 +151,25 @@ const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
                     <Card.Footer>
                         <Grid.Container>
                             <Grid xs={6} md={7}>
-                                <Popover isBordered={isDark ? true : false}>
-                                    <Popover.Trigger>
-                                        <Text color="primary">
-                                            Voir les ingredients
-                                        </Text>
-                                    </Popover.Trigger>
-                                    <Popover.Content>
+                                <Tooltip
+                                    placement="bottom"
+                                    content={
                                         <RecipeIngredients recipe={recipe} />
-                                    </Popover.Content>
-                                </Popover>
+                                    }
+                                >
+                                    <Text
+                                        css={{
+                                            color: '$accents5',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s ease-in-out',
+                                            '&:hover': {
+                                                color: '$primary',
+                                            },
+                                        }}
+                                    >
+                                        Voir les ingredients
+                                    </Text>
+                                </Tooltip>
                             </Grid>
                             <Grid xs={6} md={5} justify="flex-end">
                                 {recipe.published ? (

@@ -10,6 +10,7 @@ import UserFavoritesPage from './pages/UserFavoritesPage'
 import UserProfilePage from './pages/UserProfilePage'
 import UserRecipePage from './pages/UserRecipePage'
 import UserSettingsPage from './pages/UserSettingsPage'
+import RecipeDetailPage from './pages/RecipeDetailPage'
 
 const CustomsRoutes = () => (
     <Container
@@ -31,6 +32,7 @@ const CustomsRoutes = () => (
             <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/profile" element={<UserProfilePage />} />
             <Route path="/settings" element={<UserSettingsPage />} />
+            <Route path="/recette/:id" element={<RecipeDetailPage />} />
             <Route path="*" element={<NotFoundPage />} />
         </Routes>
     </Container>

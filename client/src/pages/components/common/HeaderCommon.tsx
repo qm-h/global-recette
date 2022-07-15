@@ -89,7 +89,7 @@ const HeaderCommon = ({
                             onClick={() => navigate('/')}
                             src={burgerLogo}
                             width="17%"
-                            alt=""
+                            alt="Burger logo"
                         />
                     </Text>
                 </Grid>

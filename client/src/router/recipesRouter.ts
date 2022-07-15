@@ -15,7 +15,7 @@ export function getAllRecipesWithUser(): Promise<Recipe[]> {
         .catch((err) => console.log(err))
 }
 
-export function getRecipesByID(id: number): Promise<Recipe> {
+export function getRecipeByID(id: number): Promise<Recipe> {
     return axios
         .get(`/api/recipe/${id}`)
         .then((res) => res.data)

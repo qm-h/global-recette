@@ -2,7 +2,7 @@ import './App.css'
 
 import { AppContext } from './utils/context/AppContext'
 import Cookie from 'js-cookie'
-import CustomsRoutes from './Routes'
+import CustomsRoutes from './routes'
 import HeaderCommon from './pages/components/common/HeaderCommon'
 import { SuccessAuthUser } from '../../server/src/shared/types'
 import { Toaster } from 'react-hot-toast'

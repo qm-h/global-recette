@@ -72,6 +72,15 @@ code {
     cursor: pointer;
 }
 
+.openRecipeDetails {
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.openRecipeDetails:hover {
+    color: rgba(255, 255, 255, 0.47);
+}
+
 .liStyle {
     list-style-type: decimal;
 }

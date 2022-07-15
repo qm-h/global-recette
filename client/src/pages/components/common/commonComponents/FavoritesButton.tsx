@@ -73,11 +73,13 @@ const FavoritesButton = ({
                 (h) => h.recipeID === recipe.id && h.favorite === true
             ) ? (
                 <AiFillHeart
+                    size={20}
                     className={'favoriteButton'}
                     onClick={() => handleUnSave(recipe.id)}
                 />
             ) : (
                 <AiOutlineHeart
+                    size={20}
                     className={'favoriteButton'}
                     onClick={() => handleSave(recipe.id)}
                 />

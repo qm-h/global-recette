@@ -79,10 +79,10 @@ const UserSettingsPage = () => {
                 <ThemeSwitch isDark={isDark} setTheme={setTheme} />
             </Grid>
             <Grid md={3} justify="center">
-                <UpdateEmail />
+                <UpdateEmail isDark={isDark} />
             </Grid>
             <Grid md={3} justify="center">
-                <UpdatePassword />
+                <UpdatePassword isDark={isDark} />
             </Grid>
             <Grid md={12} justify="center">
                 <DeleteAccount

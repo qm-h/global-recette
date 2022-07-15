@@ -96,14 +96,14 @@ const DeleteAccount = ({
                             <Button
                                 color="success"
                                 icon={<FaJediOrder size="1.5rem" />}
-                                flat
+                                flat={isDark}
                                 auto
                                 css={{ m: '$5' }}
                                 onClick={() =>
                                     setWantToDeleteAccount(!wantToDeleteAccount)
                                 }
                             >
-                                Ordre Jedi
+                                Annuler
                             </Button>
                         </Tooltip>
                         <Tooltip
@@ -118,7 +118,7 @@ const DeleteAccount = ({
                             <Button
                                 color="warning"
                                 iconRight={<FaEmpire size="1.5rem" />}
-                                flat
+                                flat={isDark}
                                 auto
                                 disabled={isLoading}
                                 css={{ m: '$5' }}
@@ -130,7 +130,7 @@ const DeleteAccount = ({
                                         color="currentColor"
                                     />
                                 ) : (
-                                    'Empire Galactique'
+                                    'Supprimer'
                                 )}
                             </Button>
                         </Tooltip>
@@ -140,7 +140,7 @@ const DeleteAccount = ({
                 <Grid md={12}>
                     <Button
                         color="warning"
-                        light
+                        flat={isDark}
                         onPress={() =>
                             setWantToDeleteAccount(!wantToDeleteAccount)
                         }

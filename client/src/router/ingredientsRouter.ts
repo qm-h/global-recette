@@ -1,4 +1,7 @@
-import { ExpressResponseMessageType } from './../../../server/src/shared/types'
+import {
+    ExpressResponseMessageType,
+    RecipeIngredientWithQuantity,
+} from './../../../server/src/shared/types'
 import { Ingredients } from '../../../server/src/shared/types'
 import axios from 'axios'
 
@@ -18,7 +21,7 @@ export function getAllIngredientByID(id: number): Promise<Ingredients> {
 
 export function getAllIngredientsByRecipeID(
     recipeID: number
-): Promise<Ingredients[]> {
+): Promise<RecipeIngredientWithQuantity[]> {
     return axios
         .get(`/api/ingredients/recipe/${recipeID}`)
         .then((res) => res.data)

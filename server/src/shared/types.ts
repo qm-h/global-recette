@@ -154,3 +154,6 @@ export type AuthRequest = Omit<User, 'id' | 'access_jwt_token'>
 export type SuccessAuthUser = Omit<User, 'password'>
 export type RecipeUser = Pick<User, 'id' | 'username' | 'avatar'>
 export type ForgotUserPassword = Pick<User, 'id' | 'email'>
+export type RecipeIngredientWithQuantity = RecipeIngredient & {
+    ingredients: Ingredients
+}

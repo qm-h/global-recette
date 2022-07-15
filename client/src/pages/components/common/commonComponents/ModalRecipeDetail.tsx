@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 
 import { MdCloseFullscreen } from 'react-icons/md'
 import { Recipe } from '../../../../../../server/src/shared/types'
-import RecipeDetails from '../../allRecipe/RecipeDetails'
-import { getRecipesByID } from '../../../../router/recipesRouter'
+import RecipeDetails from '../../recipe/RecipeDetails'
+import { getRecipeByID } from '../../../../router/recipesRouter'
 
 interface ModalRecipeDetailProps {
     isOpen: boolean
@@ -20,7 +20,7 @@ const ModalRecipeDetail = ({
     const [recipe, setRecipe] = useState<Recipe>({} as Recipe)
     useEffect(() => {
         if (recipeID !== undefined && recipeID !== 0 && recipeID !== null) {
-            Promise.all([getRecipesByID(recipeID)]).then(([recipe]) => {
+            Promise.all([getRecipeByID(recipeID)]).then(([recipe]) => {
                 setRecipe(recipe[0])
             })
         }

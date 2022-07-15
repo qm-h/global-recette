@@ -68,11 +68,10 @@ const ConfirmationContent = ({
                     <Button
                         iconRight={<FaEmpire size="1.5em" />}
                         color={'error'}
-                        flat
                         auto
                         onPress={handleCancel}
                     >
-                        Empire Galactique
+                        Annuler la Confirmation
                     </Button>
                 </Tooltip>
             </Grid>
@@ -92,12 +91,11 @@ const ConfirmationContent = ({
                     ) : (
                         <Button
                             icon={<FaRebel size="1.5em" />}
-                            flat
                             auto
                             color="success"
                             onPress={handleConfirmation}
                         >
-                            Rebelle
+                            Confirmer
                         </Button>
                     )}
                 </Tooltip>

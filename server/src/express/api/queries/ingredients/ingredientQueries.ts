@@ -1,7 +1,9 @@
 import { Request, Response } from 'express'
 
-import { Ingredients } from './../../../../shared/types'
-import { RecipeIngredient } from '../../../../shared/types'
+import {
+    Ingredients,
+    RecipeIngredientWithQuantity,
+} from './../../../../shared/types'
 import supabase from '../../../../supabase/supabase'
 
 export const getAllIngredientsHandler = async (req: Request, res: Response) => {
@@ -14,13 +16,14 @@ export const getAllIngredientsByRecipeIDHandler = async (
     res: Response
 ) => {
     const result = await supabase
-        .from<RecipeIngredient>('recipe_ingredient')
+        .from<RecipeIngredientWithQuantity>('recipe_ingredient')
         .select(
-            `
+            `*,
         ingredients(*)
     `
         )
         .eq('recipe_id', req.params.recipeID)
+
     result.status === 200 ? res.send(result.data) : res.send(result.error)
 }
 

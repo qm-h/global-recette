@@ -10,9 +10,10 @@ import {
 } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 
-import CardRecipes from './components/allRecipe/CardRecipes'
+import CardRecipes from './components/recipe/CardRecipes'
 import DataNotFound from './components/noDataFound/DataNotFound'
 import { Recipe } from '../../../server/src/shared/types'
+import { RiSearch2Line } from 'react-icons/ri'
 import { getAllRecipesWithUser } from '../router/recipesRouter'
 import { useAppContext } from '../utils/context/AppContext'
 
@@ -39,6 +40,7 @@ const ListRecipes = () => {
         } else {
             return (
                 <CardRecipes
+                    setIsLoading={setIsLoading}
                     isFollowing={isFollowing}
                     setIsFollowing={setIsFollowing}
                     isUnfollowing={isUnfollowing}
@@ -77,12 +79,14 @@ const ListRecipes = () => {
                 <Spacer />
                 <Row justify="center">
                     <Input
-                        css={{ w: '50%' }}
+                        css={{ w: '50%', boxShadow: 'none' }}
                         clearable
-                        bordered={isDark ? true : false}
+                        bordered={isDark}
+                        type="text"
                         aria-label="Search"
                         color="primary"
                         onChange={handleSearchRecipe}
+                        contentLeft={<RiSearch2Line />}
                         placeholder="Rechercher une recette"
                     />
                 </Row>
