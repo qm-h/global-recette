@@ -2,6 +2,7 @@ import {
     Avatar,
     Button,
     Card,
+    Col,
     Grid,
     Loading,
     Row,
@@ -23,6 +24,8 @@ import { TbExternalLink } from 'react-icons/tb'
 import { useNavigate } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { FaShare } from 'react-icons/fa'
+import SocialShare from '../common/commonComponents/SocialShare'
 
 interface CardRecipesProps {
     authUserID?: number
@@ -79,16 +82,6 @@ const CardRecipes = ({
             .catch((err) => {
                 console.log(err)
             })
-    }
-
-    const handleTwitterShare = (url: string) => {
-        const twitterUrl = `https://twitter.com/intent/tweet?text=${url}`
-        window.open(twitterUrl, '_blank')
-    }
-
-    const handleFacebookShare = (url: string) => {
-        const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`
-        window.open(facebookUrl, '_blank')
     }
 
     useEffect(() => {
@@ -155,10 +148,16 @@ const CardRecipes = ({
                                     p: '$5',
                                 }}
                             >
-                                <Row justify="flex-start">
+                                <Row
+                                    justify="flex-start"
+                                    css={{
+                                        alignItems: 'flex-start',
+                                    }}
+                                >
                                     <Tooltip
                                         content="Voir plus"
                                         color="success"
+                                        hideArrow
                                         animated={false}
                                     >
                                         <Button
@@ -190,7 +189,12 @@ const CardRecipes = ({
                                         </Button>
                                     </Tooltip>
                                 </Row>
-                                <Row justify="flex-end">
+                                <Row
+                                    justify="flex-end"
+                                    css={{
+                                        alignItems: 'flex-end',
+                                    }}
+                                >
                                     {authUserID !== undefined &&
                                         authUserID !== r.created_by && (
                                             <Tooltip
@@ -198,6 +202,7 @@ const CardRecipes = ({
                                                 rounded={false}
                                                 animated={false}
                                                 content="Mettre en Favoris"
+                                                hideArrow
                                             >
                                                 <FavoritesButton
                                                     hasSaved={hasSaved}
@@ -209,6 +214,35 @@ const CardRecipes = ({
                                                 />
                                             </Tooltip>
                                         )}
+                                    <Tooltip
+                                        hideArrow
+                                        css={{
+                                            p: '$0',
+                                        }}
+                                        content={
+                                            <SocialShare
+                                                isDark={isDark}
+                                                recipe={r}
+                                            />
+                                        }
+                                        animated={false}
+                                        color={isDark ? 'default' : 'success'}
+                                    >
+                                        <Button
+                                            css={{
+                                                p: '$5',
+                                                ml: '$5',
+                                                bgBlur: isDark
+                                                    ? '#0f111466'
+                                                    : '#ffffff66',
+                                            }}
+                                            auto
+                                            flat={isDark}
+                                            size="sm"
+                                        >
+                                            <FaShare color={'#fff'} />
+                                        </Button>
+                                    </Tooltip>
                                 </Row>
                             </Card.Header>
                             <Card.Body css={{ p: 0 }}>

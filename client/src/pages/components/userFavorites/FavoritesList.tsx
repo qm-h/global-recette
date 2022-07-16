@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import DataNotFound from '../noDataFound/DataNotFound'
 import FavoritesButton from '../common/commonComponents/FavoritesButton'
 import { HasSavedRecipe } from '../../../../../server/src/shared/types'
-import ModalRecipeDetail from '../common/commonComponents/ModalRecipeDetail'
 import { getSavedRecipes } from '../../../router/userRouter'
 import { useNavigate } from 'react-router-dom'
 
@@ -24,7 +23,6 @@ const FavoritesList = ({
     const [hasSaved, setHasSaved] = useState<HasSavedRecipe[]>([
         {} as HasSavedRecipe,
     ])
-    const [isUnfavorite, setIsUnfavorite] = useState<boolean>(false)
 
     const navigate = useNavigate()
 
@@ -41,14 +39,13 @@ const FavoritesList = ({
                         }
                         newHasSaved.push(hasSaved)
                     })
-                    console.log(newHasSaved)
                     setHasSaved(newHasSaved)
                 }
             })
             .catch((err) => {
                 console.log(err)
             })
-    }, [authUserID, favorites, isUnfavorite])
+    }, [authUserID, favorites])
 
     return (
         <Grid.Container gap={5} alignItems="center">
@@ -62,7 +59,7 @@ const FavoritesList = ({
                             alignItems="center"
                             alignContent="center"
                         >
-                            <Card>
+                            <Card variant={'flat'}>
                                 <Card.Header>
                                     <Grid
                                         md={12}
@@ -76,7 +73,6 @@ const FavoritesList = ({
                                     >
                                         <Text h3>{r.recipes.name}</Text>
                                         <FavoritesButton
-                                            setIsUnfavorite={setIsUnfavorite}
                                             authUserID={authUserID}
                                             isDark={isDark}
                                             recipe={r.recipes}
@@ -97,7 +93,7 @@ const FavoritesList = ({
                                         }}
                                         justify="space-between"
                                     >
-                                        <Text css={{ color: '$accents5' }}>
+                                        <Text css={{ color: '$accents6' }}>
                                             @{r.recipes.creator_username}
                                         </Text>
                                         <Text
@@ -107,7 +103,7 @@ const FavoritesList = ({
                                                 })
                                             }
                                             css={{
-                                                color: '$accents5',
+                                                color: '$accents6',
                                                 cursor: 'pointer',
                                                 transition:
                                                     'all 0.2s ease-in-out',

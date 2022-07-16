@@ -19,7 +19,6 @@ interface FavoritesButtonProps {
     authUserID: number
     isDark: boolean
     recipe: Recipe
-    setIsUnfavorite?: (isUnfavorite: boolean) => void
     color?: string
 }
 
@@ -29,10 +28,10 @@ const FavoritesButton = ({
     authUserID,
     isDark,
     recipe,
-    setIsUnfavorite,
     color,
 }: FavoritesButtonProps) => {
     const handleSave = async (recipeID: number) => {
+        console.log(recipeID)
         await saveRecipeToFavorite(recipeID, authUserID)
             .then((res) => {
                 if (res.status === 200) {
@@ -41,7 +40,6 @@ const FavoritesButton = ({
                         'Recette ajoutée à vos favoris',
                         '💚'
                     )
-                    setIsUnfavorite(true)
                     const newHasSaved: HasSavedRecipe[] = [
                         ...hasSaved,
                         {
@@ -65,7 +63,6 @@ const FavoritesButton = ({
             if (res.status === 200) {
                 const x = hasSaved.filter((h) => h.recipeID !== recipeID)
                 setHasSaved(x)
-                setIsUnfavorite(true)
                 toasterSuccessCommon(isDark, 'Recette retirée de vos favoris')
             } else {
                 toasterErrorCommon(isDark, 'Une erreur est survenue')
@@ -80,7 +77,6 @@ const FavoritesButton = ({
                 bgBlur: isDark ? '#0f111466' : '#ffffff66',
             }}
             auto
-            flat={isDark}
             size="sm"
         >
             {hasSaved.find(
