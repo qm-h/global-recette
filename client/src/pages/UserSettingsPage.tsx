@@ -13,6 +13,7 @@ import { toasterErrorCommon } from '../utils/theme/toaster'
 import { useAppContext } from '../utils/context/AppContext'
 import { useNavigate } from 'react-router-dom'
 import { useTheme as useNextTheme } from 'next-themes'
+import { isMobile } from 'react-device-detect'
 
 const UserSettingsPage = () => {
     const [wantToDeleteAccount, setWantToDeleteAccount] = useState(false)
@@ -71,21 +72,54 @@ const UserSettingsPage = () => {
     }, [wantToDeleteAccount])
 
     return (
-        <Grid.Container gap={4} alignItems="center">
-            <Grid md={12} justify="center">
+        <Grid.Container gap={!isMobile && 4} alignItems="center">
+            <Grid
+                xs={12}
+                md={12}
+                css={{
+                    mt: isMobile ? '$5' : '',
+                    mb: isMobile ? '$5' : '',
+                }}
+                justify="center"
+            >
                 <Text h2>Paramètres</Text>
             </Grid>
-            <Grid md={2} justify="center">
-                <ThemeSwitch isDark={isDark} setTheme={setTheme} />
+            <Grid
+                xs={12}
+                md={2}
+                css={{ mb: isMobile ? '$10' : '' }}
+                justify="center"
+            >
+                <ThemeSwitch
+                    isMobile={isMobile}
+                    isDark={isDark}
+                    setTheme={setTheme}
+                />
             </Grid>
-            <Grid md={3} justify="center">
-                <UpdateEmail isDark={isDark} />
+            <Grid
+                xs={12}
+                md={3}
+                css={{ mb: isMobile ? '$10' : '' }}
+                justify="center"
+            >
+                <UpdateEmail isMobile={isMobile} isDark={isDark} />
             </Grid>
-            <Grid md={3} justify="center">
-                <UpdatePassword isDark={isDark} />
+            <Grid
+                xs={12}
+                md={3}
+                css={{ mb: isMobile ? '$10' : '' }}
+                justify="center"
+            >
+                <UpdatePassword isMobile={isMobile} isDark={isDark} />
             </Grid>
-            <Grid md={12} justify="center">
+            <Grid
+                xs={12}
+                md={12}
+                css={{ mb: isMobile ? '$10' : '' }}
+                justify="center"
+            >
                 <DeleteAccount
+                    isMobile={isMobile}
                     authUser={authUser}
                     email={email}
                     isLoading={isLoading}

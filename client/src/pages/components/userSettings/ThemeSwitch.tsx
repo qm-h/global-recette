@@ -3,17 +3,18 @@ import { Card, Grid, Switch, Text } from '@nextui-org/react'
 import MoonIcon from '../../../utils/theme/Icons/MoonIcon'
 import SunIcon from '../../../utils/theme/Icons/SunIcon'
 
-const ThemeSwitch = ({ isDark, setTheme }) => {
+const ThemeSwitch = ({ isDark, setTheme, isMobile }) => {
     return (
         <Card
             css={{
-                width: '100%',
+                width: isMobile ? '50%' : '100%',
                 height: '100%',
                 padding: '0',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
             }}
+            variant={isMobile ? 'flat' : 'shadow'}
         >
             <Grid md={12}>
                 <Text css={{ textAlign: 'center' }}>

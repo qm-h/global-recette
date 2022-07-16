@@ -11,12 +11,14 @@ import UserProfilePage from './pages/UserProfilePage'
 import UserRecipePage from './pages/UserRecipePage'
 import UserSettingsPage from './pages/UserSettingsPage'
 import RecipeDetailPage from './pages/RecipeDetailPage'
+import { isMobile } from 'react-device-detect'
 
 const CustomsRoutes = () => (
     <Container
         css={{
             h: '100vh',
-            w: '90%',
+            w: isMobile ? '100%' : '90%',
+            p: isMobile ? '$5' : '',
         }}
         display="flex"
         justify="center"

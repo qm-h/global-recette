@@ -8,6 +8,7 @@ interface AvatarModalProps {
     avatar: string[]
     handleChangeAvatar: (avatar: string) => void
     isLoading: boolean
+    isMobile: boolean
 }
 
 const AvatarModal = ({
@@ -16,11 +17,12 @@ const AvatarModal = ({
     avatar,
     handleChangeAvatar,
     isLoading,
+    isMobile,
 }: AvatarModalProps) => {
     const [selectedAvatar, setSelectedAvatar] = useState(avatar[0])
 
     return (
-        <Modal open={isOpen} width="50%" onClose={onClose}>
+        <Modal open={isOpen} width={isMobile ? '95%' : '50%'} onClose={onClose}>
             <Modal.Header>
                 <Text h3>Modifier l'avatar</Text>
             </Modal.Header>
@@ -31,7 +33,7 @@ const AvatarModal = ({
                             <Avatar
                                 key={index}
                                 src={avatar}
-                                size="xl"
+                                size={isMobile ? 'lg' : 'xl'}
                                 bordered
                                 squared
                                 color={
@@ -54,7 +56,7 @@ const AvatarModal = ({
                 <Button
                     auto
                     color="success"
-                    flat
+                    flat={!isMobile}
                     disabled={isLoading}
                     onClick={() => handleChangeAvatar(selectedAvatar)}
                 >

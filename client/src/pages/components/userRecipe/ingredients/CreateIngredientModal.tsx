@@ -14,6 +14,7 @@ const CreateIngredientModal = ({
     isDark,
     setIngredientCreated,
     ingredientCreated,
+    isMobile,
 }) => {
     const [ingredient, setIngredient] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -54,16 +55,22 @@ const CreateIngredientModal = ({
     const onClose = () => setIsOpen(false)
 
     return (
-        <Modal open={isOpen} preventClose autoMargin onClose={onClose}>
+        <Modal
+            open={isOpen}
+            preventClose
+            width={isMobile ? '95%' : ''}
+            autoMargin
+            onClose={onClose}
+        >
             <Modal.Header>Créer un ingrédient</Modal.Header>
             <Modal.Body>
                 <Grid.Container gap={1}>
-                    <Grid md={12} justify="center">
+                    <Grid xs={12} md={12} justify="center">
                         <Text small color="warning">
                             L'ingrédient doit être uniquement au singulier
                         </Text>
                     </Grid>
-                    <Grid md={12}>
+                    <Grid xs={12} md={12}>
                         <Input
                             width="100%"
                             bordered={isDark}
@@ -81,12 +88,12 @@ const CreateIngredientModal = ({
             </Modal.Body>
             <Modal.Footer>
                 <Grid.Container justify="center" alignContent="center">
-                    <Grid md={6} justify="center">
+                    <Grid xs={6} md={6} justify="center">
                         <Button auto color="error" onClick={onClose}>
                             Annuler
                         </Button>
                     </Grid>
-                    <Grid md={6} justify="center">
+                    <Grid xs={6} md={6} justify="center">
                         <Button
                             onPress={handleCreateIngredient}
                             auto

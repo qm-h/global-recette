@@ -18,6 +18,7 @@ import { getRecipeByUserID } from '../router/userRouter'
 import { toasterErrorCommon } from '../utils/theme/toaster'
 import { useAppContext } from '../utils/context/AppContext'
 import { useNavigate } from 'react-router-dom'
+import { isMobile } from 'react-device-detect'
 
 const UserRecipePage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -42,7 +43,7 @@ const UserRecipePage = () => {
                     if (res['status'] === 403) {
                         toasterErrorCommon(
                             isDark,
-                            'Votre accès à cette page à été refusé, \n si le problème persiste, \n veuillez contacter nous contacter par mail'
+                            'Votre accès à cette page à été refusé, \n si le problème persiste, \n veuillez contacter le support'
                         )
                         navigate('/')
                     } else {
@@ -60,10 +61,14 @@ const UserRecipePage = () => {
 
     const renderRecipesWithNoData = (recipes: Recipe[]): JSX.Element => {
         if (recipes.length === 0) {
-            return <DataNotFound setCreateRecipe={setCreateRecipe} />
+            return <DataNotFound isMobile={isMobile} />
         } else {
             return (
-                <UserRecipeList fetchRecipe={fetchRecipe} recipes={recipes} />
+                <UserRecipeList
+                    isMobile={isMobile}
+                    fetchRecipe={fetchRecipe}
+                    recipes={recipes}
+                />
             )
         }
     }
@@ -71,51 +76,57 @@ const UserRecipePage = () => {
     return (
         <>
             {createRecipe ? (
-                <UserCreateRecipeComponent setCreate={setCreateRecipe} />
+                <UserCreateRecipeComponent
+                    isMobile={isMobile}
+                    setCreate={setCreateRecipe}
+                />
             ) : (
                 <Card
                     css={{
                         h: '85%',
-                        borderRadius: '6px',
                         w: '100%',
-                        mt: '$28',
+                        mt: isMobile ? '$18' : '$28',
                     }}
+                    variant={isMobile ? 'flat' : 'shadow'}
                 >
                     <Card.Header>
                         <Grid.Container gap={4} alignItems="center">
-                            <Grid xs={6} md={7}>
-                                <Text h2 b>
+                            <Grid xs={10} md={7}>
+                                <Text h2={!isMobile} h3={isMobile} b>
                                     Mes Recettes 🍉
                                 </Text>
                             </Grid>
-                            <Grid xs={6} md={5} justify="flex-end">
+                            <Grid xs={2} md={5} justify="flex-end">
                                 {!isLoading &&
                                     userRecipes &&
                                     userRecipes.length !== 0 && (
                                         <Button
                                             auto
                                             color={'success'}
+                                            size={isMobile ? 'sm' : 'md'}
                                             flat
                                             onPress={() =>
                                                 setCreateRecipe(true)
                                             }
                                         >
-                                            Créer une recette
+                                            {isMobile
+                                                ? 'Créer'
+                                                : 'Créer une recette'}
                                         </Button>
                                     )}
                             </Grid>
                         </Grid.Container>
                     </Card.Header>
-                    <Spacer />
+                    {!isMobile && <Spacer />}
                     <Card.Body css={{ w: '100%' }}>
-                        <Spacer />
+                        {!isMobile && <Spacer />}
                         <Grid.Container
                             justify={isLoading ? 'flex-start' : 'space-around'}
                             alignItems="center"
                             alignContent="center"
                         >
                             {isLoading ? (
-                                <Row justify="center">
+                                <Row justify="center" align={'center'}>
                                     <Loading
                                         size="xl"
                                         type="points"
@@ -129,7 +140,7 @@ const UserRecipePage = () => {
                     </Card.Body>
                     {!isLoading && userRecipes && userRecipes.length === 0 && (
                         <Card.Footer>
-                            <Row gap={2} justify="center">
+                            <Row gap={!isMobile && 2} justify="center">
                                 <Button
                                     auto
                                     flat

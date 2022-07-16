@@ -22,6 +22,8 @@ import { getAllIngredientsByRecipeID } from '../router/ingredientsRouter'
 import SunEditor from 'suneditor-react'
 import 'suneditor/dist/css/suneditor.min.css'
 import parse from 'html-react-parser'
+import RecipeDetailFirstCol from './components/recipeDetail/RecipeDetailFirstCol'
+import { isMobile } from 'react-device-detect'
 
 const RecipeDetailPage = () => {
     const [recipe, setRecipe] = useState<Recipe>()
@@ -30,7 +32,6 @@ const RecipeDetailPage = () => {
     >([] as RecipeIngredientWithQuantity[])
     const [user, setUser] = useState<SuccessAuthUser>()
     const [image, setImage] = useState<string>()
-    const [editorHeight, setEditorHeight] = useState<number>()
     const { id } = useParams()
     const { isDark } = useTheme()
 
@@ -69,94 +70,96 @@ const RecipeDetailPage = () => {
             css={{
                 overflowY: 'auto',
                 w: '100%',
+                m: isMobile ? '0' : '',
+                p: isMobile ? '0' : '',
                 mt: '$28',
             }}
-            gap={2}
+            gap={!isMobile && 2}
         >
-            <Row gap={2}>
+            <Row
+                gap={!isMobile && 2}
+                css={{
+                    m: isMobile ? '0' : '',
+                    p: isMobile ? '0' : '',
+                }}
+            >
                 <Col
                     css={{
-                        p: '$5',
+                        p: isMobile ? '$0' : '$5',
+                        m: isMobile ? '$0' : '',
                         w: '100%',
                     }}
                 >
-                    <Grid md={12}>
-                        <RecipeDetailImage
+                    {isMobile ? (
+                        <>
+                            <RecipeDetailFirstCol
+                                isDark={isDark}
+                                isMobile={isMobile}
+                                recipe={recipe}
+                                ingredients={ingredients}
+                                user={user}
+                                image={image}
+                            />
+                            <Card
+                                borderWeight="bold"
+                                variant={'flat'}
+                                css={{
+                                    w: '100%',
+                                    h: '100%',
+                                    bg: 'transparent',
+                                    p: isMobile ? '$0' : '$7',
+                                    mt: isMobile ? '$7' : '$0',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'flex-start',
+                                }}
+                            >
+                                <Text h3>Description</Text>
+                                {parse(`<div>${recipe?.note}</div>`)}
+                            </Card>
+                        </>
+                    ) : (
+                        <RecipeDetailFirstCol
                             isDark={isDark}
+                            isMobile={isMobile}
                             recipe={recipe}
+                            ingredients={ingredients}
+                            user={user}
                             image={image}
                         />
-                    </Grid>
-                    <Grid md={2} justify={'center'} alignItems="center">
-                        <Avatar
-                            bordered
-                            size="xl"
-                            color="success"
-                            src={
-                                user && user.avatar
-                                    ? user?.avatar
-                                    : user?.generated_avatar
-                            }
-                        />
-                    </Grid>
-                    <Grid md={10} alignItems="center" justify="flex-start">
-                        <Text size={20}>
-                            <b>{recipe?.creator_username}</b> a pris quelques
-                            notes :
-                        </Text>
-                    </Grid>
-                    <Grid>
-                        <Row>
-                            <Col>
-                                <Text h4>Ingredients :</Text>
-                            </Col>
-                        </Row>
-                        {ingredients &&
-                            ingredients.map((ingredient, index) => (
-                                <Row key={index}>
-                                    <Col>
-                                        <Text color={'text'} size={16}>
-                                            {ingredient.ingredients.name}
-                                        </Text>
-                                    </Col>
-                                    <Col>
-                                        <Text color={'text'} size={16}>
-                                            Quantité :{' '}
-                                            <b>{ingredient.quantity}</b>
-                                        </Text>
-                                    </Col>
-                                </Row>
-                            ))}
-                    </Grid>
+                    )}
                 </Col>
-                <Col
-                    css={{
-                        w: '100%',
-                        h: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
-                >
-                    <Card
-                        borderWeight="bold"
-                        variant={'flat'}
+                {!isMobile && (
+                    <Col
                         css={{
-                            w: '70%',
+                            w: '100%',
                             h: '100%',
-                            bg: 'transparent',
-                            p: '$7',
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
-                            justifyContent: 'flex-start',
+                            justifyContent: 'center',
                         }}
                     >
-                        <Text h3>Description</Text>
-                        {parse(`<div>${recipe?.note}</div>`)}
-                    </Card>
-                </Col>
+                        <Card
+                            borderWeight="bold"
+                            variant={'flat'}
+                            css={{
+                                w: '70%',
+                                h: '100%',
+                                bg: 'transparent',
+                                p: '$7',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'flex-start',
+                            }}
+                        >
+                            <Text h3>Description</Text>
+                            {parse(`<div>${recipe?.note}</div>`)}
+                        </Card>
+                    </Col>
+                )}
             </Row>
         </Grid.Container>
     )

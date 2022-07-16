@@ -4,48 +4,29 @@ import { Key } from 'react'
 import { SuccessAuthUser as UserType } from '../../../../../../server/src/shared/types'
 import { logout } from '../../../../utils/auth/logout'
 import { toasterSuccessLogout } from '../../../../utils/theme/toaster'
-import { useNavigate } from 'react-router-dom'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 import { userLogout } from '../../../../router/authRouter'
+import handleMenu from '../../../../utils/navigation'
 
 interface Props {
     user: UserType
     setUser: (user: UserType) => void
     setIsAuthenticated: (val: boolean) => void
     setUserUUID: (uuid: string) => void
+    isDark: boolean
+    isAuthenticated: boolean
+    navigate: NavigateFunction
 }
 
 const UserMenu = ({
+    isAuthenticated,
+    navigate,
     user,
     setUser,
     setIsAuthenticated,
     setUserUUID,
+    isDark,
 }: Props) => {
-    const { isDark } = useTheme()
-    const navigate = useNavigate()
-
-    const handleMenu = async (key: Key) => {
-        switch (key) {
-            case 'sign_out':
-                await userLogout(user.id).then(() => {
-                    logout(setUser, setIsAuthenticated, setUserUUID)
-                    setIsAuthenticated(false)
-                    toasterSuccessLogout(isDark)
-                    navigate('/')
-                })
-                break
-            case 'profile':
-                navigate(`/profile`)
-                break
-            case 'settings':
-                navigate(`/settings`)
-                break
-            default:
-                break
-        }
-        if (key === 'sign_out') {
-        }
-    }
-
     return (
         <Dropdown placement="top-left">
             <Dropdown.Trigger>
@@ -66,7 +47,17 @@ const UserMenu = ({
                 />
             </Dropdown.Trigger>
             <Dropdown.Menu
-                onAction={(key: Key) => handleMenu(key)}
+                onAction={(key: Key) =>
+                    handleMenu(
+                        key,
+                        navigate,
+                        user,
+                        setUser,
+                        setIsAuthenticated,
+                        setUserUUID,
+                        isDark
+                    )
+                }
                 color="success"
                 css={{
                     borderRadius: '$lg',
@@ -102,7 +93,7 @@ const UserMenu = ({
                         color="error"
                         textValue={'Sign Out'}
                     >
-                        Sign Out
+                        Déconnexion
                     </Dropdown.Item>
                 </Dropdown.Section>
             </Dropdown.Menu>

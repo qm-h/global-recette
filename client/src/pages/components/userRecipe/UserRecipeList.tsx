@@ -28,13 +28,15 @@ import RecipeIngredients from './ingredients/RecipeIngredients'
 import { useState } from 'react'
 import SunEditor from 'suneditor-react'
 import parse from 'html-react-parser'
+import { isMobile } from 'react-device-detect'
 
 interface Props {
     recipes: Recipe[]
     fetchRecipe: () => void
+    isMobile: boolean
 }
 
-const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
+const UserRecipeList = ({ fetchRecipe, recipes, isMobile }: Props) => {
     const { isDark } = useTheme()
     const [isLoading, setIsLoading] = useState(false)
     const [isLoadingPublish, setIsLoadingPublish] = useState(false)
@@ -79,7 +81,11 @@ const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
     return (
         <>
             {recipes.map((recipe, index) => (
-                <Card key={index} variant="bordered" css={{ w: '25%' }}>
+                <Card
+                    key={index}
+                    variant="bordered"
+                    css={{ w: isMobile ? '100%' : '25%' }}
+                >
                     <Card.Header>
                         <Grid.Container gap={1} alignItems="center">
                             <Grid xs={6} md={7}>
@@ -126,17 +132,18 @@ const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
                             justify="flex-start"
                             css={{ mb: '$1', ml: '$2', w: 'auto' }}
                         >
-                            <Text b color="#9F9F9F">
-                                {recipe.origin}
-                            </Text>
+                            <Text b>{recipe.origin}</Text>
                         </Row>
                         <Row justify="flex-start">
                             <Collapse
                                 css={{ fontSize: '10px', w: '90%' }}
                                 bordered
                                 animated
-                                title="Note"
-                                subtitle="concernant la recette"
+                                style={{
+                                    fontSize: '1em',
+                                }}
+                                title=""
+                                subtitle="Description de la recette"
                             >
                                 {parse(recipe.note)}
                             </Collapse>
@@ -147,6 +154,7 @@ const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
                             <Grid xs={6} md={7}>
                                 <Tooltip
                                     placement="bottom"
+                                    color={'success'}
                                     content={
                                         <RecipeIngredients recipe={recipe} />
                                     }

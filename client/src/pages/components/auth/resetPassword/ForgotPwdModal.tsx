@@ -8,6 +8,7 @@ interface Props {
     visible: boolean
     handleForgotPassword: (email: string) => void
     isLoading: boolean
+    isMobile: boolean
 }
 
 const ForgotPwdModal = ({
@@ -15,6 +16,7 @@ const ForgotPwdModal = ({
     visible,
     handleForgotPassword,
     isLoading,
+    isMobile,
 }: Props) => {
     const [email, setEmail] = useState<string>('')
     const closeHandler = () => {
@@ -27,7 +29,7 @@ const ForgotPwdModal = ({
             open={visible}
             blur
             onClose={closeHandler}
-            width={'30%'}
+            width={isMobile ? '90%' : '30%'}
         >
             <Modal.Header>
                 <Text id="modal-title" size={18}>
@@ -36,16 +38,17 @@ const ForgotPwdModal = ({
             </Modal.Header>
             <Modal.Body>
                 <Grid.Container gap={2}>
-                    <Grid md={12} justify="center">
+                    <Grid xs={12} md={12} justify="center">
                         <Text small>
                             Entrez votre adresse email pour recevoir un lien de
                             réinitialisation de mot de passe.
                         </Text>
                     </Grid>
-                    <Grid md={12} justify="center">
+                    <Grid xs={12} md={12} justify="center">
                         <Input
                             clearable
                             bordered
+                            width={isMobile ? '90%' : '50%'}
                             fullWidth
                             color="primary"
                             size="lg"
@@ -59,7 +62,7 @@ const ForgotPwdModal = ({
             </Modal.Body>
             <Modal.Footer>
                 <Grid.Container gap={1}>
-                    <Grid md={6} justify="center">
+                    <Grid xs={6} md={6} justify="center">
                         <Button
                             color="error"
                             flat
@@ -69,7 +72,7 @@ const ForgotPwdModal = ({
                             Annuler
                         </Button>
                     </Grid>
-                    <Grid md={6} justify="center">
+                    <Grid xs={6} md={6} justify="center">
                         {isLoading ? (
                             <Button color="primary" auto disabled>
                                 <Loading color="currentColor" size="sm" />

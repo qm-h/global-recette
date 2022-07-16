@@ -24,17 +24,19 @@ const DeleteAccount = ({
     isDark,
     handleDeleteAccount,
     isLoading,
+    isMobile,
 }) => {
     return (
         <Card
             css={{
-                width: '100%',
+                width: isMobile && !wantToDeleteAccount ? '70%' : '100%',
                 height: '100%',
-                padding: '0',
+                padding: isMobile ? '$10' : '0',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
             }}
+            variant={isMobile ? 'flat' : 'shadow'}
         >
             <Grid
                 md={12}
@@ -57,6 +59,7 @@ const DeleteAccount = ({
                 <>
                     <Text color="warning">
                         Veuillez confirmé en entrant votre email :
+                        {isMobile && <br />}
                         <b
                             style={{
                                 color: isDark ? '#fff' : '#000',
@@ -68,7 +71,7 @@ const DeleteAccount = ({
                     </Text>
                     <Input
                         css={{ m: '$5' }}
-                        width="50%"
+                        width={isMobile ? '100%' : '50%'}
                         placeholder="Entre votre email ou Copiez/Collez votre email"
                         animated
                         bordered
@@ -96,7 +99,7 @@ const DeleteAccount = ({
                             <Button
                                 color="success"
                                 icon={<FaJediOrder size="1.5rem" />}
-                                flat={isDark}
+                                flat={isDark && !isMobile}
                                 auto
                                 css={{ m: '$5' }}
                                 onClick={() =>
@@ -118,7 +121,7 @@ const DeleteAccount = ({
                             <Button
                                 color="warning"
                                 iconRight={<FaEmpire size="1.5rem" />}
-                                flat={isDark}
+                                flat={isDark && !isMobile}
                                 auto
                                 disabled={isLoading}
                                 css={{ m: '$5' }}
@@ -137,10 +140,10 @@ const DeleteAccount = ({
                     </Row>
                 </>
             ) : (
-                <Grid md={12}>
+                <Grid xs={12} md={12}>
                     <Button
                         color="warning"
-                        flat={isDark}
+                        flat={isDark && !isMobile}
                         onPress={() =>
                             setWantToDeleteAccount(!wantToDeleteAccount)
                         }

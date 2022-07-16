@@ -16,6 +16,7 @@ import { Recipe } from '../../../server/src/shared/types'
 import { RiSearch2Line } from 'react-icons/ri'
 import { getAllRecipesWithUser } from '../router/recipesRouter'
 import { useAppContext } from '../utils/context/AppContext'
+import { isMobile } from 'react-device-detect'
 
 const ListRecipes = () => {
     const [recipesData, setRecipesData] = useState<Recipe[]>([])
@@ -67,20 +68,29 @@ const ListRecipes = () => {
 
     return (
         <>
-            <Card css={{ w: '100%', h: '85%', mt: '$28' }}>
+            <Card
+                css={{
+                    w: '100%',
+                    h: '85%',
+                    mt: isMobile ? '$15' : '$28',
+                }}
+                variant={isMobile ? 'flat' : 'shadow'}
+            >
                 <Card.Header>
                     <Row justify="center">
-                        <Text h2 b>
+                        <Text h2={!isMobile} h3={isMobile} b>
                             Recette du Moment 🚀
                         </Text>
                     </Row>
                 </Card.Header>
-                <Spacer />
                 <Row justify="center">
                     <Input
-                        css={{ w: '50%', boxShadow: 'none' }}
+                        css={{
+                            w: isMobile ? '90%' : '50%',
+                            mb: isMobile ? '$5' : '0',
+                        }}
                         clearable
-                        bordered={isDark}
+                        bordered={isDark || isMobile}
                         type="text"
                         aria-label="Search"
                         color="primary"

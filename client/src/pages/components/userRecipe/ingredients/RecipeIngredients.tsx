@@ -1,5 +1,9 @@
-import { Ingredients, Recipe } from '../../../../../../server/src/shared/types'
-import { Loading, Row, Text } from '@nextui-org/react'
+import {
+    Ingredients,
+    Recipe,
+    RecipeIngredientWithQuantity,
+} from '../../../../../../server/src/shared/types'
+import { Col, Loading, Row, Text } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 
 import { getAllIngredientsByRecipeID } from '../../../../router/ingredientsRouter'
@@ -9,13 +13,15 @@ interface Props {
 }
 
 const RecipeIngredients = ({ recipe }: Props) => {
-    const [ingredientsData, setIngredientsData] = useState([])
+    const [ingredients, setIngredients] = useState<
+        RecipeIngredientWithQuantity[]
+    >([] as RecipeIngredientWithQuantity[])
     const [isLoading, setIsLoading] = useState<boolean>(true)
     useEffect(() => {
         setIsLoading(true)
         Promise.all([getAllIngredientsByRecipeID(recipe.id)]).then(
-            ([ingredients]) => {
-                setIngredientsData([...ingredients])
+            ([ingredientsData]) => {
+                setIngredients([...ingredientsData])
                 setIsLoading(false)
             }
         )
@@ -23,19 +29,32 @@ const RecipeIngredients = ({ recipe }: Props) => {
 
     return (
         <>
-            {!isLoading && ingredientsData.length !== 0 ? (
-                ingredientsData.map((ing, index) => (
+            {!isLoading && ingredients.length !== 0 ? (
+                ingredients.map((ing, index) => (
                     <Row
                         key={index}
-                        justify="center"
+                        justify="space-between"
                         align="center"
-                        css={{ p: '$5' }}
+                        css={{
+                            p: '0',
+                        }}
                     >
-                        <ul>
-                            <li className="liStyle">
-                                <Text>{ing.ingredients.name}</Text>
-                            </li>
-                        </ul>
+                        <Col
+                            css={{
+                                m: '$0',
+                                mr: '$5',
+                            }}
+                        >
+                            <Text color={'white'}>{ing.ingredients.name}</Text>
+                        </Col>
+                        <Col
+                            css={{
+                                m: '$0',
+                                ml: '$5',
+                            }}
+                        >
+                            <Text color={'white'}>{ing.quantity}</Text>
+                        </Col>
                     </Row>
                 ))
             ) : (

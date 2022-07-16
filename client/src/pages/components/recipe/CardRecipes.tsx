@@ -111,7 +111,13 @@ const CardRecipes = ({
     return (
         <>
             {recipes.map((r, i) => (
-                <Grid key={i} md={2.5} justify="center" alignItems="center">
+                <Grid
+                    key={i}
+                    xs={12}
+                    md={2.5}
+                    justify="center"
+                    alignItems="center"
+                >
                     {authUserID && isLoadingRecipe ? (
                         <>
                             {!isDark ? (

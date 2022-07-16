@@ -7,6 +7,7 @@ interface Props {
     ingredient: string
     handleDeleteIngredient: (ingredient: string) => void
     handleAddQuantityIngredient: (ingredient: string, quantity: string) => void
+    isMobile: boolean
 }
 
 const IngredientQuantity = ({
@@ -14,6 +15,7 @@ const IngredientQuantity = ({
     isDark,
     handleDeleteIngredient,
     handleAddQuantityIngredient,
+    isMobile,
 }: Props) => {
     return (
         <>
@@ -21,7 +23,7 @@ const IngredientQuantity = ({
                 type="text"
                 color={'primary'}
                 bordered={isDark ? true : false}
-                width="20%"
+                width={isMobile ? '50%' : '20%'}
                 placeholder="Quantité"
                 aria-labelledby="Quantité"
                 onChange={(e) => {

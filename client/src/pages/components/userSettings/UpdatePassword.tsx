@@ -14,9 +14,10 @@ import { useState } from 'react'
 
 interface UpdatePasswordProps {
     isDark: boolean
+    isMobile: boolean
 }
 
-const UpdatePassword = ({ isDark }: UpdatePasswordProps) => {
+const UpdatePassword = ({ isDark, isMobile }: UpdatePasswordProps) => {
     const [wantToChangePassword, setWantToChangePassword] = useState(false)
 
     const closeHandler = () => {
@@ -25,13 +26,14 @@ const UpdatePassword = ({ isDark }: UpdatePasswordProps) => {
     return (
         <Card
             css={{
-                width: '100%',
+                width: isMobile ? '70%' : '100%',
                 height: '100%',
                 padding: '0',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
             }}
+            variant={isMobile ? 'flat' : 'shadow'}
         >
             <Grid
                 md={12}
@@ -39,12 +41,12 @@ const UpdatePassword = ({ isDark }: UpdatePasswordProps) => {
                 alignContent="center"
                 alignItems="center"
                 css={{
-                    padding: '3.8rem',
+                    padding: isMobile ? '$10' : '3.8rem',
                 }}
             >
                 <Button
                     auto
-                    flat={isDark}
+                    flat={isDark && !isMobile}
                     color="success"
                     icon={<RiLockPasswordLine size="1rem" />}
                     onClick={() =>
@@ -60,6 +62,7 @@ const UpdatePassword = ({ isDark }: UpdatePasswordProps) => {
                 aria-labelledby="change-password-modal"
                 open={wantToChangePassword}
                 onClose={closeHandler}
+                width={isMobile ? '90%' : '20%'}
             >
                 <Modal.Header>
                     <Text id="change-password-modal-title" size={18}>

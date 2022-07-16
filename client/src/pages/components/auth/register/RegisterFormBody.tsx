@@ -4,6 +4,7 @@ import { CgPassword } from 'react-icons/cg'
 import { FaUserAstronaut } from 'react-icons/fa'
 import { HiOutlineMail } from 'react-icons/hi'
 import generatePassword from '../../../../utils/auth/generatePassword'
+import { isMobile } from 'react-device-detect'
 
 interface RegisterFormBodyProps {
     isDark: boolean
@@ -28,6 +29,7 @@ interface RegisterFormBodyProps {
     setLastname: (value: string) => void
     setEmail: (value: string) => void
     setPassword: (value: string) => void
+    isMobile: boolean
 }
 
 const RegisterFormBody = ({
@@ -53,6 +55,7 @@ const RegisterFormBody = ({
     setLastname,
     setEmail,
     setPassword,
+    isMobile,
 }: RegisterFormBodyProps) => {
     const generatePasswordRegister = () => {
         setPassword(generatePassword())
@@ -63,11 +66,11 @@ const RegisterFormBody = ({
             <Row
                 justify="center"
                 align="center"
-                css={{ marginTop: '$10', marginBottom: '$10' }}
+                css={{ marginTop: isMobile ? '' : '$10', marginBottom: '$10' }}
             >
                 <Input
-                    width="70%"
-                    bordered={isDark ? true : false}
+                    width={isMobile ? '90%' : '70%'}
+                    bordered={isDark || isMobile}
                     animated
                     aria-label="Lastname"
                     required
@@ -91,8 +94,8 @@ const RegisterFormBody = ({
                 css={{ marginTop: '$10', marginBottom: '$10' }}
             >
                 <Input
-                    width="70%"
-                    bordered={isDark ? true : false}
+                    width={isMobile ? '90%' : '70%'}
+                    bordered={isDark || isMobile}
                     animated
                     required
                     aria-label="Firstname"
@@ -116,14 +119,14 @@ const RegisterFormBody = ({
                 css={{ marginTop: '$10', marginBottom: '$10' }}
             >
                 <Input
-                    width="70%"
+                    width={isMobile ? '90%' : '70%'}
                     animated
                     clearable
                     aria-label="Username"
                     labelPlaceholder="Entrer un nom d'utilisateur"
                     value={username}
                     contentLeft={<FaUserAstronaut />}
-                    bordered={isDark ? true : false}
+                    bordered={isDark || isMobile}
                     required={true}
                     onBlur={() => handleValidation('username', username)}
                     color={isInvalidUsername ? 'error' : 'primary'}
@@ -142,8 +145,8 @@ const RegisterFormBody = ({
                 css={{ marginTop: '$10', marginBottom: '$10' }}
             >
                 <Input
-                    width="70%"
-                    bordered={isDark ? true : false}
+                    width={isMobile ? '90%' : '70%'}
+                    bordered={isDark || isMobile}
                     clearable
                     animated
                     aria-label="Email"
@@ -167,7 +170,7 @@ const RegisterFormBody = ({
                 css={{ marginTop: '$10', marginBottom: '$10' }}
             >
                 <Input.Password
-                    width="70%"
+                    width={isMobile ? '90%' : '70%'}
                     animated
                     title=""
                     clearable
@@ -179,7 +182,7 @@ const RegisterFormBody = ({
                     }
                     status={isInvalidPassword ? 'error' : 'default'}
                     aria-label="Password"
-                    bordered={isDark ? true : false}
+                    bordered={isDark || isMobile}
                     contentLeft={<CgPassword />}
                     required
                     labelPlaceholder="Entrer votre mot de passe"

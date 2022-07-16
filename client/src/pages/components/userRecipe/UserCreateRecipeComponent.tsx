@@ -35,12 +35,14 @@ import { toasterErrorCommon } from '../../../utils/theme/toaster'
 import { useAppContext } from '../../../utils/context/AppContext'
 import { v4 as uuidv4 } from 'uuid'
 import { editorOptions } from '../../../utils/editorOptions'
+import { isMobile } from 'react-device-detect'
 
 interface Props {
     setCreate: (value: boolean) => void
+    isMobile: boolean
 }
 
-const UserCreateRecipeComponent = ({ setCreate }: Props) => {
+const UserCreateRecipeComponent = ({ setCreate, isMobile }: Props) => {
     const [name, setName] = useState<string>('')
     const [origin, setOrigin] = useState<string>('')
     const [note, setNote] = useState<string>('')
@@ -192,15 +194,22 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
     }, [ingredientCreated])
 
     return (
-        <Card css={{ h: '85%', mt: '$28', w: '45%' }}>
+        <Card
+            css={{
+                p: isMobile ? '$5' : '',
+                mt: isMobile ? '$20' : '$28',
+                w: isMobile ? '100%' : '45%',
+            }}
+            variant={isMobile ? 'flat' : 'shadow'}
+        >
             <Card.Header>
-                <Grid.Container gap={2} alignItems="center">
-                    <Grid xs={6} md={11}>
-                        <Text h2 b>
+                <Grid.Container gap={isMobile && 2} alignItems="center">
+                    <Grid xs={8} md={11}>
+                        <Text h2={!isMobile} h4={isMobile} b>
                             Créer ma recette 🥗
                         </Text>
                     </Grid>
-                    <Grid xs={6} md={1} justify="flex-end">
+                    <Grid xs={4} md={1} justify="flex-end">
                         <Button
                             color="error"
                             auto
@@ -218,11 +227,11 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
                         xs={12}
                         md={12}
                         justify="center"
-                        css={{ w: '100%', m: '$5' }}
+                        css={{ w: '100%', m: isMobile ? '' : '$5' }}
                     >
                         <Input
-                            width="60%"
-                            bordered={isDark ? true : false}
+                            width={isMobile ? '100%' : '60%'}
+                            bordered={isDark || isMobile}
                             color={'primary'}
                             aria-label="origine de la recette"
                             labelPlaceholder="Origine de la recette"
@@ -233,13 +242,13 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
                         xs={12}
                         md={12}
                         justify="center"
-                        css={{ w: '100%', m: '$5' }}
+                        css={{ w: '100%', m: isMobile ? '' : '$5' }}
                     >
                         <Input
-                            width="60%"
+                            width={isMobile ? '100%' : '60%'}
                             color={'primary'}
                             aria-label="nom de la recette"
-                            bordered={isDark ? true : false}
+                            bordered={isDark || isMobile}
                             labelPlaceholder="Nom de la recette"
                             onChange={(e) => setName(e.target.value)}
                         />
@@ -248,7 +257,7 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
                         xs={12}
                         md={12}
                         justify="center"
-                        css={{ w: '100%', m: '$5' }}
+                        css={{ w: '100%', m: isMobile ? '' : '$5' }}
                     >
                         <IngredientDropDown
                             setSelectedIngredients={setSelectedIngredients}
@@ -258,7 +267,7 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
                             onPress={() =>
                                 handleAddIngredient(selectedIngredients)
                             }
-                            flat
+                            flat={!isMobile}
                             css={{ ml: '$4' }}
                             color={'success'}
                             auto
@@ -269,7 +278,7 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
                     <Grid md={5}>
                         <Text
                             color={'warning'}
-                            css={{ p: '$0', m: '$0' }}
+                            css={{ p: '$0', m: isMobile ? '' : '$0' }}
                             small
                         >
                             Vous ne trouvez pas votre ingrédient ?
@@ -282,7 +291,7 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
                             size="sm"
                             color="success"
                             auto
-                            flat
+                            flat={!isMobile}
                             onPress={() =>
                                 setCreateIngredient(!createIngredient)
                             }
@@ -301,6 +310,7 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
                             >
                                 <IngredientQuantity
                                     isDark={isDark}
+                                    isMobile={isMobile}
                                     ingredient={ingredient}
                                     handleDeleteIngredient={
                                         handleDeleteIngredient
@@ -349,7 +359,7 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
                     >
                         <Text color="warning" small>
                             Veuillez utiliser une image libre de droit d'auteur
-                            si vous en avez une
+                            si possible
                         </Text>
                     </Grid>
                     <Grid xs={12} md={12} justify="center" css={{ w: '100%' }}>
@@ -407,6 +417,7 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
             </Card.Footer>
             <CreateIngredientModal
                 isDark={isDark}
+                isMobile={isMobile}
                 ingredientCreated={ingredientCreated}
                 isOpen={createIngredient}
                 setIsOpen={setCreateIngredient}

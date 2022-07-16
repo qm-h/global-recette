@@ -24,6 +24,7 @@ import { SuccessAuthUser } from '../../../../../../server/src/shared/types'
 import checkField from '../../../../utils/auth/checkField'
 import { createCookies } from '../../../../utils/create'
 import { useNavigate } from 'react-router-dom'
+import { isMobile } from 'react-device-detect'
 
 interface Props {
     noAccount: (val: boolean) => void
@@ -175,17 +176,22 @@ const AuthForm = ({
     }, [email, password, isInvalidEmail, isInvalidPassword, setIsInvalidForm])
 
     return (
-        <Card css={{ w: '70%' }}>
+        <Card
+            css={{
+                w: isMobile ? '90%' : '70%',
+            }}
+            variant={isMobile ? 'flat' : 'shadow'}
+        >
             <Card.Header>
                 <Row justify="center">
-                    <Text css={{}} h2>
+                    <Text h2={!isMobile} h4={isMobile}>
                         Connexion
                     </Text>
                 </Row>
             </Card.Header>
-            <Card.Divider />
             <Card.Body>
                 <ConnectionForm
+                    isMobile={isMobile}
                     handleConnection={handleConnection}
                     isLoading={isLoading}
                     isDark={isDark}
@@ -201,6 +207,7 @@ const AuthForm = ({
                     isInvalidPasswordMessage={isInvalidPasswordMessage}
                 />
                 <ForgotPwdModal
+                    isMobile={isMobile}
                     isLoading={isLoading}
                     setOpenForgotModal={setOpenForgotModal}
                     visible={openForgotModal}
@@ -214,7 +221,10 @@ const AuthForm = ({
                 />
             </Card.Body>
             <Card.Footer>
-                <Grid.Container justify="space-between" alignItems="center">
+                <Grid.Container
+                    justify={isMobile ? 'center' : 'space-between'}
+                    alignItems="center"
+                >
                     <Grid md={3} justify="center">
                         <Checkbox
                             color="success"

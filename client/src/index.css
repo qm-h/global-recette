@@ -31,12 +31,24 @@ code {
 }
 
 .light_header {
-    background-color: #ffffff;
+    background-color: #fff;
+    z-index: 1;
     color: #212121;
+}
+
+.blur_dark_header {
+    background-color: rgba(13, 14, 14, 0.64);
+    backdrop-filter: blur(10px);
+}
+
+.blur_light_header {
+    background-color: rgba(255, 255, 255, 0.83);
+    backdrop-filter: blur(10px);
 }
 
 .dark_link {
     color: #ffffff;
+    z-index: 1;
     font-weight: bold;
 }
 
@@ -55,6 +67,24 @@ code {
     color: #19c964;
     text-decoration: none;
     font-weight: bold;
+}
+
+.mobile_dark_link {
+    color: #ffffff;
+}
+
+.mobile_light_link {
+    color: #212121;
+}
+
+.mobile_active_light {
+    color: #19c964;
+    text-decoration: none;
+}
+
+.mobile_active_dark {
+    color: #19c964;
+    text-decoration: none;
 }
 
 .hoverText:hover {
@@ -82,5 +112,6 @@ code {
 }
 
 .liStyle {
-    list-style-type: decimal;
+    width: 100%;
+    list-style-type: circle;
 }

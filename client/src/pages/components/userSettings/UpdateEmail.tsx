@@ -6,9 +6,10 @@ import { useState } from 'react'
 
 interface UpdateEmailProps {
     isDark: boolean
+    isMobile: boolean
 }
 
-const UpdateEmail = ({ isDark }: UpdateEmailProps) => {
+const UpdateEmail = ({ isDark, isMobile }: UpdateEmailProps) => {
     const [wantToChangeEmail, setWantToChangeEmail] = useState(false)
 
     const closeHandler = () => {
@@ -17,13 +18,14 @@ const UpdateEmail = ({ isDark }: UpdateEmailProps) => {
     return (
         <Card
             css={{
-                width: '100%',
+                width: isMobile ? '70%' : '100%',
                 height: '100%',
                 padding: '0',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
             }}
+            variant={isMobile ? 'flat' : 'shadow'}
         >
             <Grid
                 md={12}
@@ -31,13 +33,13 @@ const UpdateEmail = ({ isDark }: UpdateEmailProps) => {
                 alignContent="center"
                 alignItems="center"
                 css={{
-                    padding: '3.8rem',
+                    padding: isMobile ? '$10' : '3.8rem',
                 }}
             >
                 <Button
                     color="success"
                     auto
-                    flat={isDark}
+                    flat={isDark && !isMobile}
                     onPress={() => setWantToChangeEmail(!wantToChangeEmail)}
                     icon={<HiOutlineMail size="1rem" />}
                 >
@@ -48,7 +50,7 @@ const UpdateEmail = ({ isDark }: UpdateEmailProps) => {
                 closeButton
                 preventClose
                 blur
-                width="20%"
+                width={isMobile ? '90%' : '20%'}
                 aria-labelledby="change-email-modal"
                 open={wantToChangeEmail}
                 onClose={closeHandler}

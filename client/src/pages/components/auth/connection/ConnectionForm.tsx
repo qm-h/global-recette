@@ -3,6 +3,7 @@ import { Button, Input, Loading, Row } from '@nextui-org/react'
 import { HiOutlineMail } from 'react-icons/hi'
 import { MdPassword } from 'react-icons/md'
 import { useState } from 'react'
+import { isMobile } from 'react-device-detect'
 
 interface Props {
     handleConnection: (email: string, password: string) => void
@@ -18,6 +19,7 @@ interface Props {
     isInvalidPassword: boolean
     isInvalidEmailMessage: string
     isInvalidPasswordMessage: string
+    isMobile: boolean
 }
 
 const ConnectionForm = ({
@@ -34,16 +36,17 @@ const ConnectionForm = ({
     isInvalidPassword,
     isInvalidEmailMessage,
     isInvalidPasswordMessage,
+    isMobile,
 }: Props) => {
     return (
         <>
             <Row
                 justify="center"
                 align="center"
-                css={{ marginTop: '$10', marginBottom: '$10' }}
+                css={{ marginTop: isMobile ? '' : '$10', marginBottom: '$10' }}
             >
                 <Input
-                    width="50%"
+                    width={isMobile ? '90%' : '50%'}
                     type="email"
                     animated
                     clearable
@@ -56,17 +59,17 @@ const ConnectionForm = ({
                     placeholder="Entrer votre email"
                     contentLeft={<HiOutlineMail />}
                     value={email}
-                    bordered={isDark ? true : false}
+                    bordered={isDark || isMobile}
                     onChange={(e) => setEmail(e.target.value)}
                 />
             </Row>
             <Row
                 justify="center"
                 align="center"
-                css={{ marginTop: '$10', marginBottom: '$10' }}
+                css={{ marginTop: isMobile ? '' : '$10', marginBottom: '$10' }}
             >
                 <Input.Password
-                    width="50%"
+                    width={isMobile ? '90%' : '50%'}
                     animated
                     aria-label="Password"
                     required
@@ -79,7 +82,7 @@ const ConnectionForm = ({
                     status={isInvalidPassword ? 'error' : 'default'}
                     type="password"
                     clearable
-                    bordered={isDark ? true : false}
+                    bordered={isDark || isMobile}
                     placeholder="Entrer votre mot de passe"
                     value={password}
                     contentLeft={<MdPassword />}
@@ -89,7 +92,10 @@ const ConnectionForm = ({
             <Row
                 justify="center"
                 align="center"
-                css={{ marginTop: '$10', marginBottom: '$10' }}
+                css={{
+                    marginTop: isMobile ? '' : '$10',
+                    marginBottom: isMobile ? '' : '$10',
+                }}
             >
                 {!isLoading ? (
                     <Button

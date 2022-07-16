@@ -10,15 +10,15 @@ import { useNavigate } from 'react-router-dom'
 interface FavoritesListProps {
     favorites: any[]
     isDark: boolean
-    recipeAuthor: any[]
     authUserID: number
+    isMobile: boolean
 }
 
 const FavoritesList = ({
     authUserID,
     favorites,
-    recipeAuthor,
     isDark,
+    isMobile,
 }: FavoritesListProps) => {
     const [hasSaved, setHasSaved] = useState<HasSavedRecipe[]>([
         {} as HasSavedRecipe,
@@ -48,20 +48,27 @@ const FavoritesList = ({
     }, [authUserID, favorites])
 
     return (
-        <Grid.Container gap={5} alignItems="center">
+        <Grid.Container gap={isMobile ? 3 : 5} alignItems="center">
             {favorites && favorites.length > 0 ? (
                 favorites.map((r, i) => {
                     return (
                         <Grid
                             key={i}
+                            xs={12}
                             md={4}
                             justify="center"
                             alignItems="center"
                             alignContent="center"
                         >
-                            <Card variant={'flat'}>
+                            <Card
+                                variant={'flat'}
+                                css={{
+                                    w: isMobile ? '100%' : 'auto',
+                                }}
+                            >
                                 <Card.Header>
                                     <Grid
+                                        xs={12}
                                         md={12}
                                         css={{
                                             pr: '$5',
@@ -71,8 +78,11 @@ const FavoritesList = ({
                                         }}
                                         justify="space-between"
                                     >
-                                        <Text h3>{r.recipes.name}</Text>
+                                        <Text h3={!isMobile} h4={isMobile}>
+                                            {r.recipes.name}
+                                        </Text>
                                         <FavoritesButton
+                                            isMobile={isMobile}
                                             authUserID={authUserID}
                                             isDark={isDark}
                                             recipe={r.recipes}
@@ -84,6 +94,7 @@ const FavoritesList = ({
                                 </Card.Header>
                                 <Card.Body>
                                     <Grid
+                                        xs={12}
                                         md={12}
                                         css={{
                                             pl: '$5',

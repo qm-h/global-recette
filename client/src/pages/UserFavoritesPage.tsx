@@ -7,11 +7,11 @@ import { getAllFavoritesRecipe } from '../router/userRouter'
 import { toasterErrorCommon } from '../utils/theme/toaster'
 import { useAppContext } from '../utils/context/AppContext'
 import { useNavigate } from 'react-router-dom'
+import { isMobile } from 'react-device-detect'
 
 const UserFavoritesPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [favorites, setFavorites] = useState<Recipe[]>([])
-    const [recipeAuthor, setRecipeAuthor] = useState<RecipeUser[]>()
     const { user } = useAppContext()
     const { isDark } = useTheme()
     const userID: number | undefined = user?.id
@@ -28,7 +28,6 @@ const UserFavoritesPage = () => {
                     navigate('/')
                 } else {
                     setFavorites(response.favorites)
-                    setRecipeAuthor(response.users)
                     setIsLoading(false)
                 }
             })
@@ -38,18 +37,24 @@ const UserFavoritesPage = () => {
     }, [isDark, navigate, userID])
 
     return (
-        <Grid.Container gap={4} alignItems="center">
+        <Grid.Container
+            gap={!isMobile && 4}
+            justify={'center'}
+            alignItems="center"
+        >
             <Grid md={12} justify="center">
-                <Text h2>Mes Favoris</Text>
+                <Text h2={!isMobile} h3={isMobile}>
+                    Mes Favoris ❤️
+                </Text>
             </Grid>
-            <Grid md={12} justify="center">
+            <Grid xs={12} md={12} justify="center">
                 {isLoading ? (
                     <Loading size="xl" />
                 ) : (
                     <UserFavoritesList
                         authUserID={user.id}
+                        isMobile={isMobile}
                         favorites={favorites}
-                        recipeAuthor={recipeAuthor}
                         isDark={false}
                     />
                 )}

@@ -1,21 +1,15 @@
-import {
-    Avatar,
-    Grid,
-    Image,
-    Link,
-    Text,
-    Tooltip,
-    useTheme,
-} from '@nextui-org/react'
+import { Avatar, Grid, Link, Tooltip, useTheme } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 
-import { FaDoorOpen } from 'react-icons/fa'
 import MenuList from './commonComponents/MenuList'
-import UserMenu from './commonComponents/UserMenu'
 import { SuccessAuthUser as UserType } from '../../../../../server/src/shared/types'
-import burgerLogo from '../../../utils/images/assets/burger-logo.png'
 import { getUserByID } from '../../../router/userRouter'
 import { useNavigate } from 'react-router-dom'
+import { isMobile } from 'react-device-detect'
+import HeaderLogo from './commonComponents/HeaderLogo'
+import MenuComponent from './commonComponents/MenuComponent'
+import MobileMenuComponent from './commonComponents/MobileMenuComponent'
+import { FaDoorOpen } from 'react-icons/fa'
 
 interface Props {
     isAuthenticated: boolean
@@ -53,79 +47,98 @@ const HeaderCommon = ({
     return (
         <div
             className={`header_common ${
-                isDark ? 'dark_header' : 'light_header'
+                !isMobile && isDark ? 'dark_header' : 'light_header'
+            }  ${isMobile && isDark && 'blur_dark_header'} ${
+                isMobile && !isDark && 'blur_light_header'
             }`}
         >
             <Grid.Container>
-                <Grid xs={3} justify="flex-start" alignItems="center">
-                    <Text
-                        h2
-                        b
-                        css={{
-                            cursor: 'pointer',
-                            textGradient:
-                                '45deg, $yellow600 20%, $green600 50%',
-                            m: '$0',
-                            p: '$0',
-                        }}
-                        onClick={() => navigate('/')}
-                    >
-                        Global
-                    </Text>
-                    <Text
-                        h2
-                        onClick={() => navigate('/')}
-                        b
-                        css={{
-                            cursor: 'pointer',
-                            textGradient:
-                                '45deg, $green600 20%, $yellow600 100%',
-                            m: '$0',
-                            p: '$0',
-                        }}
-                    >
-                        Recette
-                        <img
-                            onClick={() => navigate('/')}
-                            src={burgerLogo}
-                            width="17%"
-                            alt="Burger logo"
-                        />
-                    </Text>
-                </Grid>
-                <Grid xs={7} alignItems="center">
-                    <MenuList isAuthenticated={isAuthenticated} user={user} />
-                </Grid>
-                <Grid xs={2} justify="flex-end" alignItems="center">
-                    {isAuthenticated ? (
-                        <UserMenu
-                            setUser={setUser}
-                            setIsAuthenticated={setIsAuthenticated}
-                            setUserUUID={setUserUUID}
-                            user={userProfile}
-                        />
-                    ) : (
-                        <Link animated href="/login" color="success">
-                            <Tooltip
-                                content={'Connexion'}
-                                hideArrow
-                                placement="left"
-                                shadow
-                                rounded
-                                color="success"
-                            >
-                                <Avatar
-                                    squared
-                                    pointer
-                                    color="success"
-                                    icon={
-                                        <FaDoorOpen color="#FFF" size="1em" />
-                                    }
+                {isMobile ? (
+                    <>
+                        <Grid xs={9} justify="flex-start" alignItems="center">
+                            <HeaderLogo
+                                isMobile={isMobile}
+                                navigate={navigate}
+                            />
+                        </Grid>
+                        <Grid xs={3} justify="flex-end" alignItems="center">
+                            {isAuthenticated ? (
+                                <MobileMenuComponent
+                                    navigate={navigate}
+                                    isAuthenticated={isAuthenticated}
+                                    isDark={isDark}
+                                    setIsAuthenticated={setIsAuthenticated}
+                                    setUser={setUser}
+                                    setUserUUID={setUserUUID}
+                                    user={user}
                                 />
-                            </Tooltip>
-                        </Link>
-                    )}
-                </Grid>
+                            ) : (
+                                <Link animated href="/login" color="success">
+                                    <Tooltip
+                                        content={'Connexion'}
+                                        hideArrow
+                                        placement="left"
+                                        shadow
+                                        rounded
+                                        color="success"
+                                    >
+                                        <Avatar
+                                            squared
+                                            pointer
+                                            color="success"
+                                            icon={
+                                                <FaDoorOpen
+                                                    color="#FFF"
+                                                    size="1em"
+                                                />
+                                            }
+                                        />
+                                    </Tooltip>
+                                </Link>
+                            )}
+                        </Grid>
+                    </>
+                ) : (
+                    <>
+                        <Grid
+                            xs={12}
+                            md={3}
+                            sm={12}
+                            lg={3}
+                            justify="flex-start"
+                            alignItems="center"
+                        >
+                            <HeaderLogo
+                                isMobile={isMobile}
+                                navigate={navigate}
+                            />
+                        </Grid>
+                        <Grid xs={12} sm={12} md={7} alignItems="center">
+                            <MenuList
+                                isAuthenticated={isAuthenticated}
+                                user={user}
+                            />
+                        </Grid>
+                        <Grid
+                            xs={12}
+                            sm={12}
+                            md={2}
+                            justify="flex-end"
+                            alignItems="center"
+                        >
+                            <MenuComponent
+                                isAuthenticated={isAuthenticated}
+                                setUser={setUser}
+                                setUserUUID={setUserUUID}
+                                avatarIsChanged={avatarIsChanged}
+                                userProfile={userProfile}
+                                setIsAuthenticated={setIsAuthenticated}
+                                navigate={navigate}
+                                isDark={isDark}
+                            />
+                        </Grid>
+                    </>
+                )}
             </Grid.Container>
         </div>
     )

@@ -19,6 +19,7 @@ import checkField from '../../../../utils/auth/checkField'
 import { randomAvatar } from '../../../../utils/randomAvatar'
 import { registerUser } from '../../../../router/authRouter'
 import toast from 'react-hot-toast'
+import { isMobile } from 'react-device-detect'
 
 interface RegisterFormProps {
     noAccount: (val: boolean) => void
@@ -78,7 +79,6 @@ const RegisterForm = ({
     const [firstname, setFirstname] = useState<string>('')
     const [lastname, setLastname] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
-
     const { isDark } = useTheme()
 
     const handleRegister = async () => {
@@ -177,17 +177,20 @@ const RegisterForm = ({
     ])
 
     return (
-        <Card css={{ w: '40%', mt: '$18' }}>
+        <Card
+            css={{ w: isMobile ? '90%' : '40%', mt: isMobile ? '$20' : '$0' }}
+            variant={isMobile ? 'flat' : 'shadow'}
+        >
             <Card.Header>
                 <Row justify="center">
-                    <Text css={{}} h2>
+                    <Text h2={!isMobile} h3={isMobile}>
                         Créer Mon Compte 🔥
                     </Text>
                 </Row>
             </Card.Header>
-            <Card.Divider />
             <Card.Body>
                 <RegisterFormBody
+                    isMobile={isMobile}
                     isDark={isDark}
                     username={username}
                     firstname={firstname}
@@ -214,7 +217,13 @@ const RegisterForm = ({
             </Card.Body>
             <Card.Footer>
                 <Grid.Container>
-                    <Grid md={12} justify="center" alignItems="center">
+                    <Grid
+                        xs={12}
+                        md={12}
+                        lg={12}
+                        justify="center"
+                        alignItems="center"
+                    >
                         <Button
                             color="success"
                             auto={isLoading}
@@ -229,7 +238,13 @@ const RegisterForm = ({
                             )}
                         </Button>
                     </Grid>
-                    <Grid md={12} justify="center" alignItems="center">
+                    <Grid
+                        xs={12}
+                        md={12}
+                        lg={12}
+                        justify="center"
+                        alignItems="center"
+                    >
                         <Button
                             light
                             auto

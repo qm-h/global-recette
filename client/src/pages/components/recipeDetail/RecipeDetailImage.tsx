@@ -5,15 +5,20 @@ interface RecipeDetailImageProps {
     recipe: Recipe
     isDark: boolean
     image: string
+    isMobile: boolean
 }
 
 const RecipeDetailImage = ({
     recipe,
     isDark,
     image,
+    isMobile,
 }: RecipeDetailImageProps) => {
     return (
-        <Card css={{ w: '100%' }} variant={'flat'}>
+        <Card
+            css={{ w: '100%', m: isMobile ? '0' : '', p: isMobile ? '0' : '' }}
+            variant={'flat'}
+        >
             <Card.Header css={{ position: 'absolute', zIndex: 1, top: 5 }}>
                 <Col
                     css={{

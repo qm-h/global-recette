@@ -20,6 +20,7 @@ interface FavoritesButtonProps {
     isDark: boolean
     recipe: Recipe
     color?: string
+    isMobile?: boolean
 }
 
 const FavoritesButton = ({
@@ -29,6 +30,7 @@ const FavoritesButton = ({
     isDark,
     recipe,
     color,
+    isMobile,
 }: FavoritesButtonProps) => {
     const handleSave = async (recipeID: number) => {
         console.log(recipeID)
@@ -72,7 +74,8 @@ const FavoritesButton = ({
     return (
         <Button
             css={{
-                p: '$5',
+                p: isMobile ? '' : '$5',
+                // pb: isMobile ? '$5' :'',
                 m: '$0',
                 bgBlur: isDark ? '#0f111466' : '#ffffff66',
             }}
