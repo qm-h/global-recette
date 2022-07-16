@@ -19,6 +19,9 @@ import {
 import RecipeDetailImage from './components/recipeDetail/RecipeDetailImage'
 import { getUserByID } from '../router/userRouter'
 import { getAllIngredientsByRecipeID } from '../router/ingredientsRouter'
+import SunEditor from 'suneditor-react'
+import 'suneditor/dist/css/suneditor.min.css'
+import parse from 'html-react-parser'
 
 const RecipeDetailPage = () => {
     const [recipe, setRecipe] = useState<Recipe>()
@@ -27,6 +30,7 @@ const RecipeDetailPage = () => {
     >([] as RecipeIngredientWithQuantity[])
     const [user, setUser] = useState<SuccessAuthUser>()
     const [image, setImage] = useState<string>()
+    const [editorHeight, setEditorHeight] = useState<number>()
     const { id } = useParams()
     const { isDark } = useTheme()
 
@@ -124,9 +128,6 @@ const RecipeDetailPage = () => {
                                 </Row>
                             ))}
                     </Grid>
-                    <Grid md={12}>
-                        <Text>{recipe?.note}</Text>
-                    </Grid>
                 </Col>
                 <Col
                     css={{
@@ -139,8 +140,8 @@ const RecipeDetailPage = () => {
                     }}
                 >
                     <Card
-                        variant={'bordered'}
                         borderWeight="bold"
+                        variant={'flat'}
                         css={{
                             w: '70%',
                             h: '100%',
@@ -149,28 +150,11 @@ const RecipeDetailPage = () => {
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
-                            justifyContent: 'space-between',
+                            justifyContent: 'flex-start',
                         }}
                     >
-                        <Text h3>Commentaires</Text>
-                        <Text>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit. Donec euismod, nisl eget consectetur sagittis,
-                            nisl nisi consectetur nisi, euismod consectetur nisi
-                            nisi euismod nisi.
-                        </Text>
-                        <Input
-                            width={'100%'}
-                            css={{
-                                m: '0',
-                                p: '0',
-                            }}
-                            placeholder="Ecrire un commentaire"
-                            type={'text'}
-                            aria-label={'Ecrire un commentaire'}
-                            bordered={isDark}
-                            color={isDark ? 'success' : 'default'}
-                        />
+                        <Text h3>Description</Text>
+                        {parse(`<div>${recipe?.note}</div>`)}
                     </Card>
                 </Col>
             </Row>

@@ -1,13 +1,11 @@
 import {
     Button,
     Card,
-    Col,
     Grid,
     Input,
     Loading,
     Row,
     Text,
-    Textarea,
     useTheme,
 } from '@nextui-org/react'
 import {
@@ -27,7 +25,8 @@ import {
     getIngredientByName,
 } from '../../../router/ingredientsRouter'
 import { useEffect, useState } from 'react'
-
+import SunEditor from 'suneditor-react'
+import 'suneditor/dist/css/suneditor.min.css'
 import { BsFillCameraFill } from 'react-icons/bs'
 import CreateIngredientModal from './ingredients/CreateIngredientModal'
 import IngredientDropDown from './ingredients/IngredientDropDown'
@@ -35,6 +34,7 @@ import IngredientQuantity from './ingredients/IngredientQuantity'
 import { toasterErrorCommon } from '../../../utils/theme/toaster'
 import { useAppContext } from '../../../utils/context/AppContext'
 import { v4 as uuidv4 } from 'uuid'
+import { editorOptions } from '../../../utils/editorOptions'
 
 interface Props {
     setCreate: (value: boolean) => void
@@ -57,13 +57,12 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
         [] as Ingredients[]
     )
     const [ingredientCreated, setIngredientCreated] = useState<boolean>(false)
-
+    const [editorHeight, setEditorHeight] = useState<number>(500)
+    const [openEditor, setOpenEditor] = useState<boolean>(false)
     const { isDark } = useTheme()
     const { user } = useAppContext()
 
     const handleCreateRecipe = async () => {
-        setIsLoading(true)
-
         if (
             name !== '' &&
             origin !== '' &&
@@ -71,6 +70,7 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
             waitingIngredients.length &&
             waitingIngredientsQuantity.length
         ) {
+            setIsLoading(true)
             const recipe: Recipe = {
                 name: name,
                 origin: origin,
@@ -267,17 +267,22 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
                         </Button>
                     </Grid>
                     <Grid md={5}>
-                        <Text css={{ p: '$0', m: '$0' }} small>
+                        <Text
+                            color={'warning'}
+                            css={{ p: '$0', m: '$0' }}
+                            small
+                        >
                             Vous ne trouvez pas votre ingrédient ?
                         </Text>
                     </Grid>
                     <Grid md={1}>
                         <Button
                             rounded
-                            css={{ fontWeight: '$light', fontSize: '12px' }}
+                            css={{ fontWeight: '$medium', fontSize: '12px' }}
                             size="sm"
                             color="success"
                             auto
+                            flat
                             onPress={() =>
                                 setCreateIngredient(!createIngredient)
                             }
@@ -348,17 +353,37 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
                         </Text>
                     </Grid>
                     <Grid xs={12} md={12} justify="center" css={{ w: '100%' }}>
-                        <Textarea
-                            color={'primary'}
-                            bordered={isDark ? true : false}
-                            width={'80%'}
-                            minRows={5}
-                            aria-label="description de la recette"
-                            helperText="Vous avez des notes ? Elles seront affichées sur votre recette"
-                            placeholder="Ecrivez vos notes ici"
-                            onChange={(e) => setNote(e.target.value)}
-                        />
+                        <Button
+                            color={openEditor ? 'error' : 'success'}
+                            auto
+                            flat={isDark}
+                            size={'sm'}
+                            onPress={() => setOpenEditor(!openEditor)}
+                        >
+                            {!openEditor
+                                ? 'Ecrire la recette en quelques mots'
+                                : 'Fermer'}
+                        </Button>
                     </Grid>
+                    {openEditor && (
+                        <Grid
+                            xs={12}
+                            md={12}
+                            justify="center"
+                            css={{ w: '100%' }}
+                        >
+                            <SunEditor
+                                width="100%"
+                                height={`${editorHeight}px`}
+                                onResizeEditor={setEditorHeight}
+                                placeholder={'Description de la recette'}
+                                setContents={note}
+                                onChange={(e) => setNote(e)}
+                                lang={'fr'}
+                                setOptions={editorOptions}
+                            />
+                        </Grid>
+                    )}
                 </Grid.Container>
             </Card.Body>
             <Card.Footer>
@@ -371,8 +396,7 @@ const UserCreateRecipeComponent = ({ setCreate }: Props) => {
                         <Button
                             color="success"
                             auto
-                            rounded
-                            flat
+                            flat={isDark}
                             onPress={handleCreateRecipe}
                             css={{ mb: '$5' }}
                         >

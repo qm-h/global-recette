@@ -24,6 +24,7 @@ const FavoritesList = ({
     const [hasSaved, setHasSaved] = useState<HasSavedRecipe[]>([
         {} as HasSavedRecipe,
     ])
+    const [isUnfavorite, setIsUnfavorite] = useState<boolean>(false)
 
     const navigate = useNavigate()
 
@@ -47,7 +48,7 @@ const FavoritesList = ({
             .catch((err) => {
                 console.log(err)
             })
-    }, [authUserID, favorites])
+    }, [authUserID, favorites, isUnfavorite])
 
     return (
         <Grid.Container gap={5} alignItems="center">
@@ -75,11 +76,13 @@ const FavoritesList = ({
                                     >
                                         <Text h3>{r.recipes.name}</Text>
                                         <FavoritesButton
+                                            setIsUnfavorite={setIsUnfavorite}
                                             authUserID={authUserID}
                                             isDark={isDark}
                                             recipe={r.recipes}
                                             hasSaved={hasSaved}
                                             setHasSaved={setHasSaved}
+                                            color={'#f31461'}
                                         />
                                     </Grid>
                                 </Card.Header>

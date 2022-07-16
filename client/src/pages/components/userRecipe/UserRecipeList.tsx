@@ -26,6 +26,8 @@ import { FaTrashAlt } from 'react-icons/fa'
 import { Recipe } from '../../../../../server/src/shared/types'
 import RecipeIngredients from './ingredients/RecipeIngredients'
 import { useState } from 'react'
+import SunEditor from 'suneditor-react'
+import parse from 'html-react-parser'
 
 interface Props {
     recipes: Recipe[]
@@ -36,12 +38,9 @@ const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
     const { isDark } = useTheme()
     const [isLoading, setIsLoading] = useState(false)
     const [isLoadingPublish, setIsLoadingPublish] = useState(false)
-    const [openDeleteModal, setOpenDeleteModal] = useState(false)
 
     const handleDeleteRecipe = async (recipe: Recipe) => {
-        setOpenDeleteModal(false)
         setIsLoading(true)
-
         if (recipe.published) {
             await unpublishRecipe(recipe.id)
         }
@@ -89,41 +88,36 @@ const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
                                 </Text>
                             </Grid>
                             <Grid xs={6} md={5} justify="flex-end">
-                                <Button
-                                    auto
-                                    icon={
-                                        isLoading ? (
-                                            <Loading
-                                                color="currentColor"
-                                                size="md"
-                                            />
-                                        ) : (
-                                            <FaTrashAlt size={15} />
-                                        )
-                                    }
-                                    disabled={isLoading}
-                                    light={isDark}
-                                    size={'sm'}
-                                    color="error"
-                                    onPress={() => setOpenDeleteModal(true)}
-                                >
-                                    Supprimer
-                                </Button>
-                                <Modal
-                                    blur
-                                    closeButton
-                                    open={openDeleteModal}
-                                    onClose={() => setOpenDeleteModal(false)}
-                                >
-                                    <Modal.Body>
+                                <Tooltip
+                                    animated={false}
+                                    trigger="click"
+                                    content={
                                         <DeleteRecipe
                                             recipe={recipe}
                                             handleDeleteRecipe={
                                                 handleDeleteRecipe
                                             }
                                         />
-                                    </Modal.Body>
-                                </Modal>
+                                    }
+                                >
+                                    <Text
+                                        css={{
+                                            cursor: 'pointer',
+                                        }}
+                                        b
+                                        color="error"
+                                    >
+                                        {isLoading ? (
+                                            <Loading
+                                                type={'points-opacity'}
+                                                color={'white'}
+                                                size={'md'}
+                                            />
+                                        ) : (
+                                            'Supprimer'
+                                        )}
+                                    </Text>
+                                </Tooltip>
                             </Grid>
                         </Grid.Container>
                     </Card.Header>
@@ -144,7 +138,7 @@ const UserRecipeList = ({ fetchRecipe, recipes }: Props) => {
                                 title="Note"
                                 subtitle="concernant la recette"
                             >
-                                <Text>{recipe.note}</Text>
+                                {parse(recipe.note)}
                             </Collapse>
                         </Row>
                     </Card.Body>

@@ -132,7 +132,7 @@ const CardRecipes = ({
                                     borderRadius={15}
                                 />
                             ) : (
-                                <Loading css={{}} />
+                                <Loading />
                             )}
                         </>
                     ) : (
@@ -163,10 +163,14 @@ const CardRecipes = ({
                                     >
                                         <Button
                                             css={{
-                                                p: '$3',
+                                                p: '$5',
                                                 m: '$0',
+                                                bgBlur: isDark
+                                                    ? '#0f111466'
+                                                    : '#ffffff66',
                                             }}
                                             auto
+                                            flat={isDark}
                                             size="sm"
                                             onPress={() =>
                                                 navigate({
@@ -176,6 +180,11 @@ const CardRecipes = ({
                                         >
                                             <TbExternalLink
                                                 size={20}
+                                                color={
+                                                    isDark
+                                                        ? '#ffffff'
+                                                        : '#ffffff'
+                                                }
                                                 className={'openRecipeDetails'}
                                             />
                                         </Button>
@@ -196,6 +205,7 @@ const CardRecipes = ({
                                                     authUserID={authUserID}
                                                     isDark={isDark}
                                                     recipe={r}
+                                                    color={'#ffffff'}
                                                 />
                                             </Tooltip>
                                         )}
@@ -220,7 +230,7 @@ const CardRecipes = ({
                                     justify="space-between"
                                     align="center"
                                 >
-                                    <Text b size={15}>
+                                    <Text b size={15} color={'white'}>
                                         {r.name}
                                     </Text>
                                     <Tooltip

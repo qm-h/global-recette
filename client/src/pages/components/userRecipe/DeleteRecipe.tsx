@@ -37,7 +37,6 @@ export const DeleteRecipe = ({ recipe, handleDeleteRecipe }: Props) => {
                     <Button
                         onPress={() => handleDeleteRecipe(recipe)}
                         size="sm"
-                        ghost
                         auto
                         color="error"
                     >

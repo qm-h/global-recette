@@ -27,6 +27,7 @@ const UserRecipePage = () => {
     const navigate = useNavigate()
     const { isDark } = useTheme()
     const fetchRecipe = async () => {
+        setIsLoading(true)
         Promise.all([getRecipeByUserID(user.id, userUUID)]).then(([res]) => {
             setUserRecipes(res['recipes'])
             setIsLoading(false)

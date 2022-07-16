@@ -1,4 +1,8 @@
-import { ImageUUIDBridge, Recipe } from '../../../../shared/types'
+import {
+    FavoritesRecipe,
+    ImageUUIDBridge,
+    Recipe,
+} from '../../../../shared/types'
 import { Request, Response } from 'express'
 
 import { logger } from '../../../../server'
@@ -108,6 +112,11 @@ export const deleteRecipeHandler = async (req: Request, res: Response) => {
         .eq('id', id)
     const imagePath = recipe.data[0].image_path
 
+    const removeFavoriteResult = await supabase
+        .from('favorites_recipe')
+        .delete()
+        .eq('recipe_id', id)
+
     const removeImageBridgeResult = await supabase
         .from<ImageUUIDBridge>('image_uuid_bridge')
         .delete()
@@ -121,6 +130,13 @@ export const deleteRecipeHandler = async (req: Request, res: Response) => {
         .from<Recipe>('recipes')
         .delete()
         .eq('id', id)
+
+    if (removeFavoriteResult.status === 400) {
+        logger.error(`Error: ${JSON.stringify(removeFavoriteResult.error)}`)
+        return res
+            .status(500)
+            .send({ status: 500, message: 'Erreur lors de la suppression' })
+    }
 
     if (removeImageBridgeResult.status === 400) {
         logger.error(`Error: ${JSON.stringify(removeImageBridgeResult.error)}`)

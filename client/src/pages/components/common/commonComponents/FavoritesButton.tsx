@@ -19,6 +19,8 @@ interface FavoritesButtonProps {
     authUserID: number
     isDark: boolean
     recipe: Recipe
+    setIsUnfavorite?: (isUnfavorite: boolean) => void
+    color?: string
 }
 
 const FavoritesButton = ({
@@ -27,6 +29,8 @@ const FavoritesButton = ({
     authUserID,
     isDark,
     recipe,
+    setIsUnfavorite,
+    color,
 }: FavoritesButtonProps) => {
     const handleSave = async (recipeID: number) => {
         await saveRecipeToFavorite(recipeID, authUserID)
@@ -37,6 +41,7 @@ const FavoritesButton = ({
                         'Recette ajoutée à vos favoris',
                         '💚'
                     )
+                    setIsUnfavorite(true)
                     const newHasSaved: HasSavedRecipe[] = [
                         ...hasSaved,
                         {
@@ -60,7 +65,7 @@ const FavoritesButton = ({
             if (res.status === 200) {
                 const x = hasSaved.filter((h) => h.recipeID !== recipeID)
                 setHasSaved(x)
-
+                setIsUnfavorite(true)
                 toasterSuccessCommon(isDark, 'Recette retirée de vos favoris')
             } else {
                 toasterErrorCommon(isDark, 'Une erreur est survenue')
@@ -68,23 +73,34 @@ const FavoritesButton = ({
         })
     }
     return (
-        <>
+        <Button
+            css={{
+                p: '$5',
+                m: '$0',
+                bgBlur: isDark ? '#0f111466' : '#ffffff66',
+            }}
+            auto
+            flat={isDark}
+            size="sm"
+        >
             {hasSaved.find(
                 (h) => h.recipeID === recipe.id && h.favorite === true
             ) ? (
                 <AiFillHeart
                     size={20}
+                    color={color}
                     className={'favoriteButton'}
                     onClick={() => handleUnSave(recipe.id)}
                 />
             ) : (
                 <AiOutlineHeart
+                    color={color}
                     size={20}
                     className={'favoriteButton'}
                     onClick={() => handleSave(recipe.id)}
                 />
             )}
-        </>
+        </Button>
     )
 }
 

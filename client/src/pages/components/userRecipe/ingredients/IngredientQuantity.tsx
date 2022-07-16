@@ -22,8 +22,8 @@ const IngredientQuantity = ({
                 color={'primary'}
                 bordered={isDark ? true : false}
                 width="20%"
-                placeholder="Quantity"
-                aria-labelledby="quantity"
+                placeholder="Quantité"
+                aria-labelledby="Quantité"
                 onChange={(e) => {
                     handleAddQuantityIngredient(ingredient, e.target.value)
                 }}
