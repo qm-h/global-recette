@@ -4,6 +4,7 @@ import {
     RecipeIngredientWithQuantity,
     SuccessAuthUser,
 } from '../../../../../server/src/shared/types'
+
 import RecipeDetailImage from './RecipeDetailImage'
 
 interface RecipeDetailFirstColProps {
@@ -81,7 +82,7 @@ const RecipeDetailFirstCol = ({
                 justify="flex-start"
             >
                 <Text size={20}>
-                    <b>{recipe?.creator_username}</b> a pris quelques notes :
+                    <b>@{recipe?.creator_username}</b> a pris quelques notes :
                 </Text>
             </Grid>
             <Grid>

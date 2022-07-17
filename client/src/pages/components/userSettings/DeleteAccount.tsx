@@ -48,11 +48,11 @@ const DeleteAccount = ({
                     color="warning"
                     css={{
                         textAlign: 'center',
-                        fontSize: '$xl3',
+                        fontSize: isMobile ? '$xl' : '$xl3',
                     }}
                     b
                 >
-                    WARNING <TiWarning size="1.5rem" />
+                    WARNING <TiWarning size={isMobile ? '1rem' : '1.5rem'} />
                 </Text>
             </Grid>
             {wantToDeleteAccount ? (
@@ -87,56 +87,36 @@ const DeleteAccount = ({
                         onChange={(e) => setEmail(e.target.value)}
                     />
                     <Row justify="center">
-                        <Tooltip
-                            content={'Annuler la suppression'}
-                            placement="bottom"
-                            css={{
-                                fontWeight: 'bold',
-                            }}
-                            color={isDark ? 'success' : 'default'}
-                            contentColor={isDark ? 'default' : 'success'}
+                        <Button
+                            color="success"
+                            icon={<FaJediOrder size="1.5rem" />}
+                            flat={isDark && !isMobile}
+                            auto
+                            css={{ m: '$5' }}
+                            onClick={() =>
+                                setWantToDeleteAccount(!wantToDeleteAccount)
+                            }
                         >
-                            <Button
-                                color="success"
-                                icon={<FaJediOrder size="1.5rem" />}
-                                flat={isDark && !isMobile}
-                                auto
-                                css={{ m: '$5' }}
-                                onClick={() =>
-                                    setWantToDeleteAccount(!wantToDeleteAccount)
-                                }
-                            >
-                                Annuler
-                            </Button>
-                        </Tooltip>
-                        <Tooltip
-                            content={'Supprimer le compte'}
-                            placement="bottom"
-                            css={{
-                                fontWeight: 'bold',
-                            }}
-                            color={isDark ? 'warning' : 'default'}
-                            contentColor={isDark ? 'default' : 'warning'}
+                            Annuler
+                        </Button>
+                        <Button
+                            color="warning"
+                            iconRight={<FaEmpire size="1.5rem" />}
+                            flat={isDark && !isMobile}
+                            auto
+                            disabled={isLoading}
+                            css={{ m: '$5' }}
+                            onPress={() => handleDeleteAccount(email)}
                         >
-                            <Button
-                                color="warning"
-                                iconRight={<FaEmpire size="1.5rem" />}
-                                flat={isDark && !isMobile}
-                                auto
-                                disabled={isLoading}
-                                css={{ m: '$5' }}
-                                onPress={() => handleDeleteAccount(email)}
-                            >
-                                {isLoading ? (
-                                    <Loading
-                                        type="points-opacity"
-                                        color="currentColor"
-                                    />
-                                ) : (
-                                    'Supprimer'
-                                )}
-                            </Button>
-                        </Tooltip>
+                            {isLoading ? (
+                                <Loading
+                                    type="points-opacity"
+                                    color="currentColor"
+                                />
+                            ) : (
+                                'Supprimer'
+                            )}
+                        </Button>
                     </Row>
                 </>
             ) : (

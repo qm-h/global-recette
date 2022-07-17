@@ -8,12 +8,12 @@ import UpdateEmail from './components/userSettings/UpdateEmail'
 import UpdatePassword from './components/userSettings/UpdatePassword'
 import checkField from '../utils/auth/checkField'
 import { deleteAccount } from '../router/authRouter'
+import { isMobile } from 'react-device-detect'
 import { logout } from '../utils/auth/logout'
 import { toasterErrorCommon } from '../utils/theme/toaster'
 import { useAppContext } from '../utils/context/AppContext'
 import { useNavigate } from 'react-router-dom'
 import { useTheme as useNextTheme } from 'next-themes'
-import { isMobile } from 'react-device-detect'
 
 const UserSettingsPage = () => {
     const [wantToDeleteAccount, setWantToDeleteAccount] = useState(false)
@@ -76,17 +76,21 @@ const UserSettingsPage = () => {
             <Grid
                 xs={12}
                 md={12}
+                lg={12}
                 css={{
-                    mt: isMobile ? '$5' : '',
+                    mt: isMobile ? '$13' : '',
                     mb: isMobile ? '$5' : '',
                 }}
                 justify="center"
             >
-                <Text h2>Paramètres</Text>
+                <Text h2={!isMobile} h3={isMobile}>
+                    Paramètres
+                </Text>
             </Grid>
             <Grid
                 xs={12}
                 md={2}
+                lg={2}
                 css={{ mb: isMobile ? '$10' : '' }}
                 justify="center"
             >
@@ -99,6 +103,7 @@ const UserSettingsPage = () => {
             <Grid
                 xs={12}
                 md={3}
+                lg={2}
                 css={{ mb: isMobile ? '$10' : '' }}
                 justify="center"
             >
@@ -107,6 +112,7 @@ const UserSettingsPage = () => {
             <Grid
                 xs={12}
                 md={3}
+                lg={2}
                 css={{ mb: isMobile ? '$10' : '' }}
                 justify="center"
             >
@@ -115,6 +121,7 @@ const UserSettingsPage = () => {
             <Grid
                 xs={12}
                 md={12}
+                lg={12}
                 css={{ mb: isMobile ? '$10' : '' }}
                 justify="center"
             >

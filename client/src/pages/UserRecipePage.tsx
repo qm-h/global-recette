@@ -8,17 +8,17 @@ import {
     Text,
     useTheme,
 } from '@nextui-org/react'
-import { Recipe } from '../../../server/src/shared/types'
 import { useEffect, useState } from 'react'
 
 import DataNotFound from './components/noDataFound/DataNotFound'
+import { Recipe } from '../../../server/src/shared/types'
 import UserCreateRecipeComponent from './components/userRecipe/UserCreateRecipeComponent'
 import UserRecipeList from './components/userRecipe/UserRecipeList'
 import { getRecipeByUserID } from '../router/userRouter'
+import { isMobile } from 'react-device-detect'
 import { toasterErrorCommon } from '../utils/theme/toaster'
 import { useAppContext } from '../utils/context/AppContext'
 import { useNavigate } from 'react-router-dom'
-import { isMobile } from 'react-device-detect'
 
 const UserRecipePage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -85,7 +85,7 @@ const UserRecipePage = () => {
                     css={{
                         h: '85%',
                         w: '100%',
-                        mt: isMobile ? '$18' : '$28',
+                        mt: isMobile ? '$15' : '$28',
                     }}
                     variant={isMobile ? 'flat' : 'shadow'}
                 >

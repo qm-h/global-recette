@@ -22,11 +22,25 @@ const AvatarModal = ({
     const [selectedAvatar, setSelectedAvatar] = useState(avatar[0])
 
     return (
-        <Modal open={isOpen} width={isMobile ? '95%' : '50%'} onClose={onClose}>
+        <Modal
+            open={isOpen}
+            blur={isMobile}
+            width={isMobile ? '95%' : '50%'}
+            onClose={onClose}
+            preventClose
+        >
             <Modal.Header>
-                <Text h3>Modifier l'avatar</Text>
+                <Text h3={!isMobile} h4={isMobile}>
+                    Modifier l'avatar
+                </Text>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body
+                css={{
+                    overflow: 'auto',
+                    h: isMobile ? '30vh' : 'auto',
+                    pr: '$0',
+                }}
+            >
                 <Grid.Container gap={1} wrap="wrap">
                     {avatar.map((avatar, index) => (
                         <Grid key={index} justify="center" alignItems="center">
@@ -50,11 +64,18 @@ const AvatarModal = ({
                 </Grid.Container>
             </Modal.Body>
             <Modal.Footer>
-                <Button color="error" flat auto onClick={onClose}>
+                <Button
+                    size={isMobile ? 'sm' : 'md'}
+                    color="error"
+                    flat
+                    auto
+                    onClick={onClose}
+                >
                     Annuler
                 </Button>
                 <Button
                     auto
+                    size={isMobile ? 'sm' : 'md'}
                     color="success"
                     flat={!isMobile}
                     disabled={isLoading}

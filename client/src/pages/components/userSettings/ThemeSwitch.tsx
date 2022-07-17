@@ -1,4 +1,5 @@
 import { Card, Grid, Switch, Text } from '@nextui-org/react'
+import { RiMoonClearFill, RiSunFill } from 'react-icons/ri'
 
 import MoonIcon from '../../../utils/theme/Icons/MoonIcon'
 import SunIcon from '../../../utils/theme/Icons/SunIcon'
@@ -18,13 +19,13 @@ const ThemeSwitch = ({ isDark, setTheme, isMobile }) => {
         >
             <Grid md={12}>
                 <Text css={{ textAlign: 'center' }}>
-                    {isDark ? 'Nuit' : 'Jour'}
+                    Thème {isDark ? 'Sombre' : 'Clair'}
                 </Text>
             </Grid>
             <Grid
                 md={12}
                 css={{
-                    padding: '$10',
+                    padding: isMobile ? '$10' : '$11',
                 }}
                 alignContent="center"
                 justify="center"
@@ -37,24 +38,8 @@ const ThemeSwitch = ({ isDark, setTheme, isMobile }) => {
                         setTheme(e.target.checked ? 'dark' : 'light')
                     }
                     size="xl"
-                    iconOff={
-                        <SunIcon
-                            filled
-                            size={undefined}
-                            height={undefined}
-                            width={undefined}
-                            label={undefined}
-                        />
-                    }
-                    iconOn={
-                        <MoonIcon
-                            filled
-                            size={undefined}
-                            height={undefined}
-                            width={undefined}
-                            label={undefined}
-                        />
-                    }
+                    iconOff={<RiSunFill color="#c9c9c9" />}
+                    iconOn={<RiMoonClearFill color={'#40EC8B'} />}
                 />
             </Grid>
         </Card>

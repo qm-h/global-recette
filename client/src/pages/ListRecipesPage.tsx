@@ -15,8 +15,8 @@ import DataNotFound from './components/noDataFound/DataNotFound'
 import { Recipe } from '../../../server/src/shared/types'
 import { RiSearch2Line } from 'react-icons/ri'
 import { getAllRecipesWithUser } from '../router/recipesRouter'
-import { useAppContext } from '../utils/context/AppContext'
 import { isMobile } from 'react-device-detect'
+import { useAppContext } from '../utils/context/AppContext'
 
 const ListRecipes = () => {
     const [recipesData, setRecipesData] = useState<Recipe[]>([])
@@ -41,6 +41,7 @@ const ListRecipes = () => {
         } else {
             return (
                 <CardRecipes
+                    isMobile={isMobile}
                     isFollowing={isFollowing}
                     setIsFollowing={setIsFollowing}
                     isUnfollowing={isUnfollowing}

@@ -23,6 +23,7 @@ interface UserInfoTooltipProps {
     handleUnfollowingUser: (userID: number, followerID: number) => void
     isFollowing: boolean
     isUnfollowing: boolean
+    isMobile: boolean
 }
 
 const UserInfoTooltip = ({
@@ -32,6 +33,7 @@ const UserInfoTooltip = ({
     handleUnfollowingUser,
     isFollowing,
     isUnfollowing,
+    isMobile,
 }: UserInfoTooltipProps) => {
     const { user } = useAppContext()
     const [followingUser, setFollowingUser] = useState<number>()
@@ -61,7 +63,7 @@ const UserInfoTooltip = ({
             css={{
                 mw: '300px',
                 borderRadius: '$lg',
-                padding: '$sm',
+                padding: isMobile ? '$0' : '$sm',
             }}
         >
             {!recipeUser ? (
@@ -75,23 +77,23 @@ const UserInfoTooltip = ({
                                 borderWeight="normal"
                                 color="success"
                                 pointer
-                                size="lg"
+                                size={isMobile ? 'md' : 'lg'}
                                 src={userRecipe.generated_avatar}
                             />
                         </Col>
                         <Col span={9}>
                             <Row>
-                                <Grid xs={12} direction="column">
+                                <Grid xs={12} md={12} direction="column">
                                     <Text
                                         className="user-twitter-card__text"
                                         b
-                                        size={15}
+                                        size={isMobile ? 12 : 15}
                                     >
                                         {recipeUser.firstname}
                                     </Text>
                                     <Text
                                         className="user-twitter-card__text"
-                                        size={14}
+                                        size={isMobile ? 12 : 14}
                                         css={{ mt: '-$3' }}
                                         color="#888888"
                                     >
@@ -105,15 +107,18 @@ const UserInfoTooltip = ({
                                   followingUser === userRecipe.id ? (
                                     <Button
                                         auto
-                                        size="sm"
+                                        size={isMobile ? 'xs' : 'sm'}
                                         onClick={() =>
                                             handleUnfollowingUser(
                                                 userRecipe.id,
                                                 user.id
                                             )
                                         }
+                                        css={{
+                                            ml: isMobile ? '$5' : '',
+                                        }}
                                         color="success"
-                                        flat
+                                        flat={!isMobile}
                                         disabled={isLoading}
                                     >
                                         {isLoading ? (
@@ -125,7 +130,10 @@ const UserInfoTooltip = ({
                                 ) : (
                                     <Button
                                         auto
-                                        size="sm"
+                                        css={{
+                                            ml: isMobile ? '$5' : '',
+                                        }}
+                                        size={isMobile ? 'xs' : 'sm'}
                                         onClick={() =>
                                             handleFollowingUser(
                                                 userRecipe.id,
@@ -133,7 +141,7 @@ const UserInfoTooltip = ({
                                             )
                                         }
                                         color="success"
-                                        flat
+                                        flat={!isMobile}
                                         disabled={isLoading}
                                     >
                                         {isLoading ? (

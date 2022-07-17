@@ -33,7 +33,7 @@ const UpdateEmail = ({ isDark, isMobile }: UpdateEmailProps) => {
                 alignContent="center"
                 alignItems="center"
                 css={{
-                    padding: isMobile ? '$10' : '3.8rem',
+                    padding: isMobile ? '$10' : '$18',
                 }}
             >
                 <Button
@@ -50,7 +50,7 @@ const UpdateEmail = ({ isDark, isMobile }: UpdateEmailProps) => {
                 closeButton
                 preventClose
                 blur
-                width={isMobile ? '90%' : '20%'}
+                width={isMobile ? '90%' : '30%'}
                 aria-labelledby="change-email-modal"
                 open={wantToChangeEmail}
                 onClose={closeHandler}

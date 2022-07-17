@@ -7,10 +7,12 @@ import { Selection } from '@nextui-org/react/dropdown'
 interface Props {
     ingredientsList: Ingredients[]
     setSelectedIngredients: (value: string) => void
+    isMobile: boolean
 }
 
 const IngredientDropDown = ({
     ingredientsList,
+    isMobile,
     setSelectedIngredients,
 }: Props) => {
     const [selected, setSelected] = useState<Selection>(new Set([]))
@@ -25,7 +27,12 @@ const IngredientDropDown = ({
     }, [selectedValue, setSelectedIngredients])
 
     return (
-        <Dropdown closeOnSelect isBordered disableShadow>
+        <Dropdown
+            closeOnSelect
+            isBordered
+            disableShadow
+            placement={isMobile ? 'bottom' : 'left'}
+        >
             <Dropdown.Button
                 animated
                 color="primary"

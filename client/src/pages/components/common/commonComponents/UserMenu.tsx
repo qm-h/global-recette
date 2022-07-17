@@ -1,12 +1,12 @@
 import { Dropdown, Text, User, useTheme } from '@nextui-org/react'
+import { NavigateFunction, useNavigate } from 'react-router-dom'
 
 import { Key } from 'react'
 import { SuccessAuthUser as UserType } from '../../../../../../server/src/shared/types'
+import handleMenu from '../../../../utils/navigation'
 import { logout } from '../../../../utils/auth/logout'
 import { toasterSuccessLogout } from '../../../../utils/theme/toaster'
-import { NavigateFunction, useNavigate } from 'react-router-dom'
 import { userLogout } from '../../../../router/authRouter'
-import handleMenu from '../../../../utils/navigation'
 
 interface Props {
     user: UserType

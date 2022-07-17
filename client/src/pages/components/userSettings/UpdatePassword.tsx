@@ -41,7 +41,7 @@ const UpdatePassword = ({ isDark, isMobile }: UpdatePasswordProps) => {
                 alignContent="center"
                 alignItems="center"
                 css={{
-                    padding: isMobile ? '$10' : '3.8rem',
+                    padding: isMobile ? '$10' : '$18',
                 }}
             >
                 <Button
@@ -62,7 +62,7 @@ const UpdatePassword = ({ isDark, isMobile }: UpdatePasswordProps) => {
                 aria-labelledby="change-password-modal"
                 open={wantToChangePassword}
                 onClose={closeHandler}
-                width={isMobile ? '90%' : '20%'}
+                width={isMobile ? '90%' : '30%'}
             >
                 <Modal.Header>
                     <Text id="change-password-modal-title" size={18}>

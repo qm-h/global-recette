@@ -9,9 +9,9 @@ import {
 } from '@nextui-org/react'
 import { Recipe, SuccessAuthUser } from '../../../server/src/shared/types'
 import {
+    getRecipeByUserID,
     getUserByID,
     updateAvatar,
-    getRecipeByUserID,
 } from '../router/userRouter'
 import {
     toasterErrorCommon,
@@ -21,11 +21,11 @@ import { useEffect, useState } from 'react'
 
 import AvatarModal from './components/profile/AvatarModal'
 import { TiImage } from 'react-icons/ti'
-import { avatar } from '../utils/randomAvatar'
-import { useAppContext } from '../utils/context/AppContext'
 import UserRecipesList from './components/profile/UserRecipesList'
-import { useNavigate } from 'react-router-dom'
+import { avatar } from '../utils/randomAvatar'
 import { isMobile } from 'react-device-detect'
+import { useAppContext } from '../utils/context/AppContext'
+import { useNavigate } from 'react-router-dom'
 
 const UserProfilePage = () => {
     const [userProfile, setUserProfile] = useState<SuccessAuthUser>()
@@ -80,8 +80,8 @@ const UserProfilePage = () => {
         <Card
             variant={isMobile ? 'flat' : 'shadow'}
             css={{
-                height: isMobile ? '100%' : '86%',
-                marginTop: isMobile ? '5rem' : '7rem',
+                height: '85%',
+                marginTop: isMobile ? '$15' : '$28',
             }}
         >
             <AvatarModal
@@ -98,7 +98,11 @@ const UserProfilePage = () => {
                     backgroundColor: `#14a452`,
                 }}
             >
-                <Tooltip content="Modifier la photo de couverture">
+                <Tooltip
+                    css={{ width: 'fit-content' }}
+                    placement="left"
+                    content="Modifier la photo de couverture"
+                >
                     <TiImage color="#fff" size="2em" />
                 </Tooltip>
             </div>
@@ -122,7 +126,10 @@ const UserProfilePage = () => {
                             <Tooltip
                                 hideArrow
                                 content="Modifier l'avatar"
-                                placement="right"
+                                placement={isMobile ? 'topStart' : 'right'}
+                                css={{
+                                    width: 'fit-content',
+                                }}
                             >
                                 <User
                                     zoomed

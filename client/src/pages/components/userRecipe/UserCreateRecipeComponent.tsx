@@ -1,3 +1,5 @@
+import 'suneditor/dist/css/suneditor.min.css'
+
 import {
     Button,
     Card,
@@ -25,17 +27,17 @@ import {
     getIngredientByName,
 } from '../../../router/ingredientsRouter'
 import { useEffect, useState } from 'react'
-import SunEditor from 'suneditor-react'
-import 'suneditor/dist/css/suneditor.min.css'
+
 import { BsFillCameraFill } from 'react-icons/bs'
 import CreateIngredientModal from './ingredients/CreateIngredientModal'
 import IngredientDropDown from './ingredients/IngredientDropDown'
 import IngredientQuantity from './ingredients/IngredientQuantity'
+import SunEditor from 'suneditor-react'
+import { editorOptions } from '../../../utils/editorOptions'
+import { isMobile } from 'react-device-detect'
 import { toasterErrorCommon } from '../../../utils/theme/toaster'
 import { useAppContext } from '../../../utils/context/AppContext'
 import { v4 as uuidv4 } from 'uuid'
-import { editorOptions } from '../../../utils/editorOptions'
-import { isMobile } from 'react-device-detect'
 
 interface Props {
     setCreate: (value: boolean) => void
@@ -203,17 +205,17 @@ const UserCreateRecipeComponent = ({ setCreate, isMobile }: Props) => {
             variant={isMobile ? 'flat' : 'shadow'}
         >
             <Card.Header>
-                <Grid.Container gap={isMobile && 2} alignItems="center">
-                    <Grid xs={8} md={11}>
+                <Grid.Container gap={2} alignItems="center">
+                    <Grid xs={8} md={10} lg={11}>
                         <Text h2={!isMobile} h4={isMobile} b>
                             Créer ma recette 🥗
                         </Text>
                     </Grid>
-                    <Grid xs={4} md={1} justify="flex-end">
+                    <Grid xs={4} md={2} lg={1} justify="flex-end">
                         <Button
                             color="error"
                             auto
-                            size="sm"
+                            size={isMobile ? 'xs' : 'sm'}
                             onPress={() => setCreate(false)}
                         >
                             Annuler
@@ -260,6 +262,7 @@ const UserCreateRecipeComponent = ({ setCreate, isMobile }: Props) => {
                         css={{ w: '100%', m: isMobile ? '' : '$5' }}
                     >
                         <IngredientDropDown
+                            isMobile={isMobile}
                             setSelectedIngredients={setSelectedIngredients}
                             ingredientsList={ingredients}
                         />

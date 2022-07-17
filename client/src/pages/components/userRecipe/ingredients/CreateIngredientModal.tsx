@@ -58,9 +58,10 @@ const CreateIngredientModal = ({
         <Modal
             open={isOpen}
             preventClose
-            width={isMobile ? '95%' : ''}
+            width={isMobile ? '95%' : '20%'}
             autoMargin
             onClose={onClose}
+            blur={isMobile}
         >
             <Modal.Header>Créer un ingrédient</Modal.Header>
             <Modal.Body>

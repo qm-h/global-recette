@@ -25,10 +25,10 @@ import DeleteRecipe from './DeleteRecipe'
 import { FaTrashAlt } from 'react-icons/fa'
 import { Recipe } from '../../../../../server/src/shared/types'
 import RecipeIngredients from './ingredients/RecipeIngredients'
-import { useState } from 'react'
 import SunEditor from 'suneditor-react'
-import parse from 'html-react-parser'
 import { isMobile } from 'react-device-detect'
+import parse from 'html-react-parser'
+import { useState } from 'react'
 
 interface Props {
     recipes: Recipe[]
@@ -155,6 +155,9 @@ const UserRecipeList = ({ fetchRecipe, recipes, isMobile }: Props) => {
                                 <Tooltip
                                     placement="bottom"
                                     color={'success'}
+                                    css={{
+                                        width: 'fit-content',
+                                    }}
                                     content={
                                         <RecipeIngredients recipe={recipe} />
                                     }

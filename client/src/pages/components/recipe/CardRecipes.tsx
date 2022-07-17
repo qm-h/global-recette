@@ -1,3 +1,5 @@
+import 'react-loading-skeleton/dist/skeleton.css'
+
 import {
     Avatar,
     Button,
@@ -18,14 +20,13 @@ import {
 import { useEffect, useState } from 'react'
 
 import CardImageRecipe from './CardImageRecipe'
-import FavoritesButton from '../common/commonComponents/FavoritesButton'
-import UserInfoTooltip from '../common/commonComponents/UserInfoTooltip'
-import { TbExternalLink } from 'react-icons/tb'
-import { useNavigate } from 'react-router-dom'
-import Skeleton from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'
 import { FaShare } from 'react-icons/fa'
+import FavoritesButton from '../common/commonComponents/FavoritesButton'
+import Skeleton from 'react-loading-skeleton'
 import SocialShare from '../common/commonComponents/SocialShare'
+import { TbExternalLink } from 'react-icons/tb'
+import UserInfoTooltip from '../common/commonComponents/UserInfoTooltip'
+import { useNavigate } from 'react-router-dom'
 
 interface CardRecipesProps {
     authUserID?: number
@@ -35,6 +36,7 @@ interface CardRecipesProps {
     isFollowing: boolean
     isUnfollowing: boolean
     setIsUnfollowing: (value: boolean) => void
+    isMobile: boolean
 }
 
 const CardRecipes = ({
@@ -45,6 +47,7 @@ const CardRecipes = ({
     isFollowing,
     setIsUnfollowing,
     isUnfollowing,
+    isMobile,
 }: CardRecipesProps) => {
     const [hasSaved, setHasSaved] = useState<HasSavedRecipe[]>([
         {} as HasSavedRecipe,
@@ -114,7 +117,8 @@ const CardRecipes = ({
                 <Grid
                     key={i}
                     xs={12}
-                    md={2.5}
+                    md={3.5}
+                    lg={3}
                     justify="center"
                     alignItems="center"
                 >
@@ -165,6 +169,9 @@ const CardRecipes = ({
                                         color="success"
                                         hideArrow
                                         animated={false}
+                                        css={{
+                                            width: 'fit-content',
+                                        }}
                                     >
                                         <Button
                                             css={{
@@ -208,6 +215,9 @@ const CardRecipes = ({
                                                 rounded={false}
                                                 animated={false}
                                                 content="Mettre en Favoris"
+                                                css={{
+                                                    width: 'fit-content',
+                                                }}
                                                 hideArrow
                                             >
                                                 <FavoritesButton
@@ -224,6 +234,7 @@ const CardRecipes = ({
                                         hideArrow
                                         css={{
                                             p: '$0',
+                                            width: 'fit-content',
                                         }}
                                         content={
                                             <SocialShare
@@ -274,11 +285,13 @@ const CardRecipes = ({
                                         {r.name}
                                     </Text>
                                     <Tooltip
-                                        placement="top"
+                                        placement="topEnd"
                                         animated={false}
                                         trigger={'hover'}
+                                        hideArrow
                                         content={
                                             <UserInfoTooltip
+                                                isMobile={isMobile}
                                                 isLoading={isLoadingFollowing}
                                                 isFollowing={isFollowing}
                                                 isUnfollowing={isUnfollowing}

@@ -1,29 +1,20 @@
-import {
-    Grid,
-    Col,
-    Row,
-    Text,
-    useTheme,
-    Avatar,
-    Input,
-    Card,
-} from '@nextui-org/react'
-import { useParams } from 'react-router-dom'
-import { useEffect, useMemo, useState } from 'react'
-import { getRecipeByID, getRecipeImage } from '../router/recipesRouter'
+import 'suneditor/dist/css/suneditor.min.css'
+
+import { Card, Col, Grid, Row, Text, useTheme } from '@nextui-org/react'
 import {
     Recipe,
     RecipeIngredientWithQuantity,
     SuccessAuthUser,
 } from '../../../server/src/shared/types'
-import RecipeDetailImage from './components/recipeDetail/RecipeDetailImage'
-import { getUserByID } from '../router/userRouter'
-import { getAllIngredientsByRecipeID } from '../router/ingredientsRouter'
-import SunEditor from 'suneditor-react'
-import 'suneditor/dist/css/suneditor.min.css'
-import parse from 'html-react-parser'
+import { getRecipeByID, getRecipeImage } from '../router/recipesRouter'
+import { useEffect, useState } from 'react'
+
 import RecipeDetailFirstCol from './components/recipeDetail/RecipeDetailFirstCol'
+import { getAllIngredientsByRecipeID } from '../router/ingredientsRouter'
+import { getUserByID } from '../router/userRouter'
 import { isMobile } from 'react-device-detect'
+import parse from 'html-react-parser'
+import { useParams } from 'react-router-dom'
 
 const RecipeDetailPage = () => {
     const [recipe, setRecipe] = useState<Recipe>()
@@ -72,7 +63,7 @@ const RecipeDetailPage = () => {
                 w: '100%',
                 m: isMobile ? '0' : '',
                 p: isMobile ? '0' : '',
-                mt: '$28',
+                mt: isMobile ? '$15' : '$28',
             }}
             gap={!isMobile && 2}
         >

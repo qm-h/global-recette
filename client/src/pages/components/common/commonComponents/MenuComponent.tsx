@@ -1,8 +1,9 @@
-import UserMenu from './UserMenu'
 import { Avatar, Link, Tooltip } from '@nextui-org/react'
+
 import { FaDoorOpen } from 'react-icons/fa'
-import { SuccessAuthUser as UserType } from '../../../../../../server/src/shared/types'
 import { NavigateFunction } from 'react-router-dom'
+import UserMenu from './UserMenu'
+import { SuccessAuthUser as UserType } from '../../../../../../server/src/shared/types'
 
 interface MenuComponentProps {
     isAuthenticated: boolean

@@ -63,7 +63,7 @@ const FavoritesList = ({
                             <Card
                                 variant={'flat'}
                                 css={{
-                                    w: isMobile ? '100%' : 'auto',
+                                    w: '100%',
                                 }}
                             >
                                 <Card.Header>
