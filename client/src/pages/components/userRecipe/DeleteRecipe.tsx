@@ -40,7 +40,7 @@ export const DeleteRecipe = ({ recipe, handleDeleteRecipe }: Props) => {
                         auto
                         color="error"
                     >
-                        Delete
+                        Confirmé la suppression
                     </Button>
                 </Grid>
             </Grid.Container>

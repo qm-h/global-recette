@@ -41,33 +41,3 @@ The `npm run build` will build the server and the client, it will then copy the 
 ### `npm run pq`
 
 Run a prettier command to prettify the code
-
-## Road to Pipeline 🚀
-
-### `The project pipelines`
-
-You just have to go to [GitLab Pipelines](https://gitlab.com/qm-h/webapp-devops/-/pipelines) to access the project pipelines
-
-#
-
-# 🐳 & 🦊
-
-## Docker
-
-Two `Dockerfiles` are set up, the first one is used to build the application, so it will create a directory on the image, create several folders.
-
-It will also install the dependencies of each folder, so client, server and global.
-
-It will also launch the tests and build the application that will be rendered by the server. When launching the docker container, the command `npm run server` will be called to launch the express server
-
-The second one will create the `docker image of the database `based on the sql file of the database
-
-### `In french` 🇫🇷
-
-Si vous lancez la ci docker, n'oublier pas de restart le conteneur de l'application. Je n'ai pas mis de sleep pour que le conteneur mysql soit bien lancé.
-
-## Gitlab CI
-
-The `gitlab` file will make `two stages`, a build which will build the docker image of the `application` and the `database`, and then push them.
-
-And the deploy stage which will create a `network` so that the `two containers` can talk and then it will pull the images created before and run them in containers.

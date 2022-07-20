@@ -130,7 +130,7 @@ const CardRecipes = ({
                                         marginLeft: '0.5rem',
                                         marginRight: '0.5rem',
                                     }}
-                                    width="19rem"
+                                    width="20rem"
                                     height="20rem"
                                     borderRadius={15}
                                 />

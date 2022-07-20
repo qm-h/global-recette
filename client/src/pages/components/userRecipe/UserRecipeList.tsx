@@ -28,7 +28,9 @@ import RecipeIngredients from './ingredients/RecipeIngredients'
 import SunEditor from 'suneditor-react'
 import { isMobile } from 'react-device-detect'
 import parse from 'html-react-parser'
+import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import CardImageRecipe from '../recipe/CardImageRecipe'
 
 interface Props {
     recipes: Recipe[]
@@ -40,6 +42,8 @@ const UserRecipeList = ({ fetchRecipe, recipes, isMobile }: Props) => {
     const { isDark } = useTheme()
     const [isLoading, setIsLoading] = useState(false)
     const [isLoadingPublish, setIsLoadingPublish] = useState(false)
+
+    const navigate = useNavigate()
 
     const handleDeleteRecipe = async (recipe: Recipe) => {
         setIsLoading(true)
@@ -80,78 +84,81 @@ const UserRecipeList = ({ fetchRecipe, recipes, isMobile }: Props) => {
 
     return (
         <>
-            {recipes.map((recipe, index) => (
-                <Card
-                    key={index}
-                    variant="bordered"
-                    css={{ w: isMobile ? '100%' : '25%' }}
+            {recipes.map((recipe, i) => (
+                <Grid
+                    key={i}
+                    xs={12}
+                    md={6}
+                    lg={4}
+                    justify="center"
+                    alignItems="center"
+                    alignContent="center"
                 >
-                    <Card.Header>
-                        <Grid.Container gap={1} alignItems="center">
-                            <Grid xs={6} md={7}>
-                                <Text h4 b>
-                                    {recipe.name}
-                                </Text>
-                            </Grid>
-                            <Grid xs={6} md={5} justify="flex-end">
-                                <Tooltip
-                                    animated={false}
-                                    trigger="click"
-                                    content={
-                                        <DeleteRecipe
-                                            recipe={recipe}
-                                            handleDeleteRecipe={
-                                                handleDeleteRecipe
-                                            }
-                                        />
-                                    }
-                                >
-                                    <Text
-                                        css={{
-                                            cursor: 'pointer',
-                                        }}
-                                        b
-                                        color="error"
-                                    >
-                                        {isLoading ? (
-                                            <Loading
-                                                type={'points-opacity'}
-                                                color={'white'}
-                                                size={'md'}
-                                            />
-                                        ) : (
-                                            'Supprimer'
-                                        )}
+                    <Card
+                        variant={'flat'}
+                        css={{
+                            w: '80%',
+                            h: '300px',
+                        }}
+                    >
+                        <Card.Header>
+                            <Grid.Container gap={1} alignItems="center">
+                                <Grid xs={6} md={7}>
+                                    <Text h4 b>
+                                        {recipe.name}
                                     </Text>
-                                </Tooltip>
-                            </Grid>
-                        </Grid.Container>
-                    </Card.Header>
-                    <Card.Body>
-                        <Row
-                            justify="flex-start"
-                            css={{ mb: '$1', ml: '$2', w: 'auto' }}
-                        >
-                            <Text b>{recipe.origin}</Text>
-                        </Row>
-                        <Row justify="flex-start">
-                            <Collapse
-                                css={{ fontSize: '10px', w: '90%' }}
-                                bordered
-                                animated
-                                style={{
-                                    fontSize: '1em',
+                                </Grid>
+                                <Grid xs={6} md={5} justify="flex-end">
+                                    <Tooltip
+                                        animated={false}
+                                        trigger="click"
+                                        content={
+                                            <DeleteRecipe
+                                                recipe={recipe}
+                                                handleDeleteRecipe={
+                                                    handleDeleteRecipe
+                                                }
+                                            />
+                                        }
+                                    >
+                                        <Text
+                                            css={{
+                                                cursor: 'pointer',
+                                            }}
+                                            b
+                                            color="error"
+                                        >
+                                            {isLoading ? (
+                                                <Loading
+                                                    type={'points-opacity'}
+                                                    color={'white'}
+                                                    size={'md'}
+                                                />
+                                            ) : (
+                                                'Supprimer'
+                                            )}
+                                        </Text>
+                                    </Tooltip>
+                                </Grid>
+                            </Grid.Container>
+                        </Card.Header>
+                        <Card.Body css={{ p: '0' }}>
+                            <CardImageRecipe
+                                recipe={recipe}
+                                width={70}
+                                borderRadius={10}
+                            />
+                        </Card.Body>
+                        <Card.Footer>
+                            <Grid
+                                xs={12}
+                                md={12}
+                                lg={12}
+                                css={{
+                                    p: '$10',
                                 }}
-                                title=""
-                                subtitle="Description de la recette"
+                                justify="space-between"
                             >
-                                {parse(recipe.note)}
-                            </Collapse>
-                        </Row>
-                    </Card.Body>
-                    <Card.Footer>
-                        <Grid.Container>
-                            <Grid xs={6} md={7}>
                                 <Tooltip
                                     placement="bottom"
                                     color={'success'}
@@ -164,7 +171,7 @@ const UserRecipeList = ({ fetchRecipe, recipes, isMobile }: Props) => {
                                 >
                                     <Text
                                         css={{
-                                            color: '$accents5',
+                                            color: '$accents6',
                                             cursor: 'pointer',
                                             transition: 'all 0.2s ease-in-out',
                                             '&:hover': {
@@ -175,11 +182,25 @@ const UserRecipeList = ({ fetchRecipe, recipes, isMobile }: Props) => {
                                         Voir les ingredients
                                     </Text>
                                 </Tooltip>
-                            </Grid>
-                            <Grid xs={6} md={5} justify="flex-end">
+                                <Text
+                                    onClick={() =>
+                                        navigate({
+                                            pathname: `/recette/${recipe.id}`,
+                                        })
+                                    }
+                                    css={{
+                                        color: '$accents6',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s ease-in-out',
+                                        '&:hover': {
+                                            color: '$primary',
+                                        },
+                                    }}
+                                >
+                                    Voir la recette
+                                </Text>
                                 {recipe.published ? (
                                     <Button
-                                        auto
                                         light
                                         size="sm"
                                         color="error"
@@ -194,15 +215,19 @@ const UserRecipeList = ({ fetchRecipe, recipes, isMobile }: Props) => {
                                                 size="sm"
                                             />
                                         ) : (
-                                            'Dépublié'
+                                            'Dépublié la recette'
                                         )}
                                     </Button>
                                 ) : (
                                     <Button
-                                        auto
-                                        flat
                                         disabled={isLoadingPublish}
+                                        light
                                         size="sm"
+                                        css={{
+                                            ml: '$0',
+                                            mr: '$0',
+                                            fontWeight: '$bold',
+                                        }}
                                         color="success"
                                         onPress={() =>
                                             handlePublishRecipe(recipe)
@@ -214,14 +239,74 @@ const UserRecipeList = ({ fetchRecipe, recipes, isMobile }: Props) => {
                                                 size="sm"
                                             />
                                         ) : (
-                                            'Publié'
+                                            'Publié la recette'
                                         )}
                                     </Button>
                                 )}
                             </Grid>
-                        </Grid.Container>
-                    </Card.Footer>
-                </Card>
+                        </Card.Footer>
+                    </Card>
+                </Grid>
+                // <Card
+                //     key={index}
+                //     variant="bordered"
+                //     css={{ w: isMobile ? '100%' : '25%' }}
+                // >
+                //     <Card.Header>
+                //
+                //     </Card.Header>
+                //     <Card.Body>
+                //         <Row
+                //             justify="flex-start"
+                //             css={{ mb: '$1', ml: '$2', w: 'auto' }}
+                //         >
+                //             <Text b>{recipe.origin}</Text>
+                //         </Row>
+                //         <Row justify="flex-start">
+                //             <Collapse
+                //                 css={{ fontSize: '10px', w: '90%' }}
+                //                 bordered
+                //                 animated
+                //                 style={{
+                //                     fontSize: '1em',
+                //                 }}
+                //                 title=""
+                //                 subtitle="Description de la recette"
+                //             >
+                //                 {parse(recipe.note)}
+                //             </Collapse>
+                //         </Row>
+                //     </Card.Body>
+                //     <Card.Footer>
+                //         <Grid.Container>
+                //             <Grid xs={6} md={7}>
+                //                 <Tooltip
+                //                     placement="bottom"
+                //                     color={'success'}
+                //                     css={{
+                //                         width: 'fit-content',
+                //                     }}
+                //                     content={
+                //                         <RecipeIngredients recipe={recipe} />
+                //                     }
+                //                 >
+                //                     <Text
+                //                         css={{
+                //                             color: '$accents5',
+                //                             cursor: 'pointer',
+                //                             transition: 'all 0.2s ease-in-out',
+                //                             '&:hover': {
+                //                                 color: '$primary',
+                //                             },
+                //                         }}
+                //                     >
+                //                         Voir les ingredients
+                //                     </Text>
+                //                 </Tooltip>
+                //             </Grid>
+                //         </Grid.Container>
+                //     </Card.Footer>
+                // </Card>
             ))}
         </>
     )

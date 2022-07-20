@@ -6,9 +6,12 @@ import { getSupabaseRecipeUrlImages } from '../../../utils/images/supabaseImage'
 
 interface Props {
     recipe: Recipe
+    width?: number
+    height?: number
+    borderRadius?: number
 }
 
-const CardImageRecipe = ({ recipe }: Props) => {
+const CardImageRecipe = ({ recipe, width, height, borderRadius }: Props) => {
     const [urlImage, setUrlImage] = useState('')
     const [isLoading, setIsLoading] = useState(true)
 
@@ -37,9 +40,12 @@ const CardImageRecipe = ({ recipe }: Props) => {
             ) : (
                 <Card.Image
                     src={urlImage}
+                    css={{
+                        borderRadius: borderRadius ? `${borderRadius}px` : '0',
+                    }}
                     objectFit="cover"
-                    width="100%"
-                    height="100%"
+                    width={width ? `${width}%` : '100%'}
+                    height={height ? `${height}px` : '100%'}
                     autoResize
                     showSkeleton
                     maxDelay={2000}
