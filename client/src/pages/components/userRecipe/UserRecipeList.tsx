@@ -89,26 +89,26 @@ const UserRecipeList = ({ fetchRecipe, recipes, isMobile }: Props) => {
                     key={i}
                     xs={12}
                     md={6}
-                    lg={4}
+                    lg={6}
                     justify="center"
                     alignItems="center"
                     alignContent="center"
                 >
                     <Card
-                        variant={'flat'}
+                        variant={isMobile ? 'bordered' : 'flat'}
                         css={{
-                            w: '80%',
-                            h: '300px',
+                            w: isMobile ? '100%' : '80%',
+                            h: isMobile ? '400px' : '300px',
                         }}
                     >
                         <Card.Header>
                             <Grid.Container gap={1} alignItems="center">
-                                <Grid xs={6} md={7}>
+                                <Grid xs={6} md={6} lg={6}>
                                     <Text h4 b>
                                         {recipe.name}
                                     </Text>
                                 </Grid>
-                                <Grid xs={6} md={5} justify="flex-end">
+                                <Grid xs={6} md={6} lg={6} justify="flex-end">
                                     <Tooltip
                                         animated={false}
                                         trigger="click"
@@ -150,26 +150,56 @@ const UserRecipeList = ({ fetchRecipe, recipes, isMobile }: Props) => {
                             />
                         </Card.Body>
                         <Card.Footer>
-                            <Grid
-                                xs={12}
-                                md={12}
-                                lg={12}
-                                css={{
-                                    p: '$10',
-                                }}
-                                justify="space-between"
+                            <Grid.Container
+                                wrap="wrap"
+                                css={{ p: isMobile ? '$10' : '$5' }}
                             >
-                                <Tooltip
-                                    placement="bottom"
-                                    color={'success'}
-                                    css={{
-                                        width: 'fit-content',
-                                    }}
-                                    content={
-                                        <RecipeIngredients recipe={recipe} />
-                                    }
+                                <Grid
+                                    xs={12}
+                                    md={4}
+                                    lg={4}
+                                    justify={isMobile ? 'center' : 'flex-start'}
+                                >
+                                    <Tooltip
+                                        placement="bottom"
+                                        color={'success'}
+                                        css={{
+                                            width: 'fit-content',
+                                        }}
+                                        content={
+                                            <RecipeIngredients
+                                                recipe={recipe}
+                                            />
+                                        }
+                                    >
+                                        <Text
+                                            css={{
+                                                color: '$accents6',
+                                                cursor: 'pointer',
+                                                transition:
+                                                    'all 0.2s ease-in-out',
+                                                '&:hover': {
+                                                    color: '$primary',
+                                                },
+                                            }}
+                                        >
+                                            Voir les ingredients
+                                        </Text>
+                                    </Tooltip>
+                                </Grid>
+                                <Grid
+                                    xs={12}
+                                    sm={12}
+                                    md={4}
+                                    lg={4}
+                                    justify="center"
                                 >
                                     <Text
+                                        onClick={() =>
+                                            navigate({
+                                                pathname: `/recette/${recipe.id}`,
+                                            })
+                                        }
                                         css={{
                                             color: '$accents6',
                                             cursor: 'pointer',
@@ -179,134 +209,67 @@ const UserRecipeList = ({ fetchRecipe, recipes, isMobile }: Props) => {
                                             },
                                         }}
                                     >
-                                        Voir les ingredients
+                                        Voir la recette
                                     </Text>
-                                </Tooltip>
-                                <Text
-                                    onClick={() =>
-                                        navigate({
-                                            pathname: `/recette/${recipe.id}`,
-                                        })
-                                    }
-                                    css={{
-                                        color: '$accents6',
-                                        cursor: 'pointer',
-                                        transition: 'all 0.2s ease-in-out',
-                                        '&:hover': {
-                                            color: '$primary',
-                                        },
-                                    }}
+                                </Grid>
+                                <Grid
+                                    xs={12}
+                                    sm={12}
+                                    md={4}
+                                    lg={4}
+                                    justify={isMobile ? 'center' : 'flex-end'}
                                 >
-                                    Voir la recette
-                                </Text>
-                                {recipe.published ? (
-                                    <Button
-                                        light
-                                        size="sm"
-                                        color="error"
-                                        disabled={isLoadingPublish}
-                                        onPress={() =>
-                                            handleUnpublishRecipes(recipe.id)
-                                        }
-                                    >
-                                        {isLoadingPublish ? (
-                                            <Loading
-                                                color="currentColor"
-                                                size="sm"
-                                            />
-                                        ) : (
-                                            'Dépublié la recette'
-                                        )}
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        disabled={isLoadingPublish}
-                                        light
-                                        size="sm"
-                                        css={{
-                                            ml: '$0',
-                                            mr: '$0',
-                                            fontWeight: '$bold',
-                                        }}
-                                        color="success"
-                                        onPress={() =>
-                                            handlePublishRecipe(recipe)
-                                        }
-                                    >
-                                        {isLoadingPublish ? (
-                                            <Loading
-                                                color="currentColor"
-                                                size="sm"
-                                            />
-                                        ) : (
-                                            'Publié la recette'
-                                        )}
-                                    </Button>
-                                )}
-                            </Grid>
+                                    {recipe.published ? (
+                                        <Button
+                                            light
+                                            size="sm"
+                                            color="error"
+                                            disabled={isLoadingPublish}
+                                            onPress={() =>
+                                                handleUnpublishRecipes(
+                                                    recipe.id
+                                                )
+                                            }
+                                        >
+                                            {isLoadingPublish ? (
+                                                <Loading
+                                                    color="currentColor"
+                                                    size="sm"
+                                                />
+                                            ) : (
+                                                'Dépublié la recette'
+                                            )}
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            disabled={isLoadingPublish}
+                                            light
+                                            size="sm"
+                                            css={{
+                                                ml: '$0',
+                                                mr: '$0',
+                                                fontWeight: '$bold',
+                                            }}
+                                            color="success"
+                                            onPress={() =>
+                                                handlePublishRecipe(recipe)
+                                            }
+                                        >
+                                            {isLoadingPublish ? (
+                                                <Loading
+                                                    color="currentColor"
+                                                    size="sm"
+                                                />
+                                            ) : (
+                                                'Publié la recette'
+                                            )}
+                                        </Button>
+                                    )}
+                                </Grid>
+                            </Grid.Container>
                         </Card.Footer>
                     </Card>
                 </Grid>
-                // <Card
-                //     key={index}
-                //     variant="bordered"
-                //     css={{ w: isMobile ? '100%' : '25%' }}
-                // >
-                //     <Card.Header>
-                //
-                //     </Card.Header>
-                //     <Card.Body>
-                //         <Row
-                //             justify="flex-start"
-                //             css={{ mb: '$1', ml: '$2', w: 'auto' }}
-                //         >
-                //             <Text b>{recipe.origin}</Text>
-                //         </Row>
-                //         <Row justify="flex-start">
-                //             <Collapse
-                //                 css={{ fontSize: '10px', w: '90%' }}
-                //                 bordered
-                //                 animated
-                //                 style={{
-                //                     fontSize: '1em',
-                //                 }}
-                //                 title=""
-                //                 subtitle="Description de la recette"
-                //             >
-                //                 {parse(recipe.note)}
-                //             </Collapse>
-                //         </Row>
-                //     </Card.Body>
-                //     <Card.Footer>
-                //         <Grid.Container>
-                //             <Grid xs={6} md={7}>
-                //                 <Tooltip
-                //                     placement="bottom"
-                //                     color={'success'}
-                //                     css={{
-                //                         width: 'fit-content',
-                //                     }}
-                //                     content={
-                //                         <RecipeIngredients recipe={recipe} />
-                //                     }
-                //                 >
-                //                     <Text
-                //                         css={{
-                //                             color: '$accents5',
-                //                             cursor: 'pointer',
-                //                             transition: 'all 0.2s ease-in-out',
-                //                             '&:hover': {
-                //                                 color: '$primary',
-                //                             },
-                //                         }}
-                //                     >
-                //                         Voir les ingredients
-                //                     </Text>
-                //                 </Tooltip>
-                //             </Grid>
-                //         </Grid.Container>
-                //     </Card.Footer>
-                // </Card>
             ))}
         </>
     )

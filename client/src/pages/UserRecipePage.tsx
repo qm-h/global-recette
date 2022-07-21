@@ -40,7 +40,8 @@ const UserRecipePage = () => {
             setIsLoading(true)
             Promise.all([getRecipeByUserID(user.id, userUUID)])
                 .then(([res]) => {
-                    if (res['status'] === 403) {
+                    console.log(res.status)
+                    if (res.status === 403 || res.status === 401) {
                         toasterErrorCommon(
                             isDark,
                             'Votre accès à cette page à été refusé, \n si le problème persiste, \n veuillez contacter le support'

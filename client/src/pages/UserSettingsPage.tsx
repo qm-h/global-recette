@@ -103,7 +103,7 @@ const UserSettingsPage = () => {
             <Grid
                 xs={12}
                 md={3}
-                lg={2}
+                lg={3}
                 css={{ mb: isMobile ? '$10' : '' }}
                 justify="center"
             >
@@ -112,7 +112,7 @@ const UserSettingsPage = () => {
             <Grid
                 xs={12}
                 md={3}
-                lg={2}
+                lg={3}
                 css={{ mb: isMobile ? '$10' : '' }}
                 justify="center"
             >

@@ -238,7 +238,7 @@ const AuthService = {
 
         if (!userID) {
             logger.error('userID is undefined')
-            return res.status(401).send({ message: 'Error. Need a userUUID' })
+            return res.send({ status: 403, message: 'Error. Invalid userUUID' })
         }
         const result = await supabase
             .from('token_access')
@@ -246,7 +246,7 @@ const AuthService = {
             .eq('token_user_access', userUUID)
         if (result.data.length === 0) {
             logger.error('userUUID is undefined')
-            return res.status(401).send({ message: 'Error. Invalid userUUID' })
+            return res.send({ status: 403, message: 'Error. Invalid userUUID' })
         }
         next()
     },

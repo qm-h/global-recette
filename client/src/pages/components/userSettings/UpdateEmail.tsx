@@ -28,7 +28,9 @@ const UpdateEmail = ({ isDark, isMobile }: UpdateEmailProps) => {
             variant={isMobile ? 'flat' : 'shadow'}
         >
             <Grid
+                sm={12}
                 md={12}
+                lg={12}
                 justify="center"
                 alignContent="center"
                 alignItems="center"
