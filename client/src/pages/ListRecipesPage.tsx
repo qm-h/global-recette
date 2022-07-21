@@ -17,6 +17,7 @@ import { RiSearch2Line } from 'react-icons/ri'
 import { getAllRecipesWithUser } from '../router/recipesRouter'
 import { isMobile } from 'react-device-detect'
 import { useAppContext } from '../utils/context/AppContext'
+import { useLocation } from 'react-router-dom'
 
 const ListRecipes = () => {
     const [recipesData, setRecipesData] = useState<Recipe[]>([])
@@ -27,6 +28,7 @@ const ListRecipes = () => {
     const { isDark } = useTheme()
     const { user } = useAppContext()
     const userID: number | undefined = user?.id
+
     const handleSearchRecipe = (event) => {
         let value = event.target.value
         let newList = recipesData.filter((re) =>

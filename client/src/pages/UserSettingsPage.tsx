@@ -20,15 +20,6 @@ const UserSettingsPage = () => {
     const [isInvalidEmail, setIsInvalidEmail] = useState(false)
     const [isInvalidEmailMessage, setIsInvalidEmailMessage] = useState('')
     const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [isInvalidPassword, setIsInvalidPassword] = useState(false)
-    const [isInvalidPasswordMessage, setIsInvalidPasswordMessage] = useState('')
-    const [isInvalidPasswordConfirmation, setIsInvalidPasswordConfirmation] =
-        useState(false)
-    const [
-        isInvalidPasswordConfirmationMessage,
-        setIsInvalidPasswordConfirmationMessage,
-    ] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const { isDark } = useTheme()
     const { setTheme } = useNextTheme()

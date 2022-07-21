@@ -178,7 +178,7 @@ const RegisterForm = ({
 
     return (
         <Card
-            css={{ w: isMobile ? '90%' : '40%', mt: isMobile ? '$20' : '$0' }}
+            css={{ w: isMobile ? '90%' : '40%', mt: isMobile ? '$20' : '$24' }}
             variant={isMobile ? 'flat' : 'shadow'}
         >
             <Card.Header>

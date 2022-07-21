@@ -17,7 +17,14 @@ export const getAllRecipesWithUserHandler = async (
         .select(`*, user(*)`)
         .eq('published', true)
         .order('created_at', { ascending: false })
-    results.status === 200 && res.send(results.data)
+
+    logger.debug(JSON.stringify(results))
+
+    if (results.data.length === 0) {
+        logger.error(`${results.error} recipes found`)
+        return res.status(404).send('No recipes found')
+    }
+    res.status(200).send(results.data)
 }
 
 export const getRecipeByUserIDHandler = async (req: Request, res: Response) => {

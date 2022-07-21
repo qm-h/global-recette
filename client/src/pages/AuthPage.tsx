@@ -5,7 +5,6 @@ import { Grid } from '@nextui-org/react'
 import RegisterForm from './components/auth/register/RegisterForm'
 import checkField from '../utils/auth/checkField'
 import { useAppContext } from '../utils/context/AppContext'
-import { isMobile } from 'react-device-detect'
 
 const AuthPage = () => {
     const [noAccount, setNoAccount] = useState<boolean>(false)

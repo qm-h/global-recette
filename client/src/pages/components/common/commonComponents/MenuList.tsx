@@ -1,8 +1,9 @@
-import { Grid, theme, useTheme } from '@nextui-org/react'
+import { Grid, useTheme } from '@nextui-org/react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
 import { SuccessAuthUser } from '../../../../../../server/src/shared/types'
+import { Justify } from '@nextui-org/react/types/utils/prop-types'
 
 interface Props {
     user: SuccessAuthUser
@@ -13,6 +14,7 @@ const MenuList = ({ user, isAuthenticated }: Props) => {
     const { isDark } = useTheme()
     const [active, setActive] = useState<string>('')
     const url = useLocation().pathname
+    const [containerJustify, setContainerJustify] = useState<Justify>('center')
 
     useEffect(() => {
         switch (url) {
@@ -31,8 +33,16 @@ const MenuList = ({ user, isAuthenticated }: Props) => {
         }
     }, [url])
 
+    useEffect(() => {
+        if (user || isAuthenticated) {
+            setContainerJustify('space-between')
+        } else {
+            setContainerJustify('center')
+        }
+    }, [isAuthenticated])
+
     return (
-        <Grid.Container gap={4} justify={user ? 'space-between' : 'center'}>
+        <Grid.Container gap={4} justify={containerJustify}>
             <Grid xs={4}>
                 <NavLink
                     className={`link ${isDark ? 'dark_link' : 'light_link'} ${

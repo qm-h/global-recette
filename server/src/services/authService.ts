@@ -1,5 +1,7 @@
 import {
     AuthRequest,
+    FavoritesRecipe,
+    ImageUUIDBridge,
     MailerOptions,
     Recipe,
     TokenUserAccess,
@@ -238,6 +240,7 @@ const AuthService = {
 
         if (!userID) {
             logger.error('userID is undefined')
+
             return res.send({ status: 403, message: 'Error. Invalid userUUID' })
         }
         const result = await supabase
@@ -275,11 +278,26 @@ const AuthService = {
         next: NextFunction
     ) => {
         const { userID } = req.params
+        logger.debug(`userID: ${userID}`)
+        logger.debug(`URL: ${req.url}`)
+        if (!userID || userID === 'undefined' || userID === undefined) {
+            logger.error('userID is undefined')
+            return res.send({ status: 403, message: 'Error. Invalid userID' })
+        }
         const result = await supabase
             .from('user')
             .select('access_jwt_token')
             .eq('id', userID)
+        logger.debug(`verifyAccessJWTToken: ${JSON.stringify(result)}`)
+        if (result.status === 400) {
+            logger.error('userID is undefined')
+            return res
+                .status(403)
+                .send({ status: 403, message: 'Error. Invalid userID' })
+        }
+
         const token = result.data[0]?.access_jwt_token
+
         if (token === null) {
             logger.error('access_jwt_token is undefined')
             return res.send({ status: 403, message: 'Not Authorize' })
@@ -606,17 +624,50 @@ const AuthService = {
                     .eq('created_by', userID)
 
                 if (recipeID.data.length > 0) {
+                    const imagePath = await supabase
+                        .from<Recipe>('recipes')
+                        .select('image_path')
+                        .eq('id', recipeID.data[0].id)
                     for (let i = 0; i < recipeID.data.length; i++) {
                         await supabase
                             .from('recipe_ingredient')
                             .delete()
                             .eq('recipe_id', recipeID['data'][0].id)
-                        await supabase
-                            .from<Recipe>('recipes')
-                            .delete()
-                            .eq('id', recipeID.data[i].id)
+                    }
+                    const favoritesRecipe = await supabase
+                        .from<FavoritesRecipe>('favorites_recipe')
+                        .delete()
+                        .eq('user_id', userID)
+                    const removeImage = await supabase
+                        .from<ImageUUIDBridge>('image_uuid_bridge')
+                        .delete()
+                        .eq('image_path', imagePath.data[0].image_path)
+                    if (removeImage.status === 400) {
+                        logger.error(`${removeImage.error}`)
+                        return res
+                            .status(401)
+                            .send({ message: 'Error. Error deleting image' })
+                    }
+                    if (favoritesRecipe.status === 400) {
+                        logger.error(`${favoritesRecipe.error}`)
+                        return res
+                            .status(401)
+                            .send({ message: 'Error. Error deleting recipe' })
                     }
                 }
+
+                const removeRecipe = await supabase
+                    .from<Recipe>('recipes')
+                    .delete()
+                    .eq('created_by', userID)
+
+                if (removeRecipe.status === 400) {
+                    logger.error(`${removeRecipe.error}`)
+                    return res
+                        .status(401)
+                        .send({ message: 'Error. Error deleting recipe' })
+                }
+
                 await supabase
                     .from<UserResetPassword>('user_reset_password')
                     .delete()
@@ -638,16 +689,20 @@ const AuthService = {
                     .delete()
                     .eq('id', userID)
                 res.clearCookie('jwt_token')
-                if (user.status === 200) {
-                    return res.status(200).send({
-                        status: 200,
-                        message: 'User deleted',
+                if (user.status === 400) {
+                    logger.error(`${JSON.stringify(user)}`)
+                    logger.error(
+                        `DELETING ERROR: ${JSON.stringify(user.error)}`
+                    )
+                    return res.send({
+                        status: 401,
+                        message: 'Error. User not found',
                     })
                 }
-                logger.error(`DELETING ERROR: ${JSON.stringify(user.error)}`)
-                return res.send({
-                    status: 401,
-                    message: 'Error. User not found',
+
+                return res.status(200).send({
+                    status: 200,
+                    message: 'User deleted',
                 })
             }
         })

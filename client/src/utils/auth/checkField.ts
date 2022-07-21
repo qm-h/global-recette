@@ -1,6 +1,4 @@
-const passwordRegex = new RegExp(
-    '^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{8,})'
-)
+const passwordRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})')
 
 const checkField = {
     emptyField: (field: string, value: string): string | boolean => {

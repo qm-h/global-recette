@@ -110,7 +110,10 @@ const AuthForm = ({
                                 )
                                 break
                             case 400:
-                                toasterErrorAuth(isDark)
+                                toasterErrorCommon(
+                                    isDark,
+                                    'Les identifiants sont incorrects'
+                                )
                                 break
                             default:
                                 toasterErrorCommon(

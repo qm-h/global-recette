@@ -66,7 +66,10 @@ const RegisterFormBody = ({
             <Row
                 justify="center"
                 align="center"
-                css={{ marginTop: isMobile ? '' : '$10', marginBottom: '$10' }}
+                css={{
+                    marginTop: isMobile ? '$5' : '$10',
+                    marginBottom: '$10',
+                }}
             >
                 <Input
                     width={isMobile ? '90%' : '70%'}

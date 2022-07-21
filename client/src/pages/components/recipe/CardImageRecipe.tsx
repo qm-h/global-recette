@@ -16,7 +16,6 @@ const CardImageRecipe = ({ recipe, width, height, borderRadius }: Props) => {
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-        console.log(recipe.image_path)
         if (recipe.image_path) {
             Promise.all([getSupabaseRecipeUrlImages(recipe.image_path)]).then(
                 ([image]) => {

@@ -14,6 +14,7 @@ import eatingGif from '../../../../utils/images/assets/gif/giphy.gif'
 import partyGif from '../../../../utils/images/assets/gif/party-gif.gif'
 import timerBefore from '../../../../utils/timer'
 import { useWindowSize } from 'react-use'
+import { isMobile } from 'react-device-detect'
 
 const Confirmation = () => {
     const [isLoading, setIsLoading] = useState(false)
@@ -64,7 +65,7 @@ const Confirmation = () => {
         <Container
             css={{
                 h: '100vh',
-                w: '90%',
+                w: isMobile ? '100%' : '90%',
             }}
             display="flex"
             justify="center"
@@ -76,6 +77,7 @@ const Confirmation = () => {
                 <Loading color="primary" size="xl" />
             ) : (
                 <ConfirmationContent
+                    isMobile={isMobile}
                     isConfirmed={isConfirmed}
                     partyGif={partyGif}
                     eatingGif={eatingGif}

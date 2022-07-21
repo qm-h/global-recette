@@ -88,7 +88,7 @@ const CardRecipes = ({
     }
 
     useEffect(() => {
-        if (authUserID) {
+        if (authUserID && authUserID !== undefined) {
             getSavedRecipes(authUserID)
                 .then((res) => {
                     if (res) {
