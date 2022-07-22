@@ -99,20 +99,21 @@ export const getUserCoverImageHandler = async (req: Request, res: Response) => {
         .from<UserCoverImageUUIDBridge>('user_cover_image_uuid_bridge')
         .select('cover_image_uuid')
         .eq('user_id', userID)
+    logger.debug(`${JSON.stringify(uuidImages)}`)
+    if (uuidImages.data.length === 0) {
+        return res.send({ status: 404, message: 'Error getting cover image' })
+    } else {
+        const image = (
+            await supabase.storage
+                .from('images')
+                .createSignedUrl(uuidImages.data[0].cover_image_uuid, 60)
+        ).signedURL
 
-    if (uuidImages.status === 400) {
-        return res.sendStatus(500)
+        if (!image) {
+            logger.error(`No image found for user ${userID}`)
+            return res.sendStatus(404)
+        }
+        logger.debug(`Image found for user ${image}`)
+        return res.status(200).send({ status: 200, url: image })
     }
-    const image = (
-        await supabase.storage
-            .from('images')
-            .createSignedUrl(uuidImages.data[0].cover_image_uuid, 60)
-    ).signedURL
-
-    if (!image) {
-        logger.error(`No image found for user ${userID}`)
-        return res.sendStatus(404)
-    }
-    logger.debug(`Image found for user ${image}`)
-    return res.status(200).send({ status: 200, url: image })
 }

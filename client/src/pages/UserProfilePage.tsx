@@ -180,19 +180,25 @@ const UserProfilePage = () => {
     }, [user.id, userUUID, avatarIsChanged, coverImageHasBeenChanged])
 
     useEffect(() => {
-        console.log(userProfile)
-        console.log(userProfile?.cover_image_path)
         if (userProfile !== undefined) {
             Promise.all([getSupabaseUserUrlCoverImage(userProfile.id)])
                 .then(([image]) => {
-                    setUrlCoverImage(image)
-                    setIsLoadingCoverImage(false)
-                    setCoverImageHasBeenChanged(false)
-                    setIsLoading(false)
+                    if (image.status === 200) {
+                        setUrlCoverImage(image.url)
+                        setIsLoadingCoverImage(false)
+                        setCoverImageHasBeenChanged(false)
+                        setIsLoading(false)
+                    } else {
+                        setUrlCoverImage('')
+                        setIsLoadingCoverImage(false)
+                        setCoverImageHasBeenChanged(false)
+                        setIsLoading(false)
+                    }
                 })
                 .catch((err) => {
                     console.log(err)
                     setIsLoading(false)
+                    setIsLoadingCoverImage(false)
                 })
         }
     }, [userProfile, coverImageHasBeenChanged])

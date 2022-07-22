@@ -7,7 +7,7 @@ const getSupabaseRecipeUrlImages = async (imageName: string) => {
 }
 
 const getSupabaseUserUrlCoverImage = async (userID: number) => {
-    const imageUrl = await getUserCoverImage(userID).then((res) => res.url)
+    const imageUrl = await getUserCoverImage(userID).then((res) => res)
     return imageUrl
 }
 
