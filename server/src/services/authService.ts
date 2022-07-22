@@ -81,7 +81,7 @@ const AuthService = {
         }: AuthRequest = req.body
         bcrypt.hash(password, 10, async (err, hash) => {
             if (err) {
-                logger.error(`${err}`)
+                logger.error(`${JSON.stringify(err)}`)
                 return res.status(500).send('Error hashing password')
             } else {
                 const existingUser = await supabase
@@ -102,6 +102,8 @@ const AuthService = {
                     const result = await supabase
                         .from<User>('user')
                         .insert(user)
+
+                    logger.debug(`RESULT: ${JSON.stringify(result)}`)
                     if (result.status === 201) {
                         const sendEmailConfirmation =
                             await AuthService.saveConfirmationRegisterEmail(
@@ -118,7 +120,9 @@ const AuthService = {
                                   message: 'Error sending email',
                               })
                     } else {
-                        logger.error(`${result.error}`)
+                        logger.error(
+                            `ERROR CREATING USER: ${JSON.stringify(err)}`
+                        )
                         return res.send({
                             status: 500,
                             message: 'Error creating user',

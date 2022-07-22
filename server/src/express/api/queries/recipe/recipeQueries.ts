@@ -108,9 +108,9 @@ export const getRecipeUserHandler = async (req: Request, res: Response) => {
 
 export const getRecipeImageHandler = async (req: Request, res: Response) => {
     const { name } = req.params
-
+    logger.debug(`Getting image for recipe: ${name}`)
     const uuidImages = await supabase
-        .from<ImageUUIDBridge>('image_uuid_bridge')
+        .from<ImageUUIDBridge>('recipe_image_uuid_bridge')
         .select()
         .eq('image_path', name)
     if (uuidImages.status === 400) {
