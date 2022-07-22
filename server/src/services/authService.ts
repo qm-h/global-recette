@@ -178,7 +178,7 @@ const AuthService = {
                         generated_avatar: userData.generated_avatar,
                         followers: userData.followers,
                         following: userData.following,
-                        biography: userData.biography,
+                        cover_image_path: userData.cover_image_path,
                     },
                 })
             } else {

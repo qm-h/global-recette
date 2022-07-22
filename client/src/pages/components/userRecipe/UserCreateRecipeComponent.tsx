@@ -34,10 +34,13 @@ import IngredientDropDown from './ingredients/IngredientDropDown'
 import IngredientQuantity from './ingredients/IngredientQuantity'
 import SunEditor from 'suneditor-react'
 import { editorOptions } from '../../../utils/editorOptions'
-import { isMobile } from 'react-device-detect'
 import { toasterErrorCommon } from '../../../utils/theme/toaster'
 import { useAppContext } from '../../../utils/context/AppContext'
 import { v4 as uuidv4 } from 'uuid'
+import {
+    allLetterToLowerCase,
+    firstLetterToUpperCase,
+} from '../../../utils/editingWord'
 
 interface Props {
     setCreate: (value: boolean) => void
@@ -76,8 +79,8 @@ const UserCreateRecipeComponent = ({ setCreate, isMobile }: Props) => {
         ) {
             setIsLoading(true)
             const recipe: Recipe = {
-                name: name,
-                origin: origin,
+                name: firstLetterToUpperCase(allLetterToLowerCase(name)),
+                origin: firstLetterToUpperCase(allLetterToLowerCase(origin)),
                 note: note,
                 created_by: user.id,
                 image_path: image ? image.name : '',
@@ -233,11 +236,11 @@ const UserCreateRecipeComponent = ({ setCreate, isMobile }: Props) => {
                     >
                         <Input
                             width={isMobile ? '100%' : '60%'}
-                            bordered={isDark || isMobile}
                             color={'primary'}
-                            aria-label="origine de la recette"
-                            labelPlaceholder="Origine de la recette"
-                            onChange={(e) => setOrigin(e.target.value)}
+                            aria-label="nom de la recette"
+                            bordered={isDark || isMobile}
+                            labelPlaceholder="Nom de la recette"
+                            onChange={(e) => setName(e.target.value)}
                         />
                     </Grid>
                     <Grid
@@ -248,11 +251,11 @@ const UserCreateRecipeComponent = ({ setCreate, isMobile }: Props) => {
                     >
                         <Input
                             width={isMobile ? '100%' : '60%'}
-                            color={'primary'}
-                            aria-label="nom de la recette"
                             bordered={isDark || isMobile}
-                            labelPlaceholder="Nom de la recette"
-                            onChange={(e) => setName(e.target.value)}
+                            color={'primary'}
+                            aria-label="origine de la recette"
+                            labelPlaceholder="Origine de la recette"
+                            onChange={(e) => setOrigin(e.target.value)}
                         />
                     </Grid>
                     <Grid
@@ -401,21 +404,26 @@ const UserCreateRecipeComponent = ({ setCreate, isMobile }: Props) => {
             </Card.Body>
             <Card.Footer>
                 <Row justify="center">
-                    {isLoading ? (
-                        <Button auto disabled rounded css={{ mb: '$5' }}>
+                    <Button
+                        color="success"
+                        auto
+                        disabled={
+                            !name ||
+                            !origin ||
+                            !note ||
+                            isLoading ||
+                            !selectedIngredients.length
+                        }
+                        flat={isDark}
+                        onPress={handleCreateRecipe}
+                        css={{ mb: '$5' }}
+                    >
+                        {isLoading ? (
                             <Loading color="currentColor" size="md" />
-                        </Button>
-                    ) : (
-                        <Button
-                            color="success"
-                            auto
-                            flat={isDark}
-                            onPress={handleCreateRecipe}
-                            css={{ mb: '$5' }}
-                        >
-                            Créer ma recette
-                        </Button>
-                    )}
+                        ) : (
+                            'Créer ma recette'
+                        )}
+                    </Button>
                 </Row>
             </Card.Footer>
             <CreateIngredientModal

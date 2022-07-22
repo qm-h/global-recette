@@ -58,7 +58,7 @@ export const savedImageUUIDHandler = async (req, res: Response) => {
     const { imageUUID, imagePath } = req.body
 
     const savedUUIDResult = await supabase
-        .from<ImageUUIDBridge>('image_uuid_bridge')
+        .from<ImageUUIDBridge>('recipe_image_uuid_bridge')
         .insert([
             {
                 image_uuid: imageUUID,

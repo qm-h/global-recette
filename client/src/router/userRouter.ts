@@ -1,8 +1,10 @@
 import {
     ExpressResponseDataType,
     ExpressResponseMessageType,
+    ExpressResponseUrlType,
     FavoritesRecipe,
     FavoritesRecipeWithUser,
+    Recipe,
     SuccessAuthUser,
     UserRecipesResponse,
 } from '../../../server/src/shared/types'
@@ -131,6 +133,56 @@ export function updateAvatar(
             userID: userID,
             avatar: avatar,
         })
+        .then((res) => res.data)
+        .catch((err) => console.log(err))
+}
+
+export function uploadUserCoverImage(
+    formData: FormData
+): Promise<ExpressResponseUrlType> {
+    return axios
+        .post('/api/user/uploadcoverimage', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        })
+        .then((res) => res.data)
+        .catch((err) => console.log(err))
+}
+
+export function saveUserCoverImageUUID(
+    userID: number,
+    imageUUID: string,
+    imagePath: string
+): Promise<ExpressResponseMessageType> {
+    return axios
+        .post('/api/user/savecoverimageuuid', {
+            userID: userID,
+            coverImageUUID: imageUUID,
+            coverImagePath: imagePath,
+        })
+        .then((res) => res.data)
+        .catch((err) => console.log(err))
+}
+
+export function updateUserCoverImage(
+    userID: number,
+    imageUUID: string,
+    imagePath: string
+): Promise<ExpressResponseMessageType> {
+    return axios
+        .put('/api/user/updatecoverimage', {
+            userID: userID,
+            coverImageUUID: imageUUID,
+            coverImagePath: imagePath,
+        })
+        .then((res) => res.data)
+        .catch((err) => console.log(err))
+}
+
+export function getUserCoverImage(
+    userID: number
+): Promise<ExpressResponseUrlType> {
+    return axios
+        .get(`/api/user/coverimage/${userID}`)
         .then((res) => res.data)
         .catch((err) => console.log(err))
 }

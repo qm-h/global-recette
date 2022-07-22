@@ -2,14 +2,18 @@ import { NextFunction, Request, Response, Router } from 'express'
 import {
     followingHandler,
     removeSavedRecipeHandler,
+    saveCoverImageUUIDHandler,
     unfollowingHandler,
     updateAvatarHandler,
+    updateCoverImageHandler,
+    uploadCoverImageHandler,
 } from './../api/commands/user/userCommands'
 import {
     getAllFavoritesRecipeHandler,
     getFollowingUserHandler,
     getSavedRecipesHandler,
     getUserByIDHandler,
+    getUserCoverImageHandler,
 } from '../api/queries/user/userQueries'
 
 import AuthService from '../../services/authService'
@@ -46,6 +50,10 @@ class UserRouter {
         this.router.post('/savetofavorite', this.saveRecipeToFavorite)
         this.router.post('/removesavedrecipe', this.removeSavedRecipe)
         this.router.put('/updateavatar', this.updateAvatar)
+        this.router.get('/coverimage/:userID', this.getUserCoverImage)
+        this.router.post('/uploadcoverimage', this.uploadCoverImage)
+        this.router.post('/savecoverimageuuid', this.saveCoverImageUUID)
+        this.router.put('/updatecoverimage', this.updateCoverImage)
     }
 
     getUserByID(req: Request, res: Response) {
@@ -79,6 +87,18 @@ class UserRouter {
     }
     private updateAvatar(req: Request, res: Response) {
         return updateAvatarHandler(req, res)
+    }
+    private getUserCoverImage(req: Request, res: Response) {
+        return getUserCoverImageHandler(req, res)
+    }
+    private uploadCoverImage(req: Request, res: Response) {
+        return uploadCoverImageHandler(req, res)
+    }
+    private saveCoverImageUUID(req: Request, res: Response) {
+        return saveCoverImageUUIDHandler(req, res)
+    }
+    private updateCoverImage(req: Request, res: Response) {
+        return updateCoverImageHandler(req, res)
     }
 }
 

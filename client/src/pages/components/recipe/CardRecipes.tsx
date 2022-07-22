@@ -195,7 +195,7 @@ const CardRecipes = ({
                                                 color={
                                                     isDark
                                                         ? '#ffffff'
-                                                        : '#ffffff'
+                                                        : '#000000'
                                                 }
                                                 className={'openRecipeDetails'}
                                             />
@@ -226,7 +226,11 @@ const CardRecipes = ({
                                                     authUserID={authUserID}
                                                     isDark={isDark}
                                                     recipe={r}
-                                                    color={'#ffffff'}
+                                                    color={
+                                                        isDark
+                                                            ? '#ffffff'
+                                                            : '#f31461'
+                                                    }
                                                 />
                                             </Tooltip>
                                         )}
@@ -257,7 +261,11 @@ const CardRecipes = ({
                                             flat={isDark}
                                             size="sm"
                                         >
-                                            <FaShare color={'#fff'} />
+                                            <FaShare
+                                                color={
+                                                    isDark ? '#fff' : '#000000'
+                                                }
+                                            />
                                         </Button>
                                     </Tooltip>
                                 </Row>
@@ -281,7 +289,7 @@ const CardRecipes = ({
                                     justify="space-between"
                                     align="center"
                                 >
-                                    <Text b size={15} color={'white'}>
+                                    <Text b size={15} color={'text'}>
                                         {r.name}
                                     </Text>
                                     <Tooltip

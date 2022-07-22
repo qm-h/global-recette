@@ -7,6 +7,10 @@ import {
 import { MdOutlineFastfood } from 'react-icons/md'
 import { createIngredient } from '../../../../router/ingredientsRouter'
 import { useState } from 'react'
+import {
+    allLetterToLowerCase,
+    firstLetterToUpperCase,
+} from '../../../../utils/editingWord'
 
 const CreateIngredientModal = ({
     isOpen,
@@ -21,7 +25,7 @@ const CreateIngredientModal = ({
     const handleCreateIngredient = async () => {
         setIsLoading(!isLoading)
         await createIngredient(
-            ingredient.charAt(0).toUpperCase() + ingredient.slice(1)
+            firstLetterToUpperCase(allLetterToLowerCase(ingredient))
         )
             .then((res) => {
                 switch (res.status) {

@@ -154,18 +154,6 @@ const UserInfoTooltip = ({
                             </Row>
                         </Col>
                     </Row>
-                    <Grid.Container className="user-twitter-card__username-container">
-                        <Grid xs={12}>
-                            <Text
-                                className="user-twitter-card__text"
-                                size={14}
-                                css={{ mt: '$1' }}
-                                color="#888888"
-                            >
-                                {recipeUser.biography}
-                            </Text>
-                        </Grid>
-                    </Grid.Container>
                     <Grid.Container
                         className="user-twitter-card__metrics-container"
                         justify="flex-start"

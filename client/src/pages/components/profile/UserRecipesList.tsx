@@ -16,12 +16,13 @@ const UserRecipesList = ({
     isMobile,
     isDark,
 }: UserRecipesListProps) => (
-    <>
+    <Grid.Container wrap="wrap" justify={'center'} gap={2}>
         {recipes.map((r, i) => (
             <Grid
                 key={i}
-                xs={8}
+                xs={10}
                 md={4}
+                lg={3}
                 justify="center"
                 alignItems="center"
                 alignContent="center"
@@ -51,7 +52,7 @@ const UserRecipesList = ({
                             />
                         </Grid>
                     </Card.Header>
-                    <Card.Body>
+                    <Card.Footer>
                         <Grid
                             md={12}
                             css={{
@@ -80,11 +81,11 @@ const UserRecipesList = ({
                                 Voir la recette
                             </Text>
                         </Grid>
-                    </Card.Body>
+                    </Card.Footer>
                 </Card>
             </Grid>
         ))}
-    </>
+    </Grid.Container>
 )
 
 export default UserRecipesList

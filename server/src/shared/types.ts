@@ -26,6 +26,14 @@ export type ImageUUIDBridge = {
     created_at?: EpochTimeStamp
 }
 
+export type UserCoverImageUUIDBridge = {
+    id?: number
+    user_id: number
+    cover_image_uuid: string
+    cover_image_path: string
+    created_at?: EpochTimeStamp
+}
+
 export type HasSavedRecipe = {
     favorite: boolean
     recipeID: number
@@ -50,7 +58,7 @@ export type User = {
     generated_avatar: string
     followers?: number
     following?: number
-    biography?: string
+    cover_image_path?: string
     confirmed?: boolean
 }
 
